@@ -18,6 +18,13 @@ class TasksController extends Controller
         	$tasks->load()
         }*/
 
+        $searchModel = (new Tasks);
+        if (Yii::$app->request->getIsPost()) {
+            $searchModel->load();
+        }
+
+        
+
         $tasks = Tasks::find()->with('specialization')->where(['status' => Task::STATUS_NEW])->orderBy(['posting_date' => SORT_DESC])->asArray()->all();
 
         return $this->render('index', ['tasks' => $tasks]);
