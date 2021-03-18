@@ -35,7 +35,7 @@ use Yii;
 class Tasks extends \yii\db\ActiveRecord
 {
     
-    public array $searchedSpecializations;
+    public $searchedSpecializations;//[1 => 'Переводы', 2 => 'Уборка', 3 => 'Переезды', 4 => 'Компьютерная помощь', 5 => 'Ремонт квартирный', 6 => 'Ремонт техники', 7 => 'Красота', 8 => 'Фото'];  
 
     /*public function search(array $params): 
     {
@@ -74,7 +74,7 @@ class Tasks extends \yii\db\ActiveRecord
         return [
             [['customer_id', 'status', 'name', 'description'], 'required'],
             [['customer_id', 'executant_id', 'city_id', 'specialization_id'], 'integer'],
-            [['posting_date', 'deadline_date'], 'safe'],
+            [['posting_date', 'deadline_date', 'searchedSpecializations'], 'safe'],
             [['latitude', 'longitude'], 'number'],
             [['status'], 'string', 'max' => 50],
             [['name'], 'string', 'max' => 1000],

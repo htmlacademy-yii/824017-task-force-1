@@ -56,7 +56,8 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
     return $passedTime;
 }
 ?>
-<?php $specializations = Specializations::find()->asArray()->all(); ?>
+<?php $specializations = ArrayHelper::map(Specializations::find()->asArray()->all(), 'id', 'name');
+//var_dump($specializations); ?>
 
 
 <section class="new-task">
@@ -97,27 +98,37 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
 <section  class="search-task">
     <div class="search-task__wrapper">
 
-
-        
-
-    
         <?php $form = ActiveForm::begin([
-            'id' => 'search-task',
+            'id' => 'searchModel',
             'method' => 'post',
             'options' => [
                 'class' => 'search-task__form'
             ]
-        ]);
+        ]); ?>
         
-                        $form->field($searchModel, 'searchedSpecializations[]')->
-                        checkboxList(ArrayHelper::map($specializations, 'id', 'name'));
+        <?= $form->field($searchModel, 'searchedSpecializations[]')->checkboxList($specializations, [
+                'tag' => 'fieldset',
+                'item' => function($index, $label, $name, $checked, $value)
+                    {
+                        return "<label for='" . (string) ($index+1) . "'>{$label}</label>
+                            <input
+                                type='checkbox'
+                                class='visually-hidden checkbox__input'
+                                {$checked}
+                                name='{$name}'
+                                value='{$value}'
+                                id='" . (string) ($index+1) . "'> ";
+                    },
+                'class' => 'search-task__categories',
+                'id' => null
+            ]
+        )?>
 
-                    ?>
                 
-
+        <input type="submit" value="Отправить"/>
         <?php ActiveForm::end(); ?>
 
-        <form class="search-task__form" name="test" method="post" action="#">
+        <!-- <form class="search-task__form" name="test" method="post" action="#">
             <fieldset class="search-task__categories">
                 <legend>Категории</legend>
                 <input class="visually-hidden checkbox__input" id="1" type="checkbox" name="" value="" checked>
@@ -147,7 +158,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
             <label class="search-task__name" for="9">Поиск по названию</label>
                 <input class="input-middle input" id="9" type="search" name="q" placeholder="">
             <button class="button" type="submit">Искать</button>
-        </form>
+        </form> -->
 
 
 
