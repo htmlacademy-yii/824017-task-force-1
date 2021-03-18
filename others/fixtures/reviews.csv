@@ -1,4 +1,4 @@
-task_id,customer_id,executant_id,completion,adding_date,rating,comment
+task_id,customer_id,executant_id,completion,adding_date,rate,comment
 1,4,1,1,2019-08-19,3,"Cras non velit nec nisi vulputate nonummy. Maecenas tincidunt lacus at velit. Vivamus vel nulla eget eros elementum pellentesque.
 
 Quisque porta volutpat erat. Quisque erat eros, viverra eget, congue eget, semper rutrum, nulla. Nunc purus.
