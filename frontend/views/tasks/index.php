@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 use TaskForce\Exceptions\DateIntervalInverseException;
 use yii\widgets\ActiveForm;
+use yii\widgets\ActiveField;
+use frontend\models\Specializations;
+//use yii\helpers\BaseArrayHelper;
+use yii\helpers\ArrayHelper;
+
 
 function getPassedTimeSinceLastActivity(string $startingDate): ?string
 {
@@ -51,6 +56,8 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
     return $passedTime;
 }
 ?>
+<?php $specializations = Specializations::find()->asArray()->all(); ?>
+
 
 <section class="new-task">
     <div class="new-task__wrapper">
@@ -96,42 +103,18 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
     
         <?php $form = ActiveForm::begin([
             'id' => 'search-task',
+            'method' => 'post',
             'options' => [
                 'class' => 'search-task__form'
             ]
         ]);
-        ?>
+        
+                        $form->field($searchModel, 'searchedSpecializations[]')->
+                        checkboxList(ArrayHelper::map($specializations, 'id', 'name'));
 
-            <fieldset class="search-task__categories">
-
-                <?php foreach ($model->attributeLabels() as $attr => $label): ?>
-
-                    <?php $field = new ActiveField([
-                        'model' => $model,
-                        'template' => "{label}\n{input}",
-                        'attribute' => $attr,
-                        'options' => [
-                            'class' => 'visually-hidden checkbox__input'
-                            'type' => 'checkbox'
-                            'name' => ''
-                        ]
-                    ]);
-                    
-                    
-                    $field->textInput([
-                        'class' => 'field__input input input--big placeholder-shown',
-                        'id'
-                    ]
-                    );
                     ?>
+                
 
-                    <?=$field->render(); ?>
-
-                <?php endforeach; ?>
-
-            </fieldset>
-
-       
         <?php ActiveForm::end(); ?>
 
         <form class="search-task__form" name="test" method="post" action="#">

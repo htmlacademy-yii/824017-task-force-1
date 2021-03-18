@@ -34,11 +34,10 @@ use Yii;
  */
 class Tasks extends \yii\db\ActiveRecord
 {
-    public $search;
-
+    
     public array $searchedSpecializations;
 
-    public function search(array $params): 
+    /*public function search(array $params): 
     {
         $query = self::find();
         $dataProvider = new ActiveDataProvider(['query' => $query]);
@@ -57,7 +56,7 @@ class Tasks extends \yii\db\ActiveRecord
         }
 
         return $dataProvider;
-    }
+    }*/
 
     /**
      * {@inheritdoc}
