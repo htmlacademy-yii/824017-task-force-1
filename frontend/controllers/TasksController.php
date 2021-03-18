@@ -26,7 +26,7 @@ class TasksController extends Controller
         	//var_dump(Yii::$app->request->post());
             $searchModel->load(Yii::$app->request->post());
             //var_dump($searchModel);
-            $query->andFilterWhere(['specialization_id' => $searchModel->searchedSpecializations]);
+            $query->andFilterWhere(['specialization_id' => $searchModel->searchParameters['specializations']]);
             //var_dump($query);	
         }
 
@@ -43,7 +43,7 @@ class TasksController extends Controller
             }
         }*/
 
-        //$searchModel 
+        //var_dump($searchModel);
 
         $tasks = $query->all();
         //var_dump($tasks);

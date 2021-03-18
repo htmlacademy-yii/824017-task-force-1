@@ -35,7 +35,11 @@ use Yii;
 class Tasks extends \yii\db\ActiveRecord
 {
     
-    public $searchedSpecializations;//[1 => 'Переводы', 2 => 'Уборка', 3 => 'Переезды', 4 => 'Компьютерная помощь', 5 => 'Ремонт квартирный', 6 => 'Ремонт техники', 7 => 'Красота', 8 => 'Фото'];  
+    public $searchParameters;//[1 => 'Переводы', 2 => 'Уборка', 3 => 'Переезды', 4 => 'Компьютерная помощь', 5 => 'Ремонт квартирный', 6 => 'Ремонт техники', 7 => 'Красота', 8 => 'Фото'];
+
+    
+
+    //public $oneMoreCheckbox;  
 
     /*public function search(array $params): 
     {
@@ -106,7 +110,7 @@ class Tasks extends \yii\db\ActiveRecord
             'longitude' => 'Longitude',
             'payment' => 'Payment',
             'deadline_date' => 'Deadline Date',
-            'address' => 'Address',
+            'address' => 'Address'
         ];
     }
 

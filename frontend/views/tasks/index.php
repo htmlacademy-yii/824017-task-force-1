@@ -105,9 +105,33 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                 'class' => 'search-task__form'
             ]
         ]); ?>
+        <fieldset class="search-task__categories">
+                <legend>Категории</legend>
+                
+                <?php foreach($specializations as $id => $name): ?>
+
+                    <?= $form->field($searchModel, "searchParameters[specializations][$id]", [
+                        'template' => "{input}",
+                        'options' => ['tag' => false]
+                    ])->checkbox([
+                        'label' => false,
+                        'value' => $id,
+                        'uncheck' => null,
+                        'id' => $id,
+                        'class' => 'visually-hidden checkbox__input'
+                    ]) ?> 
+
+                    <label for="<?= $id ?>"><?= $name ?></label>
+
+                <?php endforeach; ?> 
         
-        <?= $form->field($searchModel, 'searchedSpecializations[]')->checkboxList($specializations, [
-                'tag' => 'fieldset',
+
+        <!--        
+           $form->field($searchModel, 'searchedSpecializations[]', [
+            'options' => ['tag' => false],
+            'template' => "{input}"
+        ])->checkboxList($specializations, [
+                'tag' => false,
                 'item' => function($index, $label, $name, $checked, $value)
                     {
                         return "<label for='" . (string) ($index+1) . "'>{$label}</label>
@@ -118,17 +142,41 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                                 name='{$name}'
                                 value='{$value}'
                                 id='" . (string) ($index+1) . "'> ";
-                    },
-                'class' => 'search-task__categories',
-                'id' => null
+                    }
             ]
-        )?>
+        ) ?>
+          $form->field($searchModel, 'oneMoreCheckbox', [
 
-                
-        <input type="submit" value="Отправить"/>
+                        'template' => "{input}\n{error}"
+                    ]
+                    )->checkbox()  -->  
+
+        </fieldset>
+        <fieldset class="search-task__categories">
+            <legend>Дополнительно</legend>
+             <?= $form->field($searchModel, "searchParameters[hasNoResponses]", [
+                        'template' => "{input}",
+                        'options' => ['tag' => false]
+                    ])->checkbox([
+                        'label' => false,
+                        'value' => 1,
+                        'uncheck' => null,
+                        'id' => (count($specializations) + 1),
+                        'class' => 'visually-hidden checkbox__input'
+                    ]) ?>
+                     
+
+             <label for="<?= (count($specializations) + 1) ?>">Без откликов</label>
+
+
+
+        </fieldset>
+        <button class="button" type="submit">Искать</button>
         <?php ActiveForm::end(); ?>
 
-        <!-- <form class="search-task__form" name="test" method="post" action="#">
+        <!-- отрисовать в activefrom:
+
+        <form class="search-task__form" name="test" method="post" action="#">
             <fieldset class="search-task__categories">
                 <legend>Категории</legend>
                 <input class="visually-hidden checkbox__input" id="1" type="checkbox" name="" value="" checked>
