@@ -99,7 +99,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
     <div class="search-task__wrapper">
 
         <?php $form = ActiveForm::begin([
-            'id' => 'searchModel',
+            //'id' => 'searchModel', что будет если id не определить
             'method' => 'post',
             'options' => [
                 'class' => 'search-task__form'
@@ -110,7 +110,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                 
                 <?php foreach($specializations as $id => $name): ?>
 
-                    <?= $form->field($searchModel, "searchParameters[specializations][$id]", [
+                    <?= $form->field($searchTaskForm, "searchedSpecializations[$id]", [
                         'template' => "{input}",
                         'options' => ['tag' => false]
                     ])->checkbox([
@@ -154,7 +154,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
         </fieldset>
         <fieldset class="search-task__categories">
             <legend>Дополнительно</legend>
-             <?= $form->field($searchModel, "searchParameters[hasNoResponses]", [
+             <?= $form->field($searchTaskForm, "hasNoResponses", [
                         'template' => "{input}",
                         'options' => ['tag' => false]
                     ])->checkbox([

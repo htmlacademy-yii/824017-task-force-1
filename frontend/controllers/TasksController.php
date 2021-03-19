@@ -7,26 +7,22 @@ namespace frontend\controllers;
 use TaskForce\Controllers\Task;
 use yii\web\Controller;
 use frontend\models\Tasks;
-//use frontend\models\SearchTasks;
+use frontend\models\SearchTaskForm;
 use Yii;
 
 class TasksController extends Controller
 {
     public function actionIndex(): string
     {
-    	/*$tasks = new Tasks;
-        if (Yii::$app->request->getIsPost()) {
-        	$tasks->load()
-        }*/
         $query = Tasks::find()->with('specialization')->where(['status' => Task::STATUS_NEW])->orderBy(['posting_date' => SORT_DESC]);
 
-        $searchModel = (new Tasks);
-        //var_dump($searchModel);
+        $searchTaskForm = (new SearchTaskForm);
+        //var_dump($searchTaskForm);
         if (Yii::$app->request->getIsPost()) {
         	//var_dump(Yii::$app->request->post());
-            $searchModel->load(Yii::$app->request->post());
-            //var_dump($searchModel);
-            $query->andFilterWhere(['specialization_id' => $searchModel->searchParameters['specializations']]);
+            $searchTaskForm->load(Yii::$app->request->post());
+            //var_dump($searchTaskForm);
+            $query->andFilterWhere(['specialization_id' => $searchTaskForm->searchedSpecializations]);
             //var_dump($query);	
         }
 
@@ -43,12 +39,12 @@ class TasksController extends Controller
             }
         }*/
 
-        //var_dump($searchModel);
+        //var_dump($searchTaskForm);
 
         $tasks = $query->all();
         //var_dump($tasks);
 
-        return $this->render('index', ['tasks' => $tasks, 'searchModel' => $searchModel]);
+        return $this->render('index', ['tasks' => $tasks, 'searchTaskForm' => $searchTaskForm]);
     }
 
     //public function actionSearch()

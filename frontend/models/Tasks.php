@@ -78,7 +78,7 @@ class Tasks extends \yii\db\ActiveRecord
         return [
             [['customer_id', 'status', 'name', 'description'], 'required'],
             [['customer_id', 'executant_id', 'city_id', 'specialization_id'], 'integer'],
-            [['posting_date', 'deadline_date', 'searchedSpecializations'], 'safe'],
+            [['posting_date', 'deadline_date', 'searchParameters'], 'safe'],
             [['latitude', 'longitude'], 'number'],
             [['status'], 'string', 'max' => 50],
             [['name'], 'string', 'max' => 1000],
