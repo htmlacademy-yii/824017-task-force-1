@@ -73,6 +73,9 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
             </div>
 
         <?php endforeach; ?>
+        
+        <!-- у <fieldset>-ов почему-то рамка не появляется, в отличии от файла верстки /frontend/web/browse.html 
+        не смог понять почему... -->
 
     </div>
     <div class="new-task__pagination">
