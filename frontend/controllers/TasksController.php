@@ -12,9 +12,10 @@ use Yii;
 
 class TasksController extends Controller
 {
-    public function actionIndex(): string
+    public function actionIndex()
     {
-        $query = Tasks::find()->with('specialization')->where(['status' => Task::STATUS_NEW])->orderBy(['posting_date' => SORT_DESC]);
+        $query = Tasks::find()->with('specialization')->joinWith('responses')->where(['status' => Task::STATUS_NEW])->orderBy(['posting_date' => SORT_DESC])->asArray()/*->all()*/;
+        //var_dump($query);
 
         $searchTaskForm = (new SearchTaskForm);
         //var_dump($searchTaskForm);
@@ -23,6 +24,26 @@ class TasksController extends Controller
             $searchTaskForm->load(Yii::$app->request->post());
             //var_dump($searchTaskForm);
             $query->andFilterWhere(['specialization_id' => $searchTaskForm->searchedSpecializations]);
+
+            if ($searchTaskForm->hasNoResponses) { //тут  же не нарушается критерия про инициализацию?
+            	 $query->andWhere(['responses.id' => null]);
+            }
+            if ($searchTaskForm->hasNoLocation) {
+            	 $query->andWhere(['tasks.latitude' => null]);
+            }
+
+        	switch ($searchTaskForm->postingPeriod) {
+        		case false:
+        			break;
+        		
+        		default:
+        			break;
+        	}
+        	$query->andWhere(['posting_date' => null]  );
+            }
+
+            //$query->andFilterWhere(['responses' => $searchTaskForm->hasNoResponses]);
+            //->andWhere(['responses.id' => null])
             //var_dump($query);	
         }
 

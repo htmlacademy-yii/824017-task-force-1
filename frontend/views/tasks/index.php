@@ -57,6 +57,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
 }
 ?>
 <?php $specializations = ArrayHelper::map(Specializations::find()->asArray()->all(), 'id', 'name');
+$specializationsCount = count($specializations);
 //var_dump($specializations); ?>
 
 
@@ -99,7 +100,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
     <div class="search-task__wrapper">
 
         <?php $form = ActiveForm::begin([
-            //'id' => 'searchModel', что будет если id не определить
+            'id' => 'searchForm', 
             'method' => 'post',
             'options' => [
                 'class' => 'search-task__form'
@@ -145,15 +146,12 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                     }
             ]
         ) ?>
-          $form->field($searchModel, 'oneMoreCheckbox', [
-
-                        'template' => "{input}\n{error}"
-                    ]
-                    )->checkbox()  -->  
+           -->  
 
         </fieldset>
         <fieldset class="search-task__categories">
             <legend>Дополнительно</legend>
+
              <?= $form->field($searchTaskForm, "hasNoResponses", [
                         'template' => "{input}",
                         'options' => ['tag' => false]
@@ -161,16 +159,46 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                         'label' => false,
                         'value' => 1,
                         'uncheck' => null,
-                        'id' => (count($specializations) + 1),
+                        'id' => ($specializationsCount + 1),
                         'class' => 'visually-hidden checkbox__input'
-                    ]) ?>
-                     
+                    ]) ?>    
 
-             <label for="<?= (count($specializations) + 1) ?>">Без откликов</label>
+             <label for="<?= ($specializationsCount + 1) ?>">Без откликов</label>
 
+            <?= $form->field($searchTaskForm, "hasNoLocation", [
+                        'template' => "{input}",
+                        'options' => ['tag' => false]
+                    ])->checkbox([
+                        'label' => false,
+                        'value' => 1,
+                        'uncheck' => null,
+                        'id' => ($specializationsCount + 2),
+                        'class' => 'visually-hidden checkbox__input'
+                    ]) ?>  
 
+             <label for="<?= ($specializationsCount + 2) ?>">Удаленная работа </label>
 
         </fieldset>
+
+        <label class="search-task__name" for="<?= ($specializationsCount + 3) ?>">Период</label>
+        <?= $form->field($searchTaskForm, "postingPeriod", [
+                        'template' => "{input}",
+                        'options' => ['tag' => false]
+                    ])->dropDownList([
+                        'day' => 'За день',
+                        'month' => 'За месяц'
+                    ], [
+                        'class' => 'multiple-select input',
+                        'id' => ($specializationsCount + 3),
+                        'size' => 1,
+                        'prompt' => [
+                            'text' => 'За неделю',
+                            'options' => [
+                                'value' => 'week'
+                            ]
+                        ]
+                    ]); ?>
+
         <button class="button" type="submit">Искать</button>
         <?php ActiveForm::end(); ?>
 
