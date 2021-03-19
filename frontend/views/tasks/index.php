@@ -57,8 +57,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
 }
 ?>
 <?php $specializations = ArrayHelper::map(Specializations::find()->asArray()->all(), 'id', 'name');
-$specializationsCount = count($specializations);
-//var_dump($specializations); ?>
+$specializationsCount = count($specializations); ?>
 
 
 <section class="new-task">
@@ -106,6 +105,7 @@ $specializationsCount = count($specializations);
                 'class' => 'search-task__form'
             ]
         ]); ?>
+
         <fieldset class="search-task__categories">
                 <legend>Категории</legend>
                 
@@ -121,34 +121,12 @@ $specializationsCount = count($specializations);
                         'id' => $id,
                         'class' => 'visually-hidden checkbox__input'
                     ]) ?> 
-
                     <label for="<?= $id ?>"><?= $name ?></label>
 
-                <?php endforeach; ?> 
-        
-
-        <!--        
-           $form->field($searchModel, 'searchedSpecializations[]', [
-            'options' => ['tag' => false],
-            'template' => "{input}"
-        ])->checkboxList($specializations, [
-                'tag' => false,
-                'item' => function($index, $label, $name, $checked, $value)
-                    {
-                        return "<label for='" . (string) ($index+1) . "'>{$label}</label>
-                            <input
-                                type='checkbox'
-                                class='visually-hidden checkbox__input'
-                                {$checked}
-                                name='{$name}'
-                                value='{$value}'
-                                id='" . (string) ($index+1) . "'> ";
-                    }
-            ]
-        ) ?>
-           -->  
+                <?php endforeach; ?>  
 
         </fieldset>
+
         <fieldset class="search-task__categories">
             <legend>Дополнительно</legend>
 
@@ -162,7 +140,6 @@ $specializationsCount = count($specializations);
                         'id' => ($specializationsCount + 1),
                         'class' => 'visually-hidden checkbox__input'
                     ]) ?>    
-
              <label for="<?= ($specializationsCount + 1) ?>">Без откликов</label>
 
             <?= $form->field($searchTaskForm, "hasNoLocation", [
@@ -175,7 +152,6 @@ $specializationsCount = count($specializations);
                         'id' => ($specializationsCount + 2),
                         'class' => 'visually-hidden checkbox__input'
                     ]) ?>  
-
              <label for="<?= ($specializationsCount + 2) ?>">Удаленная работа </label>
 
         </fieldset>
@@ -193,51 +169,23 @@ $specializationsCount = count($specializations);
                         'size' => 1,
                         'prompt' => [
                             'text' => 'За неделю',
-                            'options' => [
-                                'value' => 'week'
-                            ]
+                            'options' => ['value' => 'week']
                         ]
                     ]); ?>
 
+        <label class="search-task__name" for="<?= ($specializationsCount + 4) ?>">Поиск по названию</label>
+            <?= $form->field($searchTaskForm, 'searchedName', [
+                    'template' => "{input}",
+                    'options' => ['tag' => false],
+                    'inputOptions' => [
+                        'class' => 'input-middle input',
+                        'type' => 'search',
+                        'id' => ($specializationsCount + 4)
+                    ]
+                ]); ?>
+
         <button class="button" type="submit">Искать</button>
         <?php ActiveForm::end(); ?>
-
-        <!-- отрисовать в activefrom:
-
-        <form class="search-task__form" name="test" method="post" action="#">
-            <fieldset class="search-task__categories">
-                <legend>Категории</legend>
-                <input class="visually-hidden checkbox__input" id="1" type="checkbox" name="" value="" checked>
-                <label for="1">Курьерские услуги </label>
-                <input class="visually-hidden checkbox__input" id="2" type="checkbox" name="" value="" checked>
-                <label  for="2">Грузоперевозки </label>
-                <input class="visually-hidden checkbox__input" id="3" type="checkbox" name="" value="">
-                <label  for="3">Переводы </label>
-                <input class="visually-hidden checkbox__input" id="4" type="checkbox" name="" value="">
-                <label  for="4">Строительство и ремонт </label>
-                <input class="visually-hidden checkbox__input" id="5" type="checkbox" name="" value="">
-                <label  for="5">Выгул животных </label>
-            </fieldset>
-            <fieldset class="search-task__categories">
-                <legend>Дополнительно</legend>
-                <input class="visually-hidden checkbox__input" id="6" type="checkbox" name="" value="">
-                <label for="6">Без откликов</label>
-               <input class="visually-hidden checkbox__input" id="7" type="checkbox" name="" value="" checked>
-                <label for="7">Удаленная работа </label>
-            </fieldset>
-           <label class="search-task__name" for="8">Период</label>
-               <select class="multiple-select input" id="8"size="1" name="time[]">
-                <option value="day">За день</option>
-                <option selected value="week">За неделю</option>
-                <option value="month">За месяц</option>
-            </select>
-            <label class="search-task__name" for="9">Поиск по названию</label>
-                <input class="input-middle input" id="9" type="search" name="q" placeholder="">
-            <button class="button" type="submit">Искать</button>
-        </form> -->
-
-
-
         
     </div>
 </section>

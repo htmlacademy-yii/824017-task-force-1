@@ -6,18 +6,19 @@
 
 namespace frontend\models;
 
-class SearchTaskForm extends \yii\base\Model
+class SearchUserForm extends \yii\base\Model
 {
     public $searchedSpecializations;
-    public $hasNoResponses;
-    public $hasNoLocation;
-    public $postingPeriod;
+    public $isFreeNow;
+    public $isOnline;
+    public $hasReviews;
+    public $isFavorite;
     public $searchedName;
 
     public function rules()
     {
         return [
-            [['searchedSpecializations', 'hasNoResponses', 'hasNoLocation', 'postingPeriod', 'searchedName'], 'safe']
+            [['searchedSpecializations', 'isFreeNow', 'isOnline', 'hasReviews', 'isFavorite', 'searchedName'], 'safe']
         ];
     }
 }

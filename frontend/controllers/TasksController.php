@@ -14,59 +14,28 @@ class TasksController extends Controller
 {
     public function actionIndex()
     {
-        $query = Tasks::find()->with('specialization')->joinWith('responses')->where(['status' => Task::STATUS_NEW])->orderBy(['posting_date' => SORT_DESC])->asArray()/*->all()*/;
-        //var_dump($query);
+        $query = Tasks::find()->with('specialization')->joinWith('responses')->where(['status' => Task::STATUS_NEW])->orderBy(['posting_date' => SORT_DESC])->asArray();
 
-        $searchTaskForm = (new SearchTaskForm);
-        //var_dump($searchTaskForm);
+        $searchTaskForm = new SearchTaskForm;
+        
         if (Yii::$app->request->getIsPost()) {
-        	//var_dump(Yii::$app->request->post());
             $searchTaskForm->load(Yii::$app->request->post());
-            //var_dump($searchTaskForm);
+
             $query->andFilterWhere(['specialization_id' => $searchTaskForm->searchedSpecializations]);
+            $query->andFilterWhere(['between', 'posting_date', strftime("%F %T", strtotime("-1 $searchTaskForm->postingPeriod")), strftime("%F %T")]);
+            $query->andFilterWhere(['like', 'name', $searchTaskForm->searchedName]);
 
             if ($searchTaskForm->hasNoResponses) { //тут  же не нарушается критерия про инициализацию?
-            	 $query->andWhere(['responses.id' => null]);
+                $query->andWhere(['responses.id' => null]);
             }
+
             if ($searchTaskForm->hasNoLocation) {
-            	 $query->andWhere(['tasks.latitude' => null]);
-            }
-
-        	switch ($searchTaskForm->postingPeriod) {
-        		case false:
-        			break;
-        		
-        		default:
-        			break;
-        	}
-        	$query->andWhere(['posting_date' => null]  );
-            }
-
-            //$query->andFilterWhere(['responses' => $searchTaskForm->hasNoResponses]);
-            //->andWhere(['responses.id' => null])
-            //var_dump($query);	
+                $query->andWhere(['latitude' => null]);
+            }    
         }
 
-        /*if ($params) {
-            $this->load($params);
-
-            $query->andFilterWhere(['type_id' => $this->type_id]);
-            $query->andFilterWhere(['company_id' => $this->company_id]);
-
-            if ($this->search) {
-                $query->orWhere(['like', 'email', $this->search]);
-                $query->orWhere(['like', 'name', $this->search]);
-                $query->orWhere(['like', 'phone', $this->search]);
-            }
-        }*/
-
-        //var_dump($searchTaskForm);
-
         $tasks = $query->all();
-        //var_dump($tasks);
 
         return $this->render('index', ['tasks' => $tasks, 'searchTaskForm' => $searchTaskForm]);
     }
-
-    //public function actionSearch()
 }

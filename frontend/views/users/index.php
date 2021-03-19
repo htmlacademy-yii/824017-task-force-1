@@ -3,6 +3,10 @@
 declare(strict_types=1);
 
 use TaskForce\Exceptions\DateIntervalInverseException;
+use yii\widgets\ActiveForm;
+use yii\widgets\ActiveField;
+use frontend\models\Specializations;
+use yii\helpers\ArrayHelper;
 
 function getPassedTimeSinceLastActivity(string $startingDate): ?string
 {
@@ -49,6 +53,8 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
 
     return $passedTime;
 }
+
+$specializations = ArrayHelper::map(Specializations::find()->asArray()->all(), 'id', 'name');
 ?>
 
 <section class="user__search">
@@ -91,9 +97,109 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
 <?php endforeach; ?>
 
 </section>
+
 <section  class="search-task">
     <div class="search-task__wrapper">
-        <form class="search-task__form" name="users" method="post" action="#">
+
+        <?php $form = ActiveForm::begin([
+            'id' => 'searchForm', 
+            'method' => 'post',
+            'options' => [
+                'class' => 'search-task__form'
+            ]
+        ]); ?>
+
+            <fieldset class="search-task__categories">
+                <legend>Категории</legend>
+                
+                <?php foreach($specializations as $id => $name): ?>
+
+                    <?= $form->field($searchUserForm, "searchedSpecializations[$id]", [
+                        'template' => "{input}",
+                        'options' => ['tag' => false]
+                    ])->checkbox([
+                        'label' => false,
+                        'value' => $id,
+                        'uncheck' => null,
+                        'id' => "10$id",
+                        'class' => 'visually-hidden checkbox__input'
+                    ]) ?>
+                    <label for="10<?= $id ?>"><?= $name ?></label>
+
+                <?php endforeach; ?> 
+
+            </fieldset>
+
+            <fieldset class="search-task__categories">
+                <legend>Дополнительно</legend>
+
+                <?= $form->field($searchUserForm, "isOnline", [
+                    'template' => "{input}",
+                    'options' => ['tag' => false]
+                ])->checkbox([
+                    'label' => false,
+                    'value' => 1,
+                    'uncheck' => null,
+                    'id' => 109,
+                    'class' => 'visually-hidden checkbox__input'
+                ]) ?>
+                <label for="109">Сейчас свободен</label>
+
+                <?= $form->field($searchUserForm, "isFreeNow", [
+                    'template' => "{input}",
+                    'options' => ['tag' => false]
+                ])->checkbox([
+                    'label' => false,
+                    'value' => 1,
+                    'uncheck' => null,
+                    'id' => 110,
+                    'class' => 'visually-hidden checkbox__input'
+                ]) ?>
+                <label for="110">Сейчас онлайн</label>
+
+                <?= $form->field($searchUserForm, "hasReviews", [
+                    'template' => "{input}",
+                    'options' => ['tag' => false]
+                ])->checkbox([
+                    'label' => false,
+                    'value' => 1,
+                    'uncheck' => null,
+                    'id' => 111,
+                    'class' => 'visually-hidden checkbox__input'
+                ]) ?>
+                <label for="111">Есть отзывы</label>
+
+                <?= $form->field($searchUserForm, "isFavorite", [
+                    'template' => "{input}",
+                    'options' => ['tag' => false]
+                ])->checkbox([
+                    'label' => false,
+                    'value' => 1,
+                    'uncheck' => null,
+                    'id' => 112,
+                    'class' => 'visually-hidden checkbox__input'
+                ]) ?>
+                <label for="112">В избранном</label>
+
+            </fieldset> 
+
+            <label class="search-task__name" for="113">Поиск по имени</label>
+            <?= $form->field($searchUserForm, 'searchedName', [
+                'template' => "{input}",
+                'options' => ['tag' => false],
+                'inputOptions' => [
+                    'class' => 'input-middle input',
+                    'type' => 'search',
+                    'id' => 113
+                ]
+            ]); ?>
+
+            <button class="button" type="submit">Искать</button>
+        <?php ActiveForm::end(); ?>
+
+        
+
+        <!-- <form class="search-task__form" name="users" method="post" action="#">
             <fieldset class="search-task__categories">
                 <legend>Категории</legend>
                 <input class="visually-hidden checkbox__input" id="101" type="checkbox" name="" value="" checked disabled>
@@ -121,6 +227,6 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
             <label class="search-task__name" for="110">Поиск по имени</label>
             <input class="input-middle input" id="110" type="search" name="q" placeholder="">
             <button class="button" type="submit">Искать</button>
-        </form>
+        </form> -->
     </div>
 </section>
