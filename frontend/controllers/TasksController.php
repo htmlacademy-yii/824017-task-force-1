@@ -57,4 +57,12 @@ class TasksController extends Controller
 
         return $this->render('index', ['tasks' => $tasks, 'searchTaskForm' => $searchTaskForm, 'specializations' => $specializations]);
     }
+
+    public function view() //нужно ли проставить тип view(int $id)..
+    {
+        $task = Tasks::findOne($id);
+        //var_dump($task);
+
+        return $this->render('view');
+    }
 }
