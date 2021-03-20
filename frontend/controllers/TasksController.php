@@ -14,7 +14,7 @@ use Yii;
 
 class TasksController extends Controller
 {
-    public function actionIndex()
+    public function actionIndex() //нужно ли в таких случаях проставлять тип возращаемого значения для соблюдения критерия Д7 ?
     {
     	$specializations = ArrayHelper::map(Specializations::find()->asArray()->all(), 'id', 'name');
 
