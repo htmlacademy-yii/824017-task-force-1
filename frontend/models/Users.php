@@ -160,7 +160,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getTasks0()
     {
-        return $this->hasMany(Task::className(), ['executant_id' => 'id']);
+        return $this->hasMany(Tasks::className(), ['executant_id' => 'id']);
     }
 
     /**

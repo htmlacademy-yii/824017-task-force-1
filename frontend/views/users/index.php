@@ -5,8 +5,6 @@ declare(strict_types=1);
 use TaskForce\Exceptions\DateIntervalInverseException;
 use yii\widgets\ActiveForm;
 use yii\widgets\ActiveField;
-use frontend\models\Specializations;
-use yii\helpers\ArrayHelper;
 
 function getPassedTimeSinceLastActivity(string $startingDate): ?string
 {
@@ -54,7 +52,6 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
     return $passedTime;
 }
 
-$specializations = ArrayHelper::map(Specializations::find()->asArray()->all(), 'id', 'name');
 ?>
 
 <section class="user__search">
@@ -89,7 +86,7 @@ $specializations = ArrayHelper::map(Specializations::find()->asArray()->all(), '
         <div class="link-specialization user__search-link--bottom">
 
             <?php foreach($user['specializations'] as $specialization): ?>
-                <a href="#" class="link-regular"><?= $specialization['name'] ?></a>
+                <a href="index.php?r=users/index&specialization_id=<?= $specialization['id'] ?>" class="link-regular"><?= $specialization['name'] ?></a>
             <?php endforeach; ?>
         </div>
     </div>
@@ -133,7 +130,7 @@ $specializations = ArrayHelper::map(Specializations::find()->asArray()->all(), '
             <fieldset class="search-task__categories">
                 <legend>Дополнительно</legend>
 
-                <?= $form->field($searchUserForm, "isOnline", [
+                <?= $form->field($searchUserForm, "isFreeNow", [
                     'template' => "{input}",
                     'options' => ['tag' => false]
                 ])->checkbox([
@@ -145,7 +142,7 @@ $specializations = ArrayHelper::map(Specializations::find()->asArray()->all(), '
                 ]) ?>
                 <label for="109">Сейчас свободен</label>
 
-                <?= $form->field($searchUserForm, "isFreeNow", [
+                <?= $form->field($searchUserForm, "isOnline", [
                     'template' => "{input}",
                     'options' => ['tag' => false]
                 ])->checkbox([
@@ -162,7 +159,7 @@ $specializations = ArrayHelper::map(Specializations::find()->asArray()->all(), '
                     'options' => ['tag' => false]
                 ])->checkbox([
                     'label' => false,
-                    'value' => 1,
+                    'value' => 0,
                     'uncheck' => null,
                     'id' => 111,
                     'class' => 'visually-hidden checkbox__input'
@@ -174,7 +171,7 @@ $specializations = ArrayHelper::map(Specializations::find()->asArray()->all(), '
                     'options' => ['tag' => false]
                 ])->checkbox([
                     'label' => false,
-                    'value' => 1,
+                    'value' => 0,
                     'uncheck' => null,
                     'id' => 112,
                     'class' => 'visually-hidden checkbox__input'
@@ -197,36 +194,5 @@ $specializations = ArrayHelper::map(Specializations::find()->asArray()->all(), '
             <button class="button" type="submit">Искать</button>
         <?php ActiveForm::end(); ?>
 
-        
-
-        <!-- <form class="search-task__form" name="users" method="post" action="#">
-            <fieldset class="search-task__categories">
-                <legend>Категории</legend>
-                <input class="visually-hidden checkbox__input" id="101" type="checkbox" name="" value="" checked disabled>
-                <label for="101">Курьерские услуги </label>
-                <input class="visually-hidden checkbox__input" id="102" type="checkbox" name="" value="" checked>
-                <label  for="102">Грузоперевозки </label>
-                <input class="visually-hidden checkbox__input" id="103" type="checkbox" name="" value="">
-                <label  for="103">Переводы </label>
-                <input class="visually-hidden checkbox__input" id="104" type="checkbox" name="" value="">
-                <label  for="104">Строительство и ремонт </label>
-                <input class="visually-hidden checkbox__input" id="105" type="checkbox" name="" value="">
-                <label  for="105">Выгул животных </label>
-            </fieldset>
-            <fieldset class="search-task__categories">
-                <legend>Дополнительно</legend>
-                <input class="visually-hidden checkbox__input" id="106" type="checkbox" name="" value="" disabled>
-                <label for="106">Сейчас свободен</label>
-                <input class="visually-hidden checkbox__input" id="107" type="checkbox" name="" value="" checked>
-                <label for="107">Сейчас онлайн</label>
-                <input class="visually-hidden checkbox__input" id="108" type="checkbox" name="" value="" checked>
-                <label for="108">Есть отзывы</label>
-                <input class="visually-hidden checkbox__input" id="109" type="checkbox" name="" value="" checked>
-                <label for="109">В избранном</label>
-            </fieldset>
-            <label class="search-task__name" for="110">Поиск по имени</label>
-            <input class="input-middle input" id="110" type="search" name="q" placeholder="">
-            <button class="button" type="submit">Искать</button>
-        </form> -->
     </div>
 </section>

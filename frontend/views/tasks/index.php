@@ -5,10 +5,6 @@ declare(strict_types=1);
 use TaskForce\Exceptions\DateIntervalInverseException;
 use yii\widgets\ActiveForm;
 use yii\widgets\ActiveField;
-use frontend\models\Specializations;
-//use yii\helpers\BaseArrayHelper;
-use yii\helpers\ArrayHelper;
-
 
 function getPassedTimeSinceLastActivity(string $startingDate): ?string
 {
@@ -56,8 +52,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
     return $passedTime;
 }
 ?>
-<?php $specializations = ArrayHelper::map(Specializations::find()->asArray()->all(), 'id', 'name');
-$specializationsCount = count($specializations); ?>
+<?php $specializationsCount = count($specializations); ?>
 
 
 <section class="new-task">
@@ -70,7 +65,7 @@ $specializationsCount = count($specializations); ?>
             <div class="new-task__card">
                 <div class="new-task__title">
                     <a href="#" class="link-regular"><h2><?= htmlspecialchars($task['name']) ?></h2></a>
-                    <a  class="new-task__type link-regular" href="#"><p><?= htmlspecialchars($task['specialization']['name']) ?></p></a>
+                    <a  class="new-task__type link-regular" href="index.php?r=tasks/index&specialization_id=<?= $task['specialization']['id'] ?>"><p><?= htmlspecialchars($task['specialization']['name']) ?></p></a>
                 </div>
                 <div class="new-task__icon new-task__icon--<?= htmlspecialchars($task['specialization']['icon']) ?>"></div>
                 <p class="new-task_description">
