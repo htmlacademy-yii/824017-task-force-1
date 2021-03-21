@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace frontend\controllers;
 
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 use frontend\models\SearchUserForm;
 use frontend\models\Users;
 use yii\helpers\ArrayHelper;
@@ -60,4 +61,21 @@ class UsersController extends Controller
 
         return $this->render('index', ['users' => $users, 'searchUserForm' => $searchUserForm, 'specializations' => $specializations]);
     }
+
+    public function actionView($id = null)
+    {
+        $user = Users::findOne($id);
+        if (!$user) { 
+            throw new NotFoundHttpException("Страница не найдена");
+        }
+
+        return $this->render('view', ['user' => $user]);
+    }
+
+    /*public function actionTest($id = null)
+    {
+        $task = Users::findOne($id);
+
+        return $this->render('test', ['user' => $user]);
+    }*/
 }

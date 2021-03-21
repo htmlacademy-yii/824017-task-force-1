@@ -71,7 +71,7 @@ class Reviews extends \yii\db\ActiveRecord
      */
     public function getTask()
     {
-        return $this->hasOne(Task::className(), ['id' => 'task_id']);
+        return $this->hasOne(Tasks::className(), ['id' => 'task_id']);
     }
 
     /**
@@ -81,7 +81,7 @@ class Reviews extends \yii\db\ActiveRecord
      */
     public function getCustomer()
     {
-        return $this->hasOne(User::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Users::className(), ['id' => 'customer_id']);
     }
 
     /**

@@ -109,7 +109,9 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
             </button>
           </div>
         </div>
+
         <?php $responseCount = count($task->responses); ?>
+        
         <?php if ($responseCount): ?>
         <div class="content-view__feedback">
           <h2>Отклики <span>(<?= $responseCount ?>)</span></h2>
@@ -123,7 +125,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                 <div class="feedback-card__top--name">
                   <p><a href="#<!-- ДОПИЛИТЬ ПОСЛЕ НАСТРОЙКИ МАРШРУТИЗАТОРА -->" class="link-regular"><?= Html::encode($response->user->name) ?></a></p>
                   <?php
-                  	$rating = null;
+                  	$rating = 0;
 	                $reviews = $response->user->reviews0;
 					$i = 0;
 					$ratesSum = 0;

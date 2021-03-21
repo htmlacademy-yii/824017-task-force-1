@@ -190,7 +190,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getCity()
     {
-        return $this->hasOne(City::className(), ['id' => 'city_id']);
+        return $this->hasOne(Cities::className(), ['id' => 'city_id']);
     }
 
     /**
@@ -200,7 +200,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getUsersAccomplishedTasksPhotos()
     {
-        return $this->hasMany(UsersAccomplishedTasksPhoto::className(), ['user_id' => 'id']);
+        return $this->hasMany(UsersAccomplishedTasksPhotos::className(), ['user_id' => 'id']);
     }
 
     /**
