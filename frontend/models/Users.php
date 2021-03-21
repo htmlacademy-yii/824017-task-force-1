@@ -150,7 +150,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getTasks()
     {
-        return $this->hasMany(Task::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Tasks::className(), ['customer_id' => 'id']);
     }
 
     /**

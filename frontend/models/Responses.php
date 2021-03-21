@@ -64,7 +64,7 @@ class Responses extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(Users::className(), ['id' => 'user_id']);
     }
 
     /**
@@ -74,7 +74,7 @@ class Responses extends \yii\db\ActiveRecord
      */
     public function getTask()
     {
-        return $this->hasOne(Task::className(), ['id' => 'task_id']);
+        return $this->hasOne(Tasks::className(), ['id' => 'task_id']);
     }
 
     /**

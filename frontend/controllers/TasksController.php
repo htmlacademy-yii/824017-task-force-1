@@ -6,6 +6,7 @@ namespace frontend\controllers;
 
 use TaskForce\Controllers\Task;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 use frontend\models\Tasks;
 use frontend\models\SearchTaskForm;
 use yii\helpers\ArrayHelper;
@@ -58,11 +59,20 @@ class TasksController extends Controller
         return $this->render('index', ['tasks' => $tasks, 'searchTaskForm' => $searchTaskForm, 'specializations' => $specializations]);
     }
 
-    public function view() //нужно ли проставить тип view(int $id)..
+    public function actionView($id = null) //нужно ли проставить тип view(int $id)..
     {
         $task = Tasks::findOne($id);
-        //var_dump($task);
+        if (!$task) { 
+            throw new NotFoundHttpException("Страница не найдена");
+        }
 
-        return $this->render('view');
+        return $this->render('view', ['task' => $task]);
     }
+
+    /*public function actionTest($id = null)
+    {
+        $task = Tasks::findOne($id);
+
+        return $this->render('test', ['task' => $task]);
+    }*/
 }
