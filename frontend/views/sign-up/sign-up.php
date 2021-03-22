@@ -23,17 +23,17 @@ use yii\widgets\ActiveField;
                         'fieldConfig' => [
                             'template' => "{label}\n{input}\n{error}",         /*{input}\n{error}*/
                             'inputOptions' => ['class' => 'input'],
-                            'errorOptions' => ['tag' => 'span'],
-                            'options' => ['tag' => false],
+                            'errorOptions' => ['tag' => 'span'],/*,
+                            'options' => ['tag' => false]*/
                             'labelOptions' => ['class' => null],
-                            'addAriaAttributes' => false,
+                            /*'addAriaAttributes' => false,*/
                         ]
                     ]); ?>
 
 
                             <?= $form->field($model, "email", [
                                 /*'template' => "{input}",*/
-                                /*'options' => ['tag' => false]*/
+                                /*'options' => ['tag' => false],*/
                                 'inputOptions' => [
                                     'id' => 16,
                                     'class' => 'input textarea',
