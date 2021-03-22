@@ -14,9 +14,22 @@ use Yii;
 
 class SignUpController extends Controller
 {
-    public function actionIndex()
+    public function actionSignUp()
     {
-        
+        //var_dump('УРААА');
+
+        $user = new Users;
+
+        if (Yii::$app->request->getIsPost()) {
+            var_dump('ДАА это ПОСТ');
+            $user->load(Yii::$app->request->post());
+
+            if ($user->validate()) {
+                echo 'ура всё верно';
+            }
+        }
+
+        return $this->render('sign-up', ['model' => $user/*, 'specializations' => $specializations*/]);
     } 
 
     /*public function actionIndex()

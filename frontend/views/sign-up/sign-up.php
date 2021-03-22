@@ -2,6 +2,9 @@
 
 declare(strict_types = 1);
 
+use yii\widgets\ActiveForm;
+use yii\widgets\ActiveField;
+
 ?>
 
 
@@ -10,32 +13,37 @@ declare(strict_types = 1);
                 <div class="registration-wrapper">
 
                     <?php $form = ActiveForm::begin([
-			            'id' => 'signup-form', 
-			            'method' => 'post',
-			            'options' => [
-			                'class' => 'registration__user-form form-create'
-			            ],
-			            'errorCssClass' => '',
-			            'fieldClass' => 'input',
-			            'fieldConfig' => [
-			            	'template' =>"{input}\n{error}", 		/*{label}\n*/
-			            	'inputOptions' => ''/*'class' => 'input',*/,
-			            	'errorOptions' => [
-			            		'tag' => 'span'
-			            	],
-			            	
-			            	
+                        'id' => 'signup-form', 
+                        'method' => 'post',
+                        'options' => [
+                            'class' => 'registration__user-form form-create'
+                        ],
+                        /*'errorCssClass' => '',*/
+                        /*'fieldClass' => 'input',*/
+                        'fieldConfig' => [
+                            'template' => "{label}\n{input}\n{error}",         /*{input}\n{error}*/
+                            'inputOptions' => ['class' => 'input'],
+                            'errorOptions' => ['tag' => 'span'],
+                            'options' => ['tag' => false],
+                            'labelOptions' => ['class' => null],
+                            'addAriaAttributes' => false,
+                        ]
+                    ]); ?>
 
 
+                            <?= $form->field($model, "email", [
+                                /*'template' => "{input}",*/
+                                /*'options' => ['tag' => false]*/
+                                'inputOptions' => [
+                                    'id' => 16,
+                                    'class' => 'input textarea',
+                                    'row' => 1,
+                                ]
+                            ])->textArea() ?> 
 
+                            <button class="button button__registration" type="submit">Cоздать аккаунт</button>
 
-
-			            	/*'class' => 'input',*/
-
-			            ]
-
-			        ]); ?>
-
+                             <?php ActiveForm::end(); ?>
         
                     <!-- <form class="registration__user-form form-create">
                         <label for="16">Электронная почта</label>

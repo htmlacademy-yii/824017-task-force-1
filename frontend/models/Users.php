@@ -63,7 +63,8 @@ class Users extends \yii\db\ActiveRecord
             [['avatar'], 'string', 'max' => 1000],
             [['phone', 'skype', 'telegram'], 'string', 'max' => 100],
             [['address'], 'string', 'max' => 500],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
+            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id']],
+            ['email', 'email', 'message' => 'Введите валидный адрес электронной почты'],
         ];
     }
 
@@ -78,7 +79,7 @@ class Users extends \yii\db\ActiveRecord
             'signing_up_date' => 'Signing Up Date',
             'role' => 'Role',
             'name' => 'Name',
-            'email' => 'Email',
+            'email' => 'Электронная почта',
             'password' => 'Password',
             'avatar' => 'Avatar',
             'birthday' => 'Birthday',
