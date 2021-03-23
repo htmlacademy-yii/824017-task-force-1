@@ -9,27 +9,28 @@ use yii\web\NotFoundHttpException;
 use frontend\models\SearchUserForm;
 use frontend\models\Users;
 use yii\helpers\ArrayHelper;
-use frontend\models\Specializations;
+use frontend\models\Cities;
 use Yii;
 
 class SignUpController extends Controller
 {
-    public function actionSignUp()
+    public function actionIndex()
     {
+        $cities = ArrayHelper::map(Cities::find()->asArray()->all(), 'id', 'name');
         //var_dump('УРААА');
 
         $user = new Users;
 
         if (Yii::$app->request->getIsPost()) {
-            var_dump('ДАА это ПОСТ');
+            //var_dump('ДАА это ПОСТ');
             $user->load(Yii::$app->request->post());
 
             if ($user->validate()) {
-                echo 'ура всё верно';
+                //echo 'ура всё верно';
             }
         }
 
-        return $this->render('sign-up', ['model' => $user/*, 'specializations' => $specializations*/]);
+        return $this->render('sign-up', ['model' => $user, 'cities' => $cities]);
     } 
 
     /*public function actionIndex()

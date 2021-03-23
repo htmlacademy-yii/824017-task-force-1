@@ -54,17 +54,18 @@ class Users extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['city_id', 'role', 'name', 'email', 'password', 'favorite_count', 'failure_count'], 'required'],
-            [['city_id', 'favorite_count', 'failure_count'], 'integer'],
+            [['city_id', 'role', 'name', 'email', 'password', 'favorite_count', 'failure_count'], 'required', 'message' => "Поле «{attribute}» не может быть пустым"],
+            [['city_id', 'favorite_count', 'failure_count'], 'integer', 'message' => "Выбрано не валидное значение «{value}» поля «{attribute}»"],
             [['signing_up_date', 'birthday', 'last_activity_date_time'], 'safe'],
             [['role'], 'string', 'max' => 50],
-            [['name', 'email'], 'string', 'max' => 300],
-            [['password', 'description'], 'string', 'max' => 3000],
+            [['name', 'email'], 'string', 'max' => 300, 'message' =>  "Превышена максимальная длинна поля «{attribute}»"],
+            [['password', 'description'], 'string', 'max' => 3000, 'min' => 8, 'tooShort' =>  "Длина пароля от 8 символов", 'tooLong' => "Максимальная длинна 3000 символов"],
             [['avatar'], 'string', 'max' => 1000],
             [['phone', 'skype', 'telegram'], 'string', 'max' => 100],
             [['address'], 'string', 'max' => 500],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id']],
+            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id'], 'message' => "Выбран несуществующий город"],
             ['email', 'email', 'message' => 'Введите валидный адрес электронной почты'],
+            [['email'], 'unique', 'targetAttribute' => 'email', 'message' => "Пользователь с еmail «{value}» уже зарегистрирован"],
         ];
     }
 
@@ -75,12 +76,12 @@ class Users extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'city_id' => 'City ID',
+            'city_id' => 'Город проживания',
             'signing_up_date' => 'Signing Up Date',
             'role' => 'Role',
-            'name' => 'Name',
+            'name' => 'Ваше имя',
             'email' => 'Электронная почта',
-            'password' => 'Password',
+            'password' => 'Пароль',
             'avatar' => 'Avatar',
             'birthday' => 'Birthday',
             'description' => 'Description',
