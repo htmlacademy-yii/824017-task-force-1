@@ -54,7 +54,7 @@ class Users extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['city_id', 'role', 'name', 'email', 'password', 'favorite_count', 'failure_count'], 'required', 'message' => "Поле «{attribute}» не может быть пустым"],
+            [['city_id', 'name', 'email', 'password'], 'required', 'message' => "Поле «{attribute}» не может быть пустым"],
             [['city_id', 'favorite_count', 'failure_count'], 'integer', 'message' => "Выбрано не валидное значение «{value}» поля «{attribute}»"],
             [['signing_up_date', 'birthday', 'last_activity_date_time'], 'safe'],
             [['role'], 'string', 'max' => 50],

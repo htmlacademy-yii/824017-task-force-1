@@ -9,7 +9,7 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
-        'urlManager' => [
+        /*'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'enableStrictParsing' => false,
@@ -17,6 +17,6 @@ return [
                 '//' => '/',
                 'task/view/<id>' => 'tasks/view'
             ],
-        ],
+        ],*/
     ],
 ];

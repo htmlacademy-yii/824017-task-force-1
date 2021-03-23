@@ -16,17 +16,23 @@ class SignUpController extends Controller
 {
     public function actionIndex()
     {
+        //var_dump(',,,,,,,,,');
         $cities = ArrayHelper::map(Cities::find()->asArray()->all(), 'id', 'name');
         //var_dump('УРААА');
 
         $user = new Users;
 
+        
         if (Yii::$app->request->getIsPost()) {
             //var_dump('ДАА это ПОСТ');
             $user->load(Yii::$app->request->post());
 
             if ($user->validate()) {
-                //echo 'ура всё верно';
+
+                $user->password = Yii::$app->security->generatePasswordHash($user->password);
+                $user->save(false);
+                
+                /*$this->goHome();*/
             }
         }
 
