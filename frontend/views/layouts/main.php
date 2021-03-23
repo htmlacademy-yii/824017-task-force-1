@@ -83,6 +83,7 @@ AppAsset::register($this);
           </svg>
         </a>
       </div>
+      <!-- php if (Yii::$app->request->absoluteUrl !== 'http://yii-taskforce/index.php?=sign-up/index'): ?> -->
       <div class="header__nav">
         <ul class="header-nav__list site-list">
           <li class="site-list__item">
@@ -147,6 +148,8 @@ AppAsset::register($this);
           </li>
         </ul>
       </div>
+    <!--  endif; ?> -->
+
     </div>
   </header>
 
