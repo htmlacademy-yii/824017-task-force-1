@@ -23,8 +23,6 @@ AppAsset::register($this);
     
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
-    <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <?php $this->beginBody() ?>
@@ -201,7 +199,6 @@ AppAsset::register($this);
     </div>
   </footer>
 </div>
-<script src="js/dropzone.js"></script>
 <script>
   Dropzone.autoDiscover = false;
 
