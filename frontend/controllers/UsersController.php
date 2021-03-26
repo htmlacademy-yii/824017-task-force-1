@@ -15,7 +15,11 @@ class UsersController extends Controller
 {
     public function actionIndex()
     {
+
         $specializations = ArrayHelper::map(Specializations::find()->asArray()->all(), 'id', 'name');
+
+        $users = Users::getExecutantsByDate();
+
 
         $query = Users::find()->select(['users.*', 'AVG(rate) as rating', 'COUNT(rate) as finished_tasks_count', 'COUNT(comment) as comments_count'])->joinWith('specializations')->joinWith('reviews0')->joinWith('tasks0')->where(['role' => 'executant'])->groupBy('users.id')->orderBy(['signing_up_date' => SORT_DESC])->asArray();
 

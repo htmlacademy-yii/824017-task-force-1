@@ -10,7 +10,7 @@ require_once 'vendor/autoload.php';
 try {
     $task = new Task(5, 4, 'прошлогоднее');
 } catch (GivenArgumentException $e) {
-    error_log("Передан невалидный аргумент: " . $e->getMessage()); //у меня в логе появляются иероглифы вместо русских букв..
+    error_log("Передан невалидный аргумент: " . $e->getMessage());
 }
 
 try {

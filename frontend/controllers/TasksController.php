@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace frontend\controllers;
 
-use TaskForce\Controllers\Task;
 use yii\web\Controller;
 use frontend\models\Tasks;
 use frontend\models\SearchTaskForm;
@@ -17,6 +16,8 @@ class TasksController extends Controller
     public function actionIndex() //нужно ли в таких случаях проставлять тип возращаемого значения для соблюдения критерия Д7 ?
     {
     	$specializations = ArrayHelper::map(Specializations::find()->asArray()->all(), 'id', 'name');
+        $tasks = Tasks::getNewTasksByDate();
+
 
         $query = Tasks::find()->with('specialization')->joinWith('responses')->where(['status' => Task::STATUS_NEW])->orderBy(['posting_date' => SORT_DESC])->asArray();
 

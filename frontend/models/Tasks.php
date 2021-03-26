@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use Yii;
+use TaskForce\Controllers\Task;
 
 /**
  * This is the model class for table "tasks".
@@ -183,5 +184,13 @@ class Tasks extends \yii\db\ActiveRecord
     public static function find()
     {
         return new TasksQuery(get_called_class());
+    }
+
+    final public static function getNewTasksByDate() //стоит ли проставлять здесь тип возвращаемого значения и 
+    {                                                  //объявлять в начале declare(strict_types = 1); ?
+        return self::find()->with('specialization')->
+            where(['status' => Task::STATUS_NEW])->
+            orderBy(['posting_date' => SORT_DESC])->
+            asArray()->all();
     }
 }

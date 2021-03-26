@@ -128,7 +128,7 @@ class Users extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|ReviewQuery
      */
-    public function getReviews()
+    public function getCustomerReviews()
     {
         return $this->hasMany(Reviews::className(), ['customer_id' => 'id']);
     }
@@ -138,7 +138,7 @@ class Users extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|ReviewQuery
      */
-    public function getReviews0()
+    public function getExecutantReviews()
     {
         return $this->hasMany(Reviews::className(), ['executant_id' => 'id']);
     }
@@ -148,7 +148,7 @@ class Users extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|TaskQuery
      */
-    public function getTasks()
+    public function getCustomerTasks()
     {
         return $this->hasMany(Task::className(), ['customer_id' => 'id']);
     }
@@ -158,7 +158,7 @@ class Users extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|TaskQuery
      */
-    public function getTasks0()
+    public function getExecutantTasks()
     {
         return $this->hasMany(Tasks::className(), ['executant_id' => 'id']);
     }
@@ -220,5 +220,17 @@ class Users extends \yii\db\ActiveRecord
     public static function find()
     {
         return new UsersQuery(get_called_class());
+    }
+
+    final public static function getExecutantsByDate()
+    {
+        return self::find()->select([
+                'users.*',
+                'AVG(rate) as rating',
+                'COUNT(rate) as finished_tasks_count',
+                'COUNT(comment) as comments_count'
+            ])->joinWith('executantReviews')->with('specializations')->
+            where(['role' => 'executant'])->groupBy('users.id')->
+            orderBy(['signing_up_date' => SORT_DESC])->asArray()->all();
     }
 }
