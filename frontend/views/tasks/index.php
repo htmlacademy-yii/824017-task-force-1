@@ -77,10 +77,6 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
             </div>
 
         <?php endforeach; ?>
-        
-        <!-- у <fieldset>-ов почему-то рамка не появляется, в отличии от файла верстки /frontend/web/browse.html 
-        не смог понять почему...
-        UPD: уже понял. это из-за того что я не добавил стили в подключаемый в лэйауте бандл AppAsset. -->
 
     </div>
     <div class="new-task__pagination">
@@ -110,7 +106,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                 
                 <?php foreach($specializations as $id => $name): ?>
 
-                    <?= $form->field($searchTaskForm, "searchedSpecializations[$id]", [
+                    <?= $form->field($searchForm, "searchedSpecializations[$id]", [
                         'template' => "{input}",
                         'options' => ['tag' => false]
                     ])->checkbox([
@@ -129,7 +125,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
         <fieldset class="search-task__categories">
             <legend>Дополнительно</legend>
 
-             <?= $form->field($searchTaskForm, "hasNoResponses", [
+             <?= $form->field($searchForm, "hasNoResponses", [
                         'template' => "{input}",
                         'options' => ['tag' => false]
                     ])->checkbox([
@@ -141,7 +137,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                     ]) ?>    
              <label for="<?= ($specializationsCount + 1) ?>">Без откликов</label>
 
-            <?= $form->field($searchTaskForm, "hasNoLocation", [
+            <?= $form->field($searchForm, "hasNoLocation", [
                         'template' => "{input}",
                         'options' => ['tag' => false]
                     ])->checkbox([
@@ -156,7 +152,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
         </fieldset>
 
         <label class="search-task__name" for="<?= ($specializationsCount + 3) ?>">Период</label>
-        <?= $form->field($searchTaskForm, "postingPeriod", [
+        <?= $form->field($searchForm, "postingPeriod", [
                         'template' => "{input}",
                         'options' => ['tag' => false]
                     ])->dropDownList([
@@ -173,7 +169,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                     ]); ?>
 
         <label class="search-task__name" for="<?= ($specializationsCount + 4) ?>">Поиск по названию</label>
-            <?= $form->field($searchTaskForm, 'searchedName', [
+            <?= $form->field($searchForm, 'searchedName', [
                     'template' => "{input}",
                     'options' => ['tag' => false],
                     'inputOptions' => [

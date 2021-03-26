@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace frontend\models;
 
 use Yii;
@@ -49,7 +51,6 @@ class Users extends \yii\db\ActiveRecord
     public $isFavorite;
     public $searchedName;
 
-
     /**
      * {@inheritdoc}
      */
@@ -73,8 +74,8 @@ class Users extends \yii\db\ActiveRecord
             [['avatar'], 'string', 'max' => 1000],
             [['phone', 'skype', 'telegram'], 'string', 'max' => 100],
             [['address'], 'string', 'max' => 500],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
-            [['searchedSpecializations', 'isFreeNow', 'isOnline', 'hasReviews', 'isFavorite', 'searchedName'], 'safe', 'on' => self::SCENARIO_SEARCH]
+            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id']],
+            [['searchedSpecializations', 'isFreeNow', 'isOnline', 'hasReviews', 'isFavorite', 'searchedName'],'safe', 'on' => self::SCENARIO_SEARCH]
         ];
     }
 
@@ -233,11 +234,16 @@ class Users extends \yii\db\ActiveRecord
         return new UsersQuery(get_called_class());
     }
 
-    final public function getExecutants($specializations, $request)
-    {
-        $query = self::find()->select(['users.*', 'AVG(rate) as rating', 'COUNT(rate) as finished_tasks_count', 'COUNT(comment) as comments_count'])->joinWith('specializations')->joinWith('reviews0')->joinWith('tasks0')->where(['role' => 'executant'])->groupBy('users.id')->orderBy(['signing_up_date' => SORT_DESC])->asArray();
-
-        $this->scenario = $request ? self::SCENARIO_SEARCH : self::SCENARIO_DEFAULT;
+    final public function search(array $specializations, yii\web\Request $request): ?array //подскажи, стоит ли здесь проставлять   
+    {                                                                                      // типы у параметров и возвращаемого значения 
+        $query = self::find()->select([                                                    // для соблюдения критерия Д7?
+            'users.*',                                                                     //объявлять в начале declare(strict_types = 1); ?
+            'AVG(rate) as rating',
+            'COUNT(rate) as finished_tasks_count',
+            'COUNT(comment) as comments_count'
+        ])->joinWith('specializations')->joinWith('executantReviews')->joinWith('executantTasks')->
+        where(['role' => 'executant'])->groupBy('users.id')->orderBy(['signing_up_date' => SORT_DESC])->
+        asArray();
 
         if ($this->scenario === self::SCENARIO_SEARCH && $request->isGet) {
             
@@ -250,8 +256,8 @@ class Users extends \yii\db\ActiveRecord
 
         } elseif ($this->scenario === self::SCENARIO_SEARCH && $request->isPost) {
     
-            if ($request->post('SearchUserForm')['searchedName']) {
-                $this->searchedName = $request->post('SearchUserForm')['searchedName'];
+            if ($request->post('Users')['searchedName']) {
+                $this->searchedName = $request->post('Users')['searchedName'];
                 $query->andWhere(['like', 'users.name', $this->searchedName]);
             } else {
                 $this->load($request->post());
@@ -264,13 +270,16 @@ class Users extends \yii\db\ActiveRecord
                 }
 
                 if ($this->isOnline) {
-                    $query->andWhere(['between', 'last_activity', strftime("%F %T", strtotime("-30 min")), strftime("%F %T")]);
+                    $query->andWhere([
+                        'between',
+                        'last_activity',
+                        strftime("%F %T", strtotime("-30 min")),
+                        strftime("%F %T")
+                    ]);
                 }
             }           
         }  
 
-        $users = $query->all();
-
-        return $users;
+        return $query->all();
     } 
 }
