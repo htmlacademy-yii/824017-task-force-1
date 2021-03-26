@@ -204,8 +204,8 @@ AppAsset::register($this);
     </div>
   </footer>
 </div>
-<script src="js/dropzone.js"></script>
-<script>
+<!-- <script src="js/dropzone.js"></script>
+ --><script>
   Dropzone.autoDiscover = false;
 
   var dropzone = new Dropzone(".dropzone", {url: window.location.href, maxFiles: 6, uploadMultiple: true,

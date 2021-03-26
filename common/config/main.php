@@ -19,4 +19,6 @@ return [
             ],
         ],*/
     ],
+    'defaultRoute' => '/index.php?r=landing/index',
+    'homeUrl' => '/index.php?r=tasks/index',
 ];
