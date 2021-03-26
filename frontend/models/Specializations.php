@@ -87,4 +87,9 @@ class Specializations extends \yii\db\ActiveRecord
     {
         return new SpecializationsQuery(get_called_class());
     }
+
+    final public static function getAll()
+    {
+        return self::find()->asArray()->all();
+    }
 }

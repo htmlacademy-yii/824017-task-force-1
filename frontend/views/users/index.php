@@ -92,8 +92,6 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
     </div>
 
 <?php endforeach; ?>
-<!-- у <fieldset>-ов почему-то рамка не появляется, в отличии от файла верстки /frontend/web/users.html 
-        не смог понять почему... -->
 
 </section>
 
@@ -113,7 +111,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                 
                 <?php foreach($specializations as $id => $name): ?>
 
-                    <?= $form->field($searchUserForm, "searchedSpecializations[$id]", [
+                    <?= $form->field($searchForm, "searchedSpecializations[$id]", [
                         'template' => "{input}",
                         'options' => ['tag' => false]
                     ])->checkbox([
@@ -132,7 +130,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
             <fieldset class="search-task__categories">
                 <legend>Дополнительно</legend>
 
-                <?= $form->field($searchUserForm, "isFreeNow", [
+                <?= $form->field($searchForm, "isFreeNow", [
                     'template' => "{input}",
                     'options' => ['tag' => false]
                 ])->checkbox([
@@ -144,7 +142,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                 ]) ?>
                 <label for="109">Сейчас свободен</label>
 
-                <?= $form->field($searchUserForm, "isOnline", [
+                <?= $form->field($searchForm, "isOnline", [
                     'template' => "{input}",
                     'options' => ['tag' => false]
                 ])->checkbox([
@@ -156,7 +154,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                 ]) ?>
                 <label for="110">Сейчас онлайн</label>
 
-                <?= $form->field($searchUserForm, "hasReviews", [
+                <?= $form->field($searchForm, "hasReviews", [
                     'template' => "{input}",
                     'options' => ['tag' => false]
                 ])->checkbox([
@@ -168,7 +166,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                 ]) ?>
                 <label for="111">Есть отзывы</label>
 
-                <?= $form->field($searchUserForm, "isFavorite", [
+                <?= $form->field($searchForm, "isFavorite", [
                     'template' => "{input}",
                     'options' => ['tag' => false]
                 ])->checkbox([
@@ -183,7 +181,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
             </fieldset> 
 
             <label class="search-task__name" for="113">Поиск по имени</label>
-            <?= $form->field($searchUserForm, 'searchedName', [
+            <?= $form->field($searchForm, 'searchedName', [
                 'template' => "{input}",
                 'options' => ['tag' => false],
                 'inputOptions' => [

@@ -15,13 +15,21 @@ class UsersController extends Controller
 {
     public function actionIndex()
     {
+        $specializations = ArrayHelper::map(Specializations::getAll(), 'id', 'name');
 
-        $specializations = ArrayHelper::map(Specializations::find()->asArray()->all(), 'id', 'name');
+        $searchUserForm = new Users;
+        $searchUserForm->scenario = Users::SCEANRIO_SEARCH;
 
-        $users = Users::getExecutantsByDate();
+        $users = $searchUserForm->getExecutants($specializations, Yii::$app->request);
+
+        /*$users = Users::getExecutants();
+
+        $searchUserForm = new SearchUserForm;
+
+        $request = Yii::$app->request;*/
 
 
-        $query = Users::find()->select(['users.*', 'AVG(rate) as rating', 'COUNT(rate) as finished_tasks_count', 'COUNT(comment) as comments_count'])->joinWith('specializations')->joinWith('reviews0')->joinWith('tasks0')->where(['role' => 'executant'])->groupBy('users.id')->orderBy(['signing_up_date' => SORT_DESC])->asArray();
+        /*$query = Users::find()->select(['users.*', 'AVG(rate) as rating', 'COUNT(rate) as finished_tasks_count', 'COUNT(comment) as comments_count'])->joinWith('specializations')->joinWith('reviews0')->joinWith('tasks0')->where(['role' => 'executant'])->groupBy('users.id')->orderBy(['signing_up_date' => SORT_DESC])->asArray();
 
         $searchUserForm = new SearchUserForm;
 
@@ -60,7 +68,7 @@ class UsersController extends Controller
                 break;
         }  
 
-        $users = $query->all();
+        $users = $query->all();*/
 
         return $this->render('index', ['users' => $users, 'searchUserForm' => $searchUserForm, 'specializations' => $specializations]);
     }

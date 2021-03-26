@@ -40,6 +40,16 @@ use Yii;
  */
 class Users extends \yii\db\ActiveRecord
 {
+    public const SCENARIO_SEARCH = 'search';
+
+    public $searchedSpecializations;
+    public $isFreeNow;
+    public $isOnline;
+    public $hasReviews;
+    public $isFavorite;
+    public $searchedName;
+
+
     /**
      * {@inheritdoc}
      */
@@ -64,6 +74,7 @@ class Users extends \yii\db\ActiveRecord
             [['phone', 'skype', 'telegram'], 'string', 'max' => 100],
             [['address'], 'string', 'max' => 500],
             [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
+            [['searchedSpecializations', 'isFreeNow', 'isOnline', 'hasReviews', 'isFavorite', 'searchedName'], 'safe', 'on' => self::SCENARIO_SEARCH]
         ];
     }
 
@@ -222,15 +233,44 @@ class Users extends \yii\db\ActiveRecord
         return new UsersQuery(get_called_class());
     }
 
-    final public static function getExecutantsByDate()
+    final public function getExecutants($specializations, $request)
     {
-        return self::find()->select([
-                'users.*',
-                'AVG(rate) as rating',
-                'COUNT(rate) as finished_tasks_count',
-                'COUNT(comment) as comments_count'
-            ])->joinWith('executantReviews')->with('specializations')->
-            where(['role' => 'executant'])->groupBy('users.id')->
-            orderBy(['signing_up_date' => SORT_DESC])->asArray()->all();
-    }
+        $query = self::find()->select(['users.*', 'AVG(rate) as rating', 'COUNT(rate) as finished_tasks_count', 'COUNT(comment) as comments_count'])->joinWith('specializations')->joinWith('reviews0')->joinWith('tasks0')->where(['role' => 'executant'])->groupBy('users.id')->orderBy(['signing_up_date' => SORT_DESC])->asArray();
+
+        $this->scenario = $request ? self::SCENARIO_SEARCH : self::SCENARIO_DEFAULT;
+
+        if ($this->scenario === self::SCENARIO_SEARCH && $request->isGet) {
+            
+            $id = $request->get('specialization_id');
+
+            if (key_exists($id, $specializations)) {
+                $this->searchedSpecializations[$id] = $id;
+                $query->andWhere(['specializations.id' => $this->searchedSpecializations[$id]]);
+            }
+
+        } elseif ($this->scenario === self::SCENARIO_SEARCH && $request->isPost) {
+    
+            if ($request->post('SearchUserForm')['searchedName']) {
+                $this->searchedName = $request->post('SearchUserForm')['searchedName'];
+                $query->andWhere(['like', 'users.name', $this->searchedName]);
+            } else {
+                $this->load($request->post());
+                $query->andFilterWhere(['specializations.id' => $this->searchedSpecializations]);
+                $query->andFilterWhere(['>', 'favorite_count', $this->isFavorite]);
+                $query->andFilterHaving(['>', 'comments_count', $this->hasReviews]);
+            
+                if ($this->isFreeNow) {
+                    $query->andWhere(['tasks.id' => null]);
+                }
+
+                if ($this->isOnline) {
+                    $query->andWhere(['between', 'last_activity', strftime("%F %T", strtotime("-30 min")), strftime("%F %T")]);
+                }
+            }           
+        }  
+
+        $users = $query->all();
+
+        return $users;
+    } 
 }

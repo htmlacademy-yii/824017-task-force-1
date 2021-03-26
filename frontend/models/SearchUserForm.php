@@ -17,4 +17,6 @@ class SearchUserForm extends \yii\base\Model
             [['searchedSpecializations', 'isFreeNow', 'isOnline', 'hasReviews', 'isFavorite', 'searchedName'], 'safe']
         ];
     }
+
+    
 }
