@@ -21,14 +21,14 @@ class UserController extends Controller
         return $this->redirect(['landing/index']);
     }
 
-    public function actionProfile()
+    /*public function actionProfile()
     {
         if ($id = Yii::$app->user->getId()) {
             $user = User::findOne($id);
 
             print($user->email);
         }
-    }
+    }*/
 
     public function actionLogin()
     {

@@ -11,9 +11,10 @@ use frontend\models\Tasks;
 use frontend\models\SearchTaskForm;
 use yii\helpers\ArrayHelper;
 use frontend\models\Specializations;
+use frontend\controllers\SecuredController;
 use Yii;
 
-class TasksController extends Controller
+class TasksController extends SecuredController
 {
     public function actionIndex() //нужно ли в таких случаях проставлять тип возращаемого значения для соблюдения критерия Д7 ?
     {

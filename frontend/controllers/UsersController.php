@@ -10,9 +10,10 @@ use frontend\models\SearchUserForm;
 use frontend\models\Users;
 use yii\helpers\ArrayHelper;
 use frontend\models\Specializations;
+use frontend\controllers\SecuredController;
 use Yii;
 
-class UsersController extends Controller
+class UsersController extends SecuredController
 {
     public function actionIndex()
     {

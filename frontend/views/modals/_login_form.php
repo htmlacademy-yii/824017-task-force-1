@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
         <?php $form = ActiveForm::begin([
                         'id' => 'login-form', 
                         'method' => 'post',
-                        'action' => '/index.php?r=authentication/login',
+                        'action' => '/user/login',
                         'fieldConfig' => [
                             'template' => "{label}\n{input}\n{error}",  /*\n{error}*/         
                             'inputOptions' => ['class' => 'enter-form-email input input-middle'],

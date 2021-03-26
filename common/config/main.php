@@ -9,16 +9,17 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
-        /*'urlManager' => [
+        'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'enableStrictParsing' => false,
             'rules' => [
-                '//' => '/',
-                'task/view/<id>' => 'tasks/view'
+                '/' => 'landing/index',
+                'task/view/<id>' => 'tasks/view',
+                'user/view/<id>' => 'users/view'
             ],
-        ],*/
+        ],
     ],
-    'defaultRoute' => '/index.php?r=landing/index',
-    'homeUrl' => '/index.php?r=tasks/index',
+    'defaultRoute' => ['landing/index'],
+    'homeUrl' => ['tasks/index'],
 ];

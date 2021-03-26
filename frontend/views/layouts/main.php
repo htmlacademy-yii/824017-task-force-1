@@ -4,6 +4,7 @@
 /* @var $content string */
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
@@ -11,6 +12,7 @@ use frontend\assets\AppAsset;
 use common\widgets\Alert;
 
 AppAsset::register($this);
+$user = $this->context->user;
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -83,7 +85,7 @@ AppAsset::register($this);
           </svg>
         </a>
       </div>
-      <!-- php if (Yii::$app->request->absoluteUrl !== 'http://yii-taskforce/index.php?=sign-up/index'): ?> -->
+      <?php if (!Yii::$app->user->isGuest): ?>
       <div class="header__nav">
         <ul class="header-nav__list site-list">
           <li class="site-list__item">
@@ -132,7 +134,7 @@ AppAsset::register($this);
                alt="Аватар пользователя">
         </a>
         <span class="header__account-name">
-                 Василий
+                 <?= Html::encode($user->name) ?>
              </span>
       </div>
       <div class="account__pop-up">
@@ -144,11 +146,11 @@ AppAsset::register($this);
             <a href="#">Настройки</a>
           </li>
           <li>
-            <a href="#">Выход</a>
+            <a href="<?= Url::to(['user/logout']) ?>">Выход</a>
           </li>
         </ul>
       </div>
-    <!--  endif; ?> -->
+    <?php  endif; ?>
 
     </div>
   </header>
