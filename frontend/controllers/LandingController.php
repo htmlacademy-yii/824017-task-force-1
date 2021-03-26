@@ -9,6 +9,8 @@ use yii\filters\AccessControl;
 
 class LandingController extends Controller
 {
+	public $layout = 'anon';
+
 	public function behaviors()
     {
         return [
@@ -29,8 +31,6 @@ class LandingController extends Controller
 
     public function actionIndex()
     {
-        $this->layout = 'anon';
-
         return $this->render('index');
     }
 }

@@ -9,6 +9,8 @@ use frontend\models\Users;
 
 abstract class SecuredController extends Controller
 {
+    public $user;
+
     public function behaviors()
     {
         return [
@@ -26,12 +28,10 @@ abstract class SecuredController extends Controller
 
     public function beforeAction($action)
     {
-        $id = Yii::$app->user->getId();
-        var_dump(Users::findOne($id));
-        /*if (!Yii::$app->user->isGuest) {
+        if (!Yii::$app->user->isGuest) {
             $id = Yii::$app->user->getId();
             $this->user = Users::findOne($id);
-        }*/
+        }
         
         return parent::beforeAction($action);
     }
