@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace frontend\models;
 
 use TaskForce\Controllers\Task;
-use Yii;
+use frontend\models\TaskSearchForm;
 
 /**
  * This is the model class for table "tasks".
@@ -37,14 +37,6 @@ use Yii;
  */
 class Tasks extends \yii\db\ActiveRecord
 {
-    public const SCENARIO_SEARCH = 'search';
-
-    public $searchedSpecializations;
-    public $hasNoResponses;
-    public $hasNoLocation;
-    public $postingPeriod;
-    public $searchedName;
-
     /**
      * {@inheritdoc}
      */
@@ -71,7 +63,6 @@ class Tasks extends \yii\db\ActiveRecord
             [['executant_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['executant_id' => 'id']],
             [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id']],
             [['specialization_id'], 'exist', 'skipOnError' => true, 'targetClass' => Specializations::className(), 'targetAttribute' => ['specialization_id' => 'id']],
-            [['searchedSpecializations', 'hasNoResponses', 'hasNoLocation', 'postingPeriod', 'searchedName'], 'safe', 'on' => self::SCENARIO_SEARCH],
         ];
     }
 
@@ -197,49 +188,41 @@ class Tasks extends \yii\db\ActiveRecord
         return new TasksQuery(get_called_class());
     }
 
-    final public function search(array $specializations, yii\web\Request $request): ?array
+    final public static function findNewTasksByFilters(TaskSearchForm $form): ?array
     {
-        $query = Tasks::find()->with('specialization')->joinWith('responses')->
+        $query = self::find()->with('specialization')->joinWith('responses')->
             where(['status' => Task::STATUS_NEW])->orderBy(['posting_date' => SORT_DESC])->
             asArray();
 
-        if ($this->scenario === self::SCENARIO_SEARCH) {
+        $query->andFilterWhere(['specialization_id' => $form->searchedSpecializations]);
+        $query->andFilterWhere(['like', 'name', $form->searchedName]);
 
-            switch ($request->method) {
-                case 'GET':
-                    $id = $request->get('specialization_id');
-
-                    if (key_exists($id, $specializations)) {
-                        $this->searchedSpecializations[$id] = $id;
-                        $query->andWhere(['specialization_id' => $this->searchedSpecializations[$id]]);
-                    }
-
-                    break;
-
-                case 'POST':
-                    $this->load(Yii::$app->request->post());
-
-                    $query->andFilterWhere(['specialization_id' => $this->searchedSpecializations]);
-                    $query->andFilterWhere(['like', 'name', $this->searchedName]);
-                    $query->andFilterWhere([
-                        'between',
-                        'posting_date',
-                        strftime("%F %T", strtotime("-1 $this->postingPeriod")),
-                        strftime("%F %T")
-                    ]);
-
-                    if ($this->hasNoResponses) {
-                        $query->andWhere(['responses.id' => null]);
-                    }
-
-                    if ($this->hasNoLocation) {
-                        $query->andWhere(['latitude' => null]);
-                    }   
-
-                    break;
-            }
+        if ($form->postingPeriod) {
+            $query->andWhere([
+                'between',
+                'posting_date',
+                strftime("%F %T", strtotime("-1 $form->postingPeriod")),
+                strftime("%F %T")
+            ]);
         }
 
+        if ($form->hasNoResponses) {
+            $query->andWhere(['responses.id' => null]);
+        }
+
+        if ($form->hasNoLocation) {
+            $query->andWhere(['latitude' => null]);
+        }  
+
         return $query->all();
+    }
+
+    final public static function findNewTasks(): ?array
+    {
+        $query = self::find()->with('specialization')->joinWith('responses')->
+            where(['status' => Task::STATUS_NEW])->orderBy(['posting_date' => SORT_DESC])->
+            asArray();
+
+        return $query->all(); 
     }
 }

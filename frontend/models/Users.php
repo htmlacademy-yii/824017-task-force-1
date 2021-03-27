@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace frontend\models;
 
-use Yii;
+use frontend\models\UserSearchForm;
 
 /**
  * This is the model class for table "users".
@@ -42,15 +42,6 @@ use Yii;
  */
 class Users extends \yii\db\ActiveRecord
 {
-    public const SCENARIO_SEARCH = 'search';
-
-    public $searchedSpecializations;
-    public $isFreeNow;
-    public $isOnline;
-    public $hasReviews;
-    public $isFavorite;
-    public $searchedName;
-
     /**
      * {@inheritdoc}
      */
@@ -75,7 +66,6 @@ class Users extends \yii\db\ActiveRecord
             [['phone', 'skype', 'telegram'], 'string', 'max' => 100],
             [['address'], 'string', 'max' => 500],
             [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id']],
-            [['searchedSpecializations', 'isFreeNow', 'isOnline', 'hasReviews', 'isFavorite', 'searchedName'],'safe', 'on' => self::SCENARIO_SEARCH]
         ];
     }
 
@@ -234,10 +224,43 @@ class Users extends \yii\db\ActiveRecord
         return new UsersQuery(get_called_class());
     }
 
-    final public function search(array $specializations, yii\web\Request $request): ?array //подскажи, стоит ли здесь проставлять   
-    {                                                                                      // типы у параметров и возвращаемого значения 
-        $query = self::find()->select([                                                    // для соблюдения критерия Д7?
-            'users.*',                                                                     //объявлять в начале declare(strict_types = 1); ?
+    final public static function findExecutantsByFilters(UserSearchForm $form): ?array
+    {
+        $query = self::find()->select([
+            'users.*',
+            'AVG(rate) as rating',
+            'COUNT(rate) as finished_tasks_count',
+            'COUNT(comment) as comments_count'
+        ])->joinWith('specializations')->joinWith('executantReviews')->joinWith('executantTasks')->
+        where(['role' => 'executant'])->groupBy('users.id')->orderBy(['signing_up_date' => SORT_DESC])->
+        asArray();
+    
+        $query->andFilterWhere(['specializations.id' => $form->searchedSpecializations]);
+        $query->andFilterWhere(['like', 'users.name', $form->searchedName]);
+        $query->andFilterWhere(['>', 'favorite_count', $form->isFavorite]);
+
+        if ($form->isFreeNow) {
+            $query->andWhere(['tasks.id' => null]);
+        }
+
+        if ($form->isOnline) {
+            $query->andWhere([
+                'between',
+                'last_activity',
+                strftime("%F %T", strtotime("-30 min")),
+                strftime("%F %T")
+            ]);
+        }
+
+        $query->andFilterHaving(['>', 'comments_count', $form->hasReviews]);
+
+        return $query->all();
+    }
+
+    final public static function findExecutants(): ?array
+    {
+        $query = self::find()->select([
+            'users.*',
             'AVG(rate) as rating',
             'COUNT(rate) as finished_tasks_count',
             'COUNT(comment) as comments_count'
@@ -245,41 +268,6 @@ class Users extends \yii\db\ActiveRecord
         where(['role' => 'executant'])->groupBy('users.id')->orderBy(['signing_up_date' => SORT_DESC])->
         asArray();
 
-        if ($this->scenario === self::SCENARIO_SEARCH && $request->isGet) {
-            
-            $id = $request->get('specialization_id');
-
-            if (key_exists($id, $specializations)) {
-                $this->searchedSpecializations[$id] = $id;
-                $query->andWhere(['specializations.id' => $this->searchedSpecializations[$id]]);
-            }
-
-        } elseif ($this->scenario === self::SCENARIO_SEARCH && $request->isPost) {
-    
-            if ($request->post('Users')['searchedName']) {
-                $this->searchedName = $request->post('Users')['searchedName'];
-                $query->andWhere(['like', 'users.name', $this->searchedName]);
-            } else {
-                $this->load($request->post());
-                $query->andFilterWhere(['specializations.id' => $this->searchedSpecializations]);
-                $query->andFilterWhere(['>', 'favorite_count', $this->isFavorite]);
-                $query->andFilterHaving(['>', 'comments_count', $this->hasReviews]);
-            
-                if ($this->isFreeNow) {
-                    $query->andWhere(['tasks.id' => null]);
-                }
-
-                if ($this->isOnline) {
-                    $query->andWhere([
-                        'between',
-                        'last_activity',
-                        strftime("%F %T", strtotime("-30 min")),
-                        strftime("%F %T")
-                    ]);
-                }
-            }           
-        }  
-
-        return $query->all();
-    } 
+        return $query->all(); 
+    }
 }

@@ -5,23 +5,25 @@ declare(strict_types = 1);
 namespace frontend\controllers;
 
 use yii\web\Controller;
-use yii\helpers\ArrayHelper;
-use frontend\models\Users;
-use frontend\models\Specializations;
-use Yii;
+use frontend\models\UserService;
+use frontend\models\UserSearchForm;
 
 class UsersController extends Controller
 {
+    private UserService $service;
+
+    public function init()
+    {
+        parent::init();
+        $this->service = new UserService($this->request);
+    }
+
     public function actionIndex()
     {
-        $specializations = ArrayHelper::map(Specializations::getAll(), 'id', 'name');
-        $searchForm = new Users(['scenario' => Users::SCENARIO_SEARCH]);
-        $users = $searchForm->search($specializations, Yii::$app->request);
+        $users = $this->service->getUsers(
+            $searchForm = new UserSearchForm()
+        );
 
-        return $this->render('index', [
-            'users' => $users,
-            'searchForm' => $searchForm,
-            'specializations' => $specializations
-        ]);
+        return $this->render('index', compact('users', 'searchForm'));
     }
 }

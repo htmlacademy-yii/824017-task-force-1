@@ -53,6 +53,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
 }
 
 ?>
+<?php $specializations = $searchForm->getSpecializations(); ?>
 
 <section class="user__search">
 
@@ -109,9 +110,10 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
             <fieldset class="search-task__categories">
                 <legend>Категории</legend>
                 
+                <?php $i = 1; ?>
                 <?php foreach($specializations as $id => $name): ?>
 
-                    <?= $form->field($searchForm, "searchedSpecializations[$id]", [
+                    <?= $form->field($searchForm, "searchedSpecializations[$i]", [
                         'template' => "{input}",
                         'options' => ['tag' => false]
                     ])->checkbox([
@@ -121,6 +123,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                         'id' => "10$id",
                         'class' => 'visually-hidden checkbox__input'
                     ]) ?>
+                    <?php $i++; ?>
                     <label for="10<?= $id ?>"><?= $name ?></label>
 
                 <?php endforeach; ?> 

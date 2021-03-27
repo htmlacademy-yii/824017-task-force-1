@@ -52,6 +52,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
     return $passedTime;
 }
 ?>
+<?php $specializations = $searchForm->getSpecializations(); ?>
 <?php $specializationsCount = count($specializations); ?>
 
 
@@ -72,7 +73,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                     <?= htmlspecialchars($task['description']) ?>
                 </p>
                 <b class="new-task__price new-task__price--<?= htmlspecialchars($task['specialization']['icon']) ?>"><?= htmlspecialchars($task['payment']) ?><b> ₽</b></b>
-                <p class="new-task__place">Санкт-Петербург, Центральный район</p><!-- как я понял, это реализуется в будущих заданиях посредством geocoder API -->
+                <p class="new-task__place">Санкт-Петербург, Центральный район</p>
                 <span class="new-task__time"><?= getPassedTimeSinceLastActivity($task['posting_date']) ?></span>
             </div>
 
@@ -104,9 +105,10 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
         <fieldset class="search-task__categories">
                 <legend>Категории</legend>
                 
+                <?php $i = 1; ?>
                 <?php foreach($specializations as $id => $name): ?>
 
-                    <?= $form->field($searchForm, "searchedSpecializations[$id]", [
+                    <?= $form->field($searchForm, "searchedSpecializations[$i]", [
                         'template' => "{input}",
                         'options' => ['tag' => false]
                     ])->checkbox([
@@ -116,6 +118,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                         'id' => $id,
                         'class' => 'visually-hidden checkbox__input'
                     ]) ?> 
+                    <?php $i++; ?>
                     <label for="<?= $id ?>"><?= $name ?></label>
 
                 <?php endforeach; ?>  
