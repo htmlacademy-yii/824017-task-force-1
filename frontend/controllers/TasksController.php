@@ -4,76 +4,160 @@ declare(strict_types = 1);
 
 namespace frontend\controllers;
 
-use TaskForce\Controllers\Task;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use frontend\models\Tasks;
-use frontend\models\SearchTaskForm;
-use yii\helpers\ArrayHelper;
-use frontend\models\Specializations;
-use frontend\controllers\SecuredController;
+use frontend\models\task\{TaskService, TaskSearchForm, TaskCreatingForm};
+use yii\filters\AccessControl;
+use TaskForce\Utils\Uploader;
 use Yii;
 
-class TasksController extends SecuredController
+/**
+ * TasksController организовывает просмотр заданий и добавление нового задания.
+ */
+class TasksController extends Controller
 {
-    public function actionIndex() //нужно ли в таких случаях проставлять тип возращаемого значения для соблюдения критерия Д7 ?
+    /** @var TasksService $service */
+    private TaskService $service;
+
+    /**
+     * Выполняет инициализацию объекта.
+     *
+     * После инициализации создает объект TaskService
+     * и присваивает его свойству $service.
+     *
+     * @return void
+     */
+    public function init()
     {
-    	$specializations = ArrayHelper::map(Specializations::find()->asArray()->all(), 'id', 'name');
-
-        $query = Tasks::find()->with('specialization')->joinWith('responses')->where(['status' => Task::STATUS_NEW])->orderBy(['posting_date' => SORT_DESC])->asArray();
-
-        $searchTaskForm = new SearchTaskForm;
-
-        $request = Yii::$app->request;
-
-        switch ($request->method) {
-            case 'GET':
-                $id = $request->get('specialization_id');
-
-                if (key_exists($id, $specializations)) {
-                    $searchTaskForm->searchedSpecializations[$id] = $id;
-                    $query->andWhere(['specialization_id' => $searchTaskForm->searchedSpecializations[$id]]);
-                }
-
-                break;
-
-            case 'POST':
-            	$searchTaskForm->load(Yii::$app->request->post());
-
-	            $query->andFilterWhere(['specialization_id' => $searchTaskForm->searchedSpecializations]);
-	            $query->andFilterWhere(['between', 'posting_date', strftime("%F %T", strtotime("-1 $searchTaskForm->postingPeriod")), strftime("%F %T")]);
-	            $query->andFilterWhere(['like', 'name', $searchTaskForm->searchedName]);
-
-	            if ($searchTaskForm->hasNoResponses) { //тут  же не нарушается критерия про инициализацию?
-	                $query->andWhere(['responses.id' => null]);
-	            }
-
-	            if ($searchTaskForm->hasNoLocation) {
-	                $query->andWhere(['latitude' => null]);
-	            }   
-
-	            break;
-	    }
-
-        $tasks = $query->all();
-
-        return $this->render('index', ['tasks' => $tasks, 'searchTaskForm' => $searchTaskForm, 'specializations' => $specializations]);
+        parent::init();
+        $this->service = new TaskService($this->request);
     }
 
-    public function actionView($id = null) //нужно ли проставить тип view(int $id)..
+    /**
+     * {@inheritdoc}
+     */
+    public function behaviors()
     {
-        $task = Tasks::findOne($id);
-        if (!$task) { 
-            throw new NotFoundHttpException("Страница не найдена");
-        }
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['add', 'upload'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->user->getIdentity()->role === 'customer';
+                        }
+                    ],
+                    [
+                        'actions' => ['index', 'view'],
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * Организовывает просмотр новых заданий.
+     *
+     * Обращается к объекту свойства $service за получением провайдера данных,
+     * передовая аргументом модель формы поиска заданий.
+     *
+     * @return string
+     */
+    public function actionIndex()
+    {
+        $searchForm = new TaskSearchForm();
+        $dataProvider = $this->service->getDataProvider($searchForm);
+
+        return $this->render('index', compact('dataProvider', 'searchForm'));
+    }
+
+    /**
+     * Отображает одно задание по его ID.
+     *
+     * Обращается к объекту свойства $service за получением объекта
+     * задания, передовая аргументом ID задания.
+     *
+     * @param  string|null $id
+     *
+     * @return string
+     */
+    public function actionView(?string $id = null)
+    {
+        $task = $this->service->getOneTask($id);
 
         return $this->render('view', ['task' => $task]);
     }
 
-    /*public function actionTest($id = null)
+    /**
+     * Сохраненяет файл задания на сервере при помощи Uploader'а.
+     *
+     * @return void
+     */
+    public function actionUploadFile()
     {
-        $task = Tasks::findOne($id);
+        Uploader::uploadFile();
+    }
 
-        return $this->render('test', ['task' => $task]);
-    }*/
+    /**
+     * Организовывает добавление нового задания.
+     *
+     * При помощи объекта сервиса добавляет новое задание, передавая аргументом
+     * форму добавления задания. Если успешно, перенаправляет на домашнюю
+     * страницу. В ином случае отображает форму с ошибками.
+     *
+     * @return Response|string
+     */
+    public function actionAdd()
+    {
+        $taskCreatingForm = new TaskCreatingForm;
+
+        if ($this->service->add($taskCreatingForm)) {
+
+            return $this->goHome();
+        }
+
+        return $this->render('add', ['taskCreatingForm' => $taskCreatingForm]);
+    }
+
+    /**
+     * Определяет имя класса для действия error.
+     *
+     * @return array
+     */
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['index', 'view', 'upload', 'add'],
+                'rules' => [
+                    [
+                        'actions' => ['add', 'upload'],
+                        'allow' => true,
+                        'matchCallback' => function ($rule, $action) {
+                            return $this->user->role === 'customer';
+                        }
+                    ],
+                    [
+                        'actions' => ['index', 'view'],
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ]
+            ]
+        ];
+    }
 }

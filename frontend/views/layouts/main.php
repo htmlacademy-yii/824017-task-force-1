@@ -1,32 +1,25 @@
 <?php
 
-/* @var $this \yii\web\View */
-/* @var $content string */
-
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
-use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
-use common\widgets\Alert;
 
 AppAsset::register($this);
-$user = $this->context->user;
+
+$user = \Yii::$app->user->getIdentity();
 ?>
+
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
 <head>
     <?php $this->head() ?>
+
     <meta charset="<?= Yii::$app->charset ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
-    <!-- <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/style.css"> -->
 </head>
 <body>
 <?php $this->beginBody() ?>
@@ -35,7 +28,7 @@ $user = $this->context->user;
   <header class="page-header">
     <div class="main-container page-header__container">
       <div class="page-header__logo">
-        <a href="index.html">
+        <a href="<?= Url::toRoute('tasks/index') ?>">
           <svg class="page-header__logo-image" id="Layer_2" xmlns="http://www.w3.org/2000/svg"
                viewBox="0 0 1634 646.35">
             <title>taskforce_logo2-01</title>
@@ -85,20 +78,21 @@ $user = $this->context->user;
           </svg>
         </a>
       </div>
-      <?php if (!Yii::$app->user->isGuest): ?>
+
+      <?php if (Url::current() !== Url::to(['sign-up/index'])): ?>
       <div class="header__nav">
         <ul class="header-nav__list site-list">
           <li class="site-list__item">
-            <a href="#">Задания</a>
+            <a href="<?= Url::toRoute('tasks/index') ?>">Задания</a>
           </li>
           <li class="site-list__item">
-            <a href="#">Исполнители</a>
+            <a href="<?= Url::toRoute('users/index') ?>">Исполнители</a>
           </li>
           <li class="site-list__item">
-            <a href="#">Создать задание</a>
+            <a href="<?= Url::toRoute('tasks/add') ?>">Создать задание</a>
           </li>
           <li class="site-list__item">
-            <a>Мой профиль</a>
+            <a href="<?= Url::to() ?>">Мой профиль</a>
           </li>
         </ul>
       </div>
@@ -129,7 +123,7 @@ $user = $this->context->user;
       </div>
       <div class="header__account">
         <a class="header__account-photo">
-          <img src="../img/user-photo.png"
+          <img src="<?= $user->avatar ?>"
                width="43" height="44"
                alt="Аватар пользователя">
         </a>
@@ -146,11 +140,11 @@ $user = $this->context->user;
             <a href="#">Настройки</a>
           </li>
           <li>
-            <a href="<?= Url::to(['user/logout']) ?>">Выход</a>
+            <a href="<?= Url::toRoute('sign/logout') ?>">Выход</a>
           </li>
         </ul>
       </div>
-    <?php  endif; ?>
+    <?php endif; ?>
 
     </div>
   </header>
@@ -176,22 +170,22 @@ $user = $this->context->user;
       <div class="page-footer__links">
         <ul class="links__list">
           <li class="links__item">
-            <a href="">Задания</a>
+            <a href="<?= Url::toRoute('tasks/index') ?>">Задания</a>
           </li>
           <li class="links__item">
             <a href="">Мой профиль</a>
           </li>
           <li class="links__item">
-            <a href="">Исполнители</a>
+            <a href="<?= Url::toRoute('users/index') ?>">Исполнители</a>
           </li>
           <li class="links__item">
-            <a href="">Регистрация</a>
+            <a href="<?= Url::toRoute('sign/signup') ?>">Регистрация</a>
           </li>
           <li class="links__item">
-            <a href="">Создать задание</a>
+            <a href="<?= Url::toRoute('tasks/add') ?>">Создать задание</a>
           </li>
           <li class="links__item">
-            <a href="">Справка</a>
+            <a href="<?= Url::to() ?>">Справка</a>
           </li>
         </ul>
       </div>
@@ -203,16 +197,25 @@ $user = $this->context->user;
                alt="Логотип HTML Academy">
         </a>
       </div>
+
+      <?php if ($this->title === 'Регистрация аккаунта'): ?>
+      <div class="clipart-woman">
+          <img src="../img/clipart-woman.png" width="238" height="450">
+      </div>
+      <div class="clipart-message">
+          <div class="clipart-message-text">
+          <h2>Знаете ли вы, что?</h2>
+          <p>После регистрации вам будет доступно более
+              двух тысяч заданий из двадцати разных категорий.</p>
+              <p>В среднем, наши исполнители зарабатывают
+              от 500 рублей в час.</p>
+          </div>
+      </div>
+      <?php endif; ?>
+
     </div>
   </footer>
 </div>
-<!-- <script src="js/dropzone.js"></script>
- --><script>
-  Dropzone.autoDiscover = false;
-
-  var dropzone = new Dropzone(".dropzone", {url: window.location.href, maxFiles: 6, uploadMultiple: true,
-    acceptedFiles: 'image/*', previewTemplate: '<a href="#"><img data-dz-thumbnail alt="Фото работы"></a>'});
-</script>
 
 <?php $this->endBody() ?>
 </body>

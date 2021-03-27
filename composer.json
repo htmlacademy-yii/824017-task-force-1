@@ -28,7 +28,7 @@
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
         "yiisoft/yii2-gii": "~2.1.0",
-        "yiisoft/yii2-faker": "~2.0.0",
+        "yiisoft/yii2-faker": "^2.0",
         "codeception/codeception": "^4.0",
         "codeception/module-asserts": "^1.0",
         "codeception/module-yii2": "^1.0",
@@ -50,7 +50,9 @@
     ],
     "autoload": {
         "psr-4": {
-            "TaskForce\\": "src/"
+            "TaskForce\\": "src/",
+            "chat\\messages\\": "chat-messages/",
+            "notifications\\history\\": "notifications-history/"
         }
     }
 }

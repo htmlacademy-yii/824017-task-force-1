@@ -6,31 +6,49 @@ namespace frontend\controllers;
 
 use yii\web\Controller;
 use yii\filters\AccessControl;
+use frontend\models\task\Tasks;
 
+/**
+ * LandingController отвечает за работу с посадочной страницей.
+ */
 class LandingController extends Controller
 {
-	public $layout = 'anon';
+    /**
+     * {@inheritdoc}
+     */
+    public $layout = 'anon';
 
-	public function behaviors()
+    /**
+     * {@inheritdoc}
+     */
+    public function behaviors()
     {
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'denyCallback' => function($rule, $action) {
-                    $this->redirect(['tasks/index']);
-                },
                 'rules' => [
                     [
+                        'actions' => ['index'],
                         'allow' => true,
                         'roles' => ['?']
                     ]
-                ]
+                ],
+                'denyCallback' => function($rule, $action) {
+                    return $this->goHome();
+                },
             ]
         ];
     }
 
+    /**
+     * Отображает посадочную страницу и 4 последних добавленных задания.
+     *
+     * @return string
+     */
     public function actionIndex()
     {
-        return $this->render('index');
+        $tasks = Tasks::findLastFourTasks();
+
+        return $this->render('index', ['tasks' => $tasks]);
     }
 }

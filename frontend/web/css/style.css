@@ -636,10 +636,15 @@ footer {
     .input:disabled::-webkit-input-placeholder {
       color: #D4D9E2; }
 
-.input-danger + input {
+/*.input-danger + input {
   border-color: #FF116E; }
   .input-danger + input + span {
-    color: #FF116E; }
+    color: #FF116E; }*/
+
+.input-danger {
+  border-color: #FF116E; }
+  .input-danger + span {
+    color: #FF116E !important; }
 
 .input-middle {
   padding-top: 14px;
@@ -907,6 +912,9 @@ footer {
 .pagination__item--current,
 .pagination__item:hover {
   background-color: #1a34b8; }
+
+.pagination__item__zero_opacity.pagination__item a, .pagination__item__zero_opacity span {
+  opacity: 0;}
 
 .link-regular {
   color: #1e90ff;

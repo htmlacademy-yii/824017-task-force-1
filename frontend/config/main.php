@@ -16,13 +16,15 @@ return [
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
-            'identityClass' => 'frontend\models\UserIdentity',
+            'identityClass' => 'frontend\models\user\UserIdentity',
             'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
+            'identityCookie' => [
+                'name' => '_identity-frontend',
+                'httpOnly' => true
+            ],
             'loginUrl' => ['landing/index']
         ],
         'session' => [
-            // this is the name of the session cookie used for login on the frontend
             'name' => 'advanced-frontend',
         ],
         'log' => [
@@ -35,19 +37,10 @@ return [
             ],
         ],
         'errorHandler' => [
-            'errorAction' => 'site/error',
+            'errorAction' => 'tasks/error',
         ],
-        
-        /*'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'enableStrictParsing' => false,
-            'rules' => [
-                '//' => '/',
-                'task/view/<id>' => 'tasks/view'
-            ],
-        ],*/
-        
     ],
     'params' => $params,
+    'defaultRoute' => ['landing/index'],
+    'homeUrl' => ['tasks/index'],
 ];

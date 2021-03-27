@@ -5,84 +5,87 @@ declare(strict_types = 1);
 namespace TaskForce\Utils;
 
 use \SplFileObject;
+use \RuntimeException;
 use TaskForce\Exceptions\SourceFileException;
+use TaskForce\Exceptions\GivenArgumentException;
 
-class CsvToSqlConverter
+final class CsvToSqlConverter
 {
     private string $csvName;
     private string $sqlName;
-
-    private SplFileObject $csvFileObject;
-    private SplFileObject $sqlFileObject;
-    private string $dataBaseTable;
+    private ?string $dataBaseTable;
 
     public function __construct(string $csvName)
     {
-        $this->dataBaseTable = explode('.', $csvName)[0] ?? null; //это же не является нарушением Б37?
-        $this->sqlName = 'data/' . $this->dataBaseTable . '.sql';
+        if (!is_readable('data/' . $csvName)) {
+            throw new SourceFileException("CSV файл '$csvName' либо не существует в директории 'data' либо он не доступен для чтения");
+        }
+
+        $this->dataBaseTable = explode('.', $csvName)[0] ?? null;
+
+        if (!$dataBaseTable) {
+            throw new GivenArgumentException("Попытка присвоить dataBaseTable пустое значение");
+        }
+
+        $this->sqlName = 'data/sql/' . $this->dataBaseTable . '.sql';
         $this->csvName = 'data/' . $csvName;
     }
 
     public function convert(): void
     {
-        if (!file_exists($this->csvName)) {
-            throw new SourceFileException("CSV файл не существует");
-        }
+        $csvFileObject = new SplFileObject($this->csvName);
 
         try {
-            $this->csvFileObject = new SplFileObject($this->csvName);
-        }
-        catch (RuntimeException $exception) {
-            throw new SourceFileException("Не удалось открыть CSV файл на чтение");
-        }
-
-        try {
-            $this->sqlFileObject = new SplFileObject($this->sqlName, 'w');
+            $sqlFileObject = new SplFileObject($this->sqlName, 'w');
         }
         catch (RuntimeException $exception) {
             throw new SourceFileException("Не удалось создать SQL файл для записи");
         }
 
-        $this->csvFileObject->setFlags(SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE); 
+        $csvFileObject->setFlags(SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
 
-        $headers = $this->getHeaders();
+        $columns = $this->getColumns($csvFileObject);
 
-        $firstValues = $this->csvFileObject->fgetcsv();
-        $firstValues = $this->arrayToString($firstValues);
+        $firstValues = $this->arrayToString(
+            $csvFileObject->fgetcsv()
+        );
 
-        $firstSqlLine = "INSERT INTO $this->dataBaseTable (" . $headers . ")\r\n" . 'VALUES ("' . $firstValues . '"),';
-        $this->writeLine($firstSqlLine);
+        $firstSqlLine = "INSERT INTO $this->dataBaseTable (" . $columns . ")\r\n" . 'VALUES ("' . $firstValues . '"),';
+        $this->writeLine($sqlFileObject, $firstSqlLine);
 
-        foreach ($this->getNextLine() as $insertingValues) {
+        foreach ($this->getNextLine($csvFileObject) as $insertingValues) {
             $insertingValues = $this->arrayToString($insertingValues);
             $line = '       ("' . $insertingValues . '"),';
             $line = str_replace('"NULL"','NULL',$line);
-            $this->writeLine($line);
+            $this->writeLine($sqlFileObject, $line);
         }
+
+        $sqlFileObject->fseek(-3, SEEK_END);
+        $sqlFileObject->fwrite(';');
     }
-    
-    private function getHeaders(): string {
-        $this->csvFileObject->rewind();
-        $data = $this->csvFileObject->fgetcsv();
-        $headers = array_shift($data);
+
+    private function getColumns(SplFileObject $csvFileObject): string {
+        $csvFileObject->rewind();
+        $data = $csvFileObject->fgetcsv();
+        $columns = array_shift($data);
 
         foreach ($data as $value) {
-            $headers .= ", $value";
+            $columns .= ", $value";
         }
 
-        return $headers;
+        return $columns;
     }
 
-    private function getNextLine(): iterable {
-        while (!$this->csvFileObject->eof()) {
-            
-            yield $this->csvFileObject->fgetcsv();
+    private function getNextLine(SplFileObject $csvFileObject): iterable {
+        while (!$csvFileObject->eof()) {
+
+            yield $csvFileObject->fgetcsv();
         }
     }
 
-    private function writeLine(string $line): void
+    private function writeLine(SplFileObject $sqlFileObject, string $line): void
     {
-        $this->sqlFileObject->fwrite("$line\r\n");
+        $sqlFileObject->fwrite("$line\r\n");
     }
 
     private function arrayToString(array $array): string

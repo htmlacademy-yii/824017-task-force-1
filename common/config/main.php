@@ -14,12 +14,15 @@ return [
             'showScriptName' => false,
             'enableStrictParsing' => false,
             'rules' => [
-                '/' => 'landing/index',
                 'task/view/<id>' => 'tasks/view',
-                'user/view/<id>' => 'users/view'
+                'user/view/<id>' => 'users/view',
             ],
         ],
+        'formatter' => [
+            'language' => 'ru',
+            'thousandSeparator' => ' '
+        ],
     ],
-    'defaultRoute' => ['landing/index'],
-    'homeUrl' => ['tasks/index'],
+    'timeZone' => 'Europe/Moscow',
+    'language' => 'ru-RU'
 ];
