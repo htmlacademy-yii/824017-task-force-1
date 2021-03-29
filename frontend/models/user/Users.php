@@ -2,9 +2,13 @@
 
 declare(strict_types = 1);
 
-namespace frontend\models;
+namespace frontend\models\user;
 
-use frontend\models\UserSearchForm;
+use frontend\models\{
+    specializations\Specializations,
+    reviews\Reviews,
+    task\Tasks,
+};
 
 /**
  * This is the model class for table "users".
@@ -234,25 +238,32 @@ class Users extends \yii\db\ActiveRecord
         ])->joinWith('specializations')->joinWith('executantReviews')->joinWith('executantTasks')->
         where(['role' => 'executant'])->groupBy('users.id')->orderBy(['signing_up_date' => SORT_DESC])->
         asArray();
-    
-        $query->andFilterWhere(['specializations.id' => $form->searchedSpecializations]);
-        $query->andFilterWhere(['like', 'users.name', $form->searchedName]);
-        $query->andFilterWhere(['>', 'favorite_count', $form->isFavorite]);
 
-        if ($form->isFreeNow) {
-            $query->andWhere(['tasks.id' => null]);
+        if ($form->searchedName) {
+            
+            foreach ($form as $attribute => $value) {
+
+                if ($attribute !== 'searchedName') {
+                    unset($form[$attribute]);
+                }
+            }
+            $query->nameFilter($form->searchedName);
+            
+        } else {
+            $query->specializationsFilter($form->searchedSpecializations);
+            $query->nameFilter($form->searchedName);
+            $query->favoriteFilter($form->isFavorite);
+
+            if ($form->isFreeNow) {
+                $query->freeNow();
+            }
+
+            if ($form->isOnline) {
+                $query->online();
+            }
+
+            $query->withReviewsFilter($form->hasReviews);
         }
-
-        if ($form->isOnline) {
-            $query->andWhere([
-                'between',
-                'last_activity',
-                strftime("%F %T", strtotime("-30 min")),
-                strftime("%F %T")
-            ]);
-        }
-
-        $query->andFilterHaving(['>', 'comments_count', $form->hasReviews]);
 
         return $query->all();
     }

@@ -1,16 +1,17 @@
 <?php
 
-namespace frontend\models;
+namespace frontend\models\user;
 
-use frontend\models\Specializations;
+use frontend\models\specializations\Specializations;
 use yii\helpers\ArrayHelper;
 
-class TaskSearchForm extends \yii\base\Model
+class UserSearchForm extends \yii\base\Model
 {
     public ?array $searchedSpecializations = null;
-    public ?string $hasNoResponses = null;
-    public ?string $hasNoLocation = null;
-    public ?string $postingPeriod = null;
+    public ?string $isFreeNow = null;
+    public ?string $isOnline = null;
+    public ?string $hasReviews = null;
+    public ?string $isFavorite = null;
     public ?string $searchedName = null;
 
     private array $specializations;
@@ -27,7 +28,7 @@ class TaskSearchForm extends \yii\base\Model
     public function rules()
     {
         return [
-            [['searchedSpecializations', 'hasNoResponses', 'hasNoLocation', 'postingPeriod', 'searchedName'], 'safe']
+            [['searchedSpecializations', 'isFreeNow', 'isOnline', 'hasReviews', 'isFavorite', 'searchedName'], 'safe']
         ];
     }
 }

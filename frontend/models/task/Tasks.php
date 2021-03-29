@@ -2,10 +2,13 @@
 
 declare(strict_types = 1);
 
-namespace frontend\models;
+namespace frontend\models\task;
 
 use TaskForce\Controllers\Task;
-use frontend\models\TaskSearchForm;
+use frontend\models\{
+    responses\Responses,
+    specializations\Specializations,
+};
 
 /**
  * This is the model class for table "tasks".
@@ -194,24 +197,19 @@ class Tasks extends \yii\db\ActiveRecord
             where(['status' => Task::STATUS_NEW])->orderBy(['posting_date' => SORT_DESC])->
             asArray();
 
-        $query->andFilterWhere(['specialization_id' => $form->searchedSpecializations]);
-        $query->andFilterWhere(['like', 'name', $form->searchedName]);
+        $query->specializationsFilter($form->searchedSpecializations);
+        $query->nameFilter($form->searchedName);
 
         if ($form->postingPeriod) {
-            $query->andWhere([
-                'between',
-                'posting_date',
-                strftime("%F %T", strtotime("-1 $form->postingPeriod")),
-                strftime("%F %T")
-            ]);
+            $query->period($form->postingPeriod);
         }
 
         if ($form->hasNoResponses) {
-            $query->andWhere(['responses.id' => null]);
+            $query->withoutResponses();
         }
 
         if ($form->hasNoLocation) {
-            $query->andWhere(['latitude' => null]);
+            $query->withoutLocation();
         }  
 
         return $query->all();

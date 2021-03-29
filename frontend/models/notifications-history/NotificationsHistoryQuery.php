@@ -1,13 +1,13 @@
 <?php
 
-namespace frontend\models;
+namespace frontend\models\notifications\history;
 
 /**
- * This is the ActiveQuery class for [[TaskHelpfulFiles]].
+ * This is the ActiveQuery class for [[NotificationsHistory]].
  *
- * @see TaskHelpfulFiles
+ * @see NotificationsHistory
  */
-class TaskHelpfulFilesQuery extends \yii\db\ActiveQuery
+class NotificationsHistoryQuery extends \yii\db\ActiveQuery
 {
     /*public function active()
     {
@@ -16,7 +16,7 @@ class TaskHelpfulFilesQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return TaskHelpfulFiles[]|array
+     * @return NotificationsHistory[]|array
      */
     public function all($db = null)
     {
@@ -25,7 +25,7 @@ class TaskHelpfulFilesQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return TaskHelpfulFiles|array|null
+     * @return NotificationsHistory|array|null
      */
     public function one($db = null)
     {

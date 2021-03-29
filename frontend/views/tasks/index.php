@@ -5,6 +5,10 @@ declare(strict_types=1);
 use TaskForce\Exceptions\DateIntervalInverseException;
 use yii\widgets\ActiveForm;
 use yii\widgets\ActiveField;
+use yii\helpers\Html;
+use yii\helpers\Url;
+
+$this->title = 'Список заданий';
 
 function getPassedTimeSinceLastActivity(string $startingDate): ?string
 {
@@ -65,14 +69,14 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
         
             <div class="new-task__card">
                 <div class="new-task__title">
-                    <a href="#" class="link-regular"><h2><?= htmlspecialchars($task['name']) ?></h2></a>
-                    <a  class="new-task__type link-regular" href="index.php?r=tasks/index&specialization_id=<?= $task['specialization']['id'] ?>"><p><?= htmlspecialchars($task['specialization']['name']) ?></p></a>
+                    <a href="#" class="link-regular"><h2><?= Html::encode($task['name']) ?></h2></a>
+                    <a  class="new-task__type link-regular" href="<?= Url::to(['tasks/index', 'specialization_id' => $task['specialization']['id']]) ?>"><p><?= Html::encode($task['specialization']['name']) ?></p></a>
                 </div>
-                <div class="new-task__icon new-task__icon--<?= htmlspecialchars($task['specialization']['icon']) ?>"></div>
+                <div class="new-task__icon new-task__icon--<?= Html::encode($task['specialization']['icon']) ?>"></div>
                 <p class="new-task_description">
-                    <?= htmlspecialchars($task['description']) ?>
+                    <?= Html::encode($task['description']) ?>
                 </p>
-                <b class="new-task__price new-task__price--<?= htmlspecialchars($task['specialization']['icon']) ?>"><?= htmlspecialchars($task['payment']) ?><b> ₽</b></b>
+                <b class="new-task__price new-task__price--<?= Html::encode($task['specialization']['icon']) ?>"><?= Html::encode($task['payment']) ?><b> ₽</b></b>
                 <p class="new-task__place">Санкт-Петербург, Центральный район</p>
                 <span class="new-task__time"><?= getPassedTimeSinceLastActivity($task['posting_date']) ?></span>
             </div>

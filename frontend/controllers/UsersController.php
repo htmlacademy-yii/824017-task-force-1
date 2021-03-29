@@ -5,8 +5,8 @@ declare(strict_types = 1);
 namespace frontend\controllers;
 
 use yii\web\Controller;
-use frontend\models\UserService;
-use frontend\models\UserSearchForm;
+use frontend\models\user\UserService;
+use frontend\models\user\UserSearchForm;
 
 class UsersController extends Controller
 {
@@ -20,9 +20,8 @@ class UsersController extends Controller
 
     public function actionIndex()
     {
-        $users = $this->service->getUsers(
-            $searchForm = new UserSearchForm()
-        );
+        $searchForm = new UserSearchForm();
+        $users = $this->service->getUsers($searchForm);
 
         return $this->render('index', compact('users', 'searchForm'));
     }

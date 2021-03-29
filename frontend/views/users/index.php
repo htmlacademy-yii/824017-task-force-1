@@ -5,6 +5,10 @@ declare(strict_types=1);
 use TaskForce\Exceptions\DateIntervalInverseException;
 use yii\widgets\ActiveForm;
 use yii\widgets\ActiveField;
+use yii\helpers\Html;
+use yii\helpers\Url;
+
+$this->title = 'Список исполнителей';
 
 function getPassedTimeSinceLastActivity(string $startingDate): ?string
 {
@@ -68,7 +72,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                 <span><?= $user['comments_count'] ?> отзывов</span>
             </div>
             <div class="feedback-card__top--name user__search-card">
-                <p class="link-name"><a href="#" class="link-regular"><?= htmlspecialchars($user['name']) ?></a></p>
+                <p class="link-name"><a href="#" class="link-regular"><?= Html::encode($user['name']) ?></a></p>
 
                 <?php $starCount = round((float) $user['rating']) ?>
 
@@ -79,7 +83,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
 
                 <b><?= number_format((float) $user['rating'], 2) ?></b>
                 <p class="user__search-content">
-                    <?= htmlspecialchars($user['description']) ?>
+                    <?= Html::encode($user['description']) ?>
                 </p>
             </div>
             <span class="new-task__time"><?= 'Был на сайте ' . getPassedTimeSinceLastActivity($user['last_activity']) ?></span>
@@ -87,7 +91,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
         <div class="link-specialization user__search-link--bottom">
 
             <?php foreach($user['specializations'] as $specialization): ?>
-                <a href="index.php?r=users/index&specialization_id=<?= $specialization['id'] ?>" class="link-regular"><?= $specialization['name'] ?></a>
+                <a href="<?= Url::to(['users/index', 'specialization_id' => $specialization['id']]) ?>" class="link-regular"><?= $specialization['name'] ?></a>
             <?php endforeach; ?>
         </div>
     </div>

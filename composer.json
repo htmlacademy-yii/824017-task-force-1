@@ -50,7 +50,9 @@
     ],
     "autoload": {
         "psr-4": {
-            "TaskForce\\": "src/"
+            "TaskForce\\": "src/",
+            "chat\\messages\\": "chat-messages/",
+            "notifications\\history\\": "notifications-history/"
         }
     }
 }
