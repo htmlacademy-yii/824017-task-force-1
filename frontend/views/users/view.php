@@ -3,6 +3,7 @@
 declare(strict_types = 1);
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use TaskForce\Exceptions\DateIntervalInverseException;
 
 function getPassedTimeSinceLastActivity(string $startingDate): ?string
@@ -51,6 +52,8 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
     return $passedTime;
 }
 
+$this->title = 'Просмотр профиля пользователя';
+
  ?>
 
     <section class="content-view">
@@ -58,24 +61,23 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
             <div class="user__card">
                 <img src="<?= Html::encode($user->avatar) ?>" width="120" height="120" alt="Аватар пользователя">
                  <div class="content-view__headline">
-                    <h1><?= $user->name ?></h1>
-                     <p>Россия, <?= $user->city->name ?>, 30 лет</p><!-- ДОБАВИТЬ В БД ИНФОРМАЦИЮ ПО ВОЗРАСТУ И СДЕЛАТЬ МИГРАЦИЮ -->
+                    <h1><?= Html::encode($user->name) ?></h1>
+                     <p>Россия, <?= $user->city->name ?>, 30 лет</p>
                     <div class="profile-mini__name five-stars__rate">
                       <?php
-                        
-                        $reviews = $user->reviews0;
+                        $reviews = $user->executantReviews;
                         $rating = 0;
 
                         if (!empty($reviews)) {
-                            $i = 0;
+                            $ratesCount = 0;
                             $ratesSum = 0;
 
                             foreach ($reviews as $review) {
-                              $i++;
+                              $ratesCount++;
                               $ratesSum += $review->rate;
                             } 
 
-                            $rating = round(($ratesSum / $i), 2);
+                            $rating = round(($ratesSum / $ratesCount), 2);
                         } ?>
                                 
                         <?php $starCount =  round($rating) ?>
@@ -85,9 +87,9 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                         <?php endfor; ?>
                         <b><?= $rating ?></b>
                     </div>
-                    <b class="done-task">Выполнил <?= count($user->reviews0) ?> заказов</b>
+                    <b class="done-task">Выполнил <?= count($user->executantReviews) ?> заказов</b>
 
-                    <?php $reviews = $user->reviews0;
+                    <?php $reviews = $user->executantReviews;
                           $commentCount = 0;
 
                           foreach ($reviews as $review) {
@@ -101,7 +103,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                  </div>
                 <div class="content-view__headline user__card-bookmark user__card-bookmark--current">
                     <span>Был на сайте <?= getPassedTimeSinceLastActivity($user->last_activity) ?></span>
-                     <a href="#"><b></b></a><!-- ДОБАВИТЬ В БД ИНФ О ИЗБРАННЫХ ИСПОЛНИТЕЛЯХ ПОЛЬЗОВАТЕЛЯ -->
+                     <a href="#"><b></b></a>
                 </div>
             </div>
             <div class="content-view__description">
@@ -114,7 +116,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
 
                       <?php foreach ($user->specializations as $specialization): ?>
 
-                        <a href="#<!-- ДОПИЛИТЬ ПОСЛЕ НАСТРОЙКИ МАРШРУТИЗАТОРА -->" class="link-regular"><?= $specialization->name ?></a>
+                        <a href="<?= Url::to(['tasks/index', 'specialization_id' => $specialization->id]) ?>" class="link-regular"><?= $specialization->name ?></a>
                       <?php endforeach; ?>
 
                     </div>
@@ -129,7 +131,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                     <h3 class="content-view__h3">Фото работ</h3>
 
                     <?php foreach($user->usersAccomplishedTasksPhotos as $photo): ?>
-                      <a href="#<!-- ЗДЕСЬ НАДО ЧТО-ТО ВПИСЫВАТЬ ИЛИ НЕТ? -->"><img src="<?= Html::encode($photo->accomplished_task_photo) ?><!-- ПЕРЕИМЕНОВАТЬ В БД ПОЛЕ В ВМЕНЯЕМОЕ НАЗВАНИЕ И УЧЕСТЬ В МИГРАЦИИ -->" width="85" height="86" alt="Фото работы"></a>
+                      <a href="<?= Url::to($photo->accomplished_task_photo) ?>"><img src="<?= $photo->accomplished_task_photo ?>" width="85" height="86" alt="Фото работы"></a>
                     <?php endforeach ?>
                 </div>
             </div>
@@ -143,11 +145,11 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
               <?php foreach ($reviews as $review): ?>
                 <?php if ($review->comment): ?>
                 <div class="feedback-card__reviews">
-                    <p class="link-task link">Задание <a href="#<!-- ДОПИЛИТЬ ПОСЛЕ НАСТРОЙКИ МАРШРУТИЗАТОРА -->" class="link-regular">«<?= Html::encode($review->task->name) ?>»</a></p>
+                    <p class="link-task link">Задание <a href="<?= Url::to(['tasks/view', 'id' => $review->task->id]) ?>" class="link-regular">«<?= Html::encode($review->task->name) ?>»</a></p>
                     <div class="card__review">
-                        <a href="#"><img src="<?= Html::encode($review->customer->avatar) ?>" width="55" height="54"></a>
+                        <a href="#"><img src="<?= $review->customer->avatar ?>" width="55" height="54"></a>
                         <div class="feedback-card__reviews-content">
-                            <p class="link-name link"><a href="#<!-- ДОПИЛИТЬ ПОСЛЕ НАСТРОЙКИ МАРШРУТИЗАТОРА -->" class="link-regular">
+                            <p class="link-name link"><a href="<?= Url::to(['users/view', 'id' => $review->customer->id]) ?>" class="link-regular">
                               <?= Html::encode($review->customer->name) ?></a></p>
                             <p class="review-text">
                                 <?= Html::encode($review->comment) ?>
@@ -155,7 +157,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                         </div>
                         <div class="card__review-rate">
 
-                            <p class="<?= $review->rate > 3 ? 'five' : 'three' ?>-rate big-rate"><?= Html::encode($review->rate) ?><span></span></p>
+                            <p class="<?= $review->rate > 3 ? 'five' : 'three' ?>-rate big-rate"><?= $review->rate ?><span></span></p>
                         </div>
                     </div>
                 </div>

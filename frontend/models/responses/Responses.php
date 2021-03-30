@@ -2,6 +2,8 @@
 
 namespace frontend\models\responses;
 
+use frontend\models\user\Users;
+
 use Yii;
 
 /**

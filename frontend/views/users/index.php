@@ -67,12 +67,12 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
     <div class="content-view__feedback-card user__search-wrapper">
         <div class="feedback-card__top">
             <div class="user__search-icon">
-                <a href="#"><img src="<?= $user['avatar'] ?>" width="65" height="65"></a>
+                <a href="<?= Url::to($user['avatar']) ?>"><img src="<?= $user['avatar'] ?>" width="65" height="65"></a>
                 <span><?= $user['finished_tasks_count'] ?> заданий</span>
                 <span><?= $user['comments_count'] ?> отзывов</span>
             </div>
             <div class="feedback-card__top--name user__search-card">
-                <p class="link-name"><a href="#" class="link-regular"><?= Html::encode($user['name']) ?></a></p>
+                <p class="link-name"><a href="<?= Url::to(['users/view', 'id' => $user['id']]) ?>" class="link-regular"><?= Html::encode($user['name']) ?></a></p>
 
                 <?php $starCount = round((float) $user['rating']) ?>
 

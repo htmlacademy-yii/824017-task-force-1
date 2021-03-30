@@ -3,6 +3,7 @@
 declare(strict_types = 1);
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use TaskForce\Exceptions\DateIntervalInverseException;
 
 function getPassedTimeSinceLastActivity(string $startingDate): ?string
@@ -51,6 +52,8 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
     return $passedTime;
 }
 
+$this->title = 'Просмотр задания';
+
  ?>
 
       <section class="content-view">
@@ -60,11 +63,11 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
               <div class="content-view__headline">
                 <h1><?= Html::encode($task->name) ?></h1>
                 <span>Размещено в категории
-                                    <a href="#" class="link-regular"><?= Html::encode($task->specialization->name) ?></a>
-                                    <?= Html::encode(getPassedTimeSinceLastActivity($task->posting_date)) ?></span>
+                                    <a href="<?= Url::to(['tasks/index', 'specialization_id' => $task->specialization->id]) ?>" class="link-regular"><?= $task->specialization->name ?></a>
+                                    <?= getPassedTimeSinceLastActivity($task->posting_date) ?></span>
               </div>
-              <b class="new-task__price new-task__price--<?= Html::encode($task->specialization->icon) ?> content-view-price"><?= $task->payment ?><b> ₽</b></b>
-              <div class="new-task__icon new-task__icon--<?= Html::encode($task->specialization->icon) ?> content-view-icon"></div>
+              <b class="new-task__price new-task__price--<?= $task->specialization->icon ?> content-view-price"><?= $task->payment /*А вот стоит ли кодировать вывод суммы вознаграждения, если мы при валидации формы создания задания будем проверять, чтобы значение было целым числом, а также если нам известно, что тип данных этого поля в БД - INT ? Я не закодировал.*/ ?><b> ₽</b></b>
+              <div class="new-task__icon new-task__icon--<?= $task->specialization->icon ?> content-view-icon"></div>
             </div>
             <div class="content-view__description">
               <h3 class="content-view__h3">Общее описание</h3>
@@ -77,10 +80,10 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
             <div class="content-view__attach">
               <h3 class="content-view__h3">Вложения</h3>
               <?php foreach($task->taskHelpfulFiles as $helpfulFile): ?>
-              	<a href="<?= $helpfulFile->helpful_file ?>"><?= $helpfulFile->helpful_file ?></a> <!-- напоминание себе: учесть в миграции переименование поля в понятное. -->
+                <a href="<?= $helpfulFile->helpful_file ?>"><?= $helpfulFile->helpful_file ?></a>
               <?php endforeach; ?>
             </div>
-        	<?php endif; ?>
+          <?php endif; ?>
 
             <div class="content-view__location">
               <h3 class="content-view__h3">Расположение</h3>
@@ -121,23 +124,23 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
 
             <div class="content-view__feedback-card">
               <div class="feedback-card__top">
-                <a href="#<!-- ДОПИЛИТЬ ПОСЛЕ НАСТРОЙКИ МАРШРУТИЗАТОРА -->"><img src="<?= Html::encode($response->user->avatar) ?>" width="55" height="55"></a>
+                <a href="<?= Url::to(['users/view', 'id' => $response->user->id]) ?>"><img src="<?= $response->user->avatar /*вывод пути к картинке тоже не кодирую. Мы же сами будем создавать и сохранять в бд путь. А не пользователь.*/ ?>" width="55" height="55"></a>
                 <div class="feedback-card__top--name">
-                  <p><a href="#<!-- ДОПИЛИТЬ ПОСЛЕ НАСТРОЙКИ МАРШРУТИЗАТОРА -->" class="link-regular"><?= Html::encode($response->user->name) ?></a></p>
+                  <p><a href="<?= Url::to(['users/view', 'id' => $response->user->id]) ?>" class="link-regular"><?= Html::encode($response->user->name) ?></a></p>
                   <?php
-                  	$rating = 0;
-	                $reviews = $response->user->reviews0;
-					$i = 0;
-					$ratesSum = 0;
-					foreach ($reviews as $review) {
-						$i++;
+                    $rating = 0;
+                    $reviews = $response->user->executantReviews;
+                    $ratesCount = 0;
+                    $ratesSum = 0;
 
-						$ratesSum += $review->rate;
-						$rating = round(($ratesSum / $i), 2);
-						
-					} ?>
+                    foreach ($reviews as $review) {
+                      $ratesCount++;
+                      $ratesSum += $review->rate;
+                      $rating = round(($ratesSum / $ratesCount), 2);
+                    }
+                  ?>
                   
-				<?php $starCount =  round($rating) ?>
+                <?php $starCount =  round($rating) ?>
                 <?php for($i = 1; $i <= 5; $i++): ?>
 
                     <span class="<?= $starCount < $i ? 'star-disabled' : '' ?>"></span>
@@ -164,23 +167,23 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
           <?php endforeach; ?>  
 
         </div>
-    	<?php endif; ?>
+      <?php endif; ?>
       </section>
       <section class="connect-desk">
         <div class="connect-desk__profile-mini">
           <div class="profile-mini__wrapper">
             <h3>Заказчик</h3>
             <div class="profile-mini__top">
-              <img src="<?= Html::encode($task->customer->avatar) ?>" width="62" height="62" alt="Аватар заказчика">
+              <img src="<?= $task->customer->avatar ?>" width="62" height="62" alt="Аватар заказчика">
               <div class="profile-mini__name five-stars__rate">
                 <p><?= Html::encode($task->customer->name) ?></p>
               </div>
             </div>
-            <p class="info-customer"><span><?= count($task->customer->tasks) ?> заданий</span>
-            	<?php $passedTimeSinceSigningUp = strftime("%Y") - substr($task->customer->signing_up_date, 0, 4); ?>
-            	
-            	<span class="last-"><?= $passedTimeSinceSigningUp ?> года на сайте</span></p>
-            <a href="#<!-- ДОПИЛИТЬ ПОСЛЕ НАСТРОЙКИ МАРШРУТИЗАТОРА -->" class="link-regular">Смотреть профиль</a>
+            <p class="info-customer"><span><?= count($task->customer->customerTasks) ?> заданий</span>
+              <?php $passedTimeSinceSigningUp = strftime("%Y") - substr($task->customer->signing_up_date, 0, 4); ?>
+              
+              <span class="last-"><?= $passedTimeSinceSigningUp ?> года на сайте</span></p>
+            <a href="<?= Url::to(['users/view', 'id' => $task->customer->id]) ?>" class="link-regular">Смотреть профиль</a>
           </div>
         </div>
         <div id="chat-container">

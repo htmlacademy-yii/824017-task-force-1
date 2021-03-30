@@ -9,14 +9,17 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
-        /*'urlManager' => [
+        'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'enableStrictParsing' => false,
             'rules' => [
-                '//' => '/',
-                'task/view/<id>' => 'tasks/view'
+                /*'//' => '/',   это правило было в учебнике. Подскажи, плиз, что оно значит? в поисковике не нашел...*/
+                'task/view/<id>' => 'tasks/view',
+                'user/view/<id>' => 'users/view',
             ],
-        ],*/
+        ],
     ],
+    'defaultRoute' => ['tasks/index'],
+    'homeUrl' => ['tasks/index'],
 ];

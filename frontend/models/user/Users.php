@@ -8,6 +8,7 @@ use frontend\models\{
     specializations\Specializations,
     reviews\Reviews,
     task\Tasks,
+    cities\Cities,
 };
 
 /**
@@ -279,6 +280,6 @@ class Users extends \yii\db\ActiveRecord
         where(['role' => 'executant'])->groupBy('users.id')->orderBy(['signing_up_date' => SORT_DESC])->
         asArray();
 
-        return $query->all(); 
+        return $query->all();
     }
 }

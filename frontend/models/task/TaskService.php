@@ -25,10 +25,10 @@ class TaskService extends BaseObject
             return Tasks::findNewTasksByFilters($form);
         }
 
-        return Tasks::findNewTasks();    
+        return Tasks::findNewTasks();
     }
 
-    private function getFiltering(TaskSearchForm $form)
+    private function getFiltering(TaskSearchForm $form): void
     {
         $id = $this->request->get('specialization_id');
 
@@ -37,8 +37,10 @@ class TaskService extends BaseObject
         }
     }
 
-    private function postFiltering(TaskSearchForm $form)
+    private function postFiltering(TaskSearchForm $form): void
     {
         $form->load($this->request->post());
     }
+
+
 }
