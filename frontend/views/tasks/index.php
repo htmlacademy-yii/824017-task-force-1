@@ -5,6 +5,10 @@ declare(strict_types=1);
 use TaskForce\Exceptions\DateIntervalInverseException;
 use yii\widgets\ActiveForm;
 use yii\widgets\ActiveField;
+use yii\helpers\Html;
+use yii\helpers\Url;
+
+$this->title = 'Список заданий';
 
 function getPassedTimeSinceLastActivity(string $startingDate): ?string
 {
@@ -52,6 +56,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
     return $passedTime;
 }
 ?>
+<?php $specializations = $searchForm->getSpecializations(); ?>
 <?php $specializationsCount = count($specializations); ?>
 
 
@@ -64,15 +69,15 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
         
             <div class="new-task__card">
                 <div class="new-task__title">
-                    <a href="#" class="link-regular"><h2><?= htmlspecialchars($task['name']) ?></h2></a>
-                    <a  class="new-task__type link-regular" href="index.php?r=tasks/index&specialization_id=<?= $task['specialization']['id'] ?>"><p><?= htmlspecialchars($task['specialization']['name']) ?></p></a>
+                    <a href="#" class="link-regular"><h2><?= Html::encode($task['name']) ?></h2></a>
+                    <a  class="new-task__type link-regular" href="<?= Url::to(['tasks/index', 'specialization_id' => $task['specialization']['id']]) ?>"><p><?= Html::encode($task['specialization']['name']) ?></p></a>
                 </div>
-                <div class="new-task__icon new-task__icon--<?= htmlspecialchars($task['specialization']['icon']) ?>"></div>
+                <div class="new-task__icon new-task__icon--<?= Html::encode($task['specialization']['icon']) ?>"></div>
                 <p class="new-task_description">
-                    <?= htmlspecialchars($task['description']) ?>
+                    <?= Html::encode($task['description']) ?>
                 </p>
-                <b class="new-task__price new-task__price--<?= htmlspecialchars($task['specialization']['icon']) ?>"><?= htmlspecialchars($task['payment']) ?><b> ₽</b></b>
-                <p class="new-task__place">Санкт-Петербург, Центральный район</p><!-- как я понял, это реализуется в будущих заданиях посредством geocoder API -->
+                <b class="new-task__price new-task__price--<?= Html::encode($task['specialization']['icon']) ?>"><?= Html::encode($task['payment']) ?><b> ₽</b></b>
+                <p class="new-task__place">Санкт-Петербург, Центральный район</p>
                 <span class="new-task__time"><?= getPassedTimeSinceLastActivity($task['posting_date']) ?></span>
             </div>
 
@@ -104,9 +109,10 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
         <fieldset class="search-task__categories">
                 <legend>Категории</legend>
                 
+                <?php $i = 1; ?>
                 <?php foreach($specializations as $id => $name): ?>
 
-                    <?= $form->field($searchTaskForm, "searchedSpecializations[$id]", [
+                    <?= $form->field($searchForm, "searchedSpecializations[$i]", [
                         'template' => "{input}",
                         'options' => ['tag' => false]
                     ])->checkbox([
@@ -116,6 +122,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                         'id' => $id,
                         'class' => 'visually-hidden checkbox__input'
                     ]) ?> 
+                    <?php $i++; ?>
                     <label for="<?= $id ?>"><?= $name ?></label>
 
                 <?php endforeach; ?>  
@@ -125,7 +132,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
         <fieldset class="search-task__categories">
             <legend>Дополнительно</legend>
 
-             <?= $form->field($searchTaskForm, "hasNoResponses", [
+             <?= $form->field($searchForm, "hasNoResponses", [
                         'template' => "{input}",
                         'options' => ['tag' => false]
                     ])->checkbox([
@@ -137,7 +144,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                     ]) ?>    
              <label for="<?= ($specializationsCount + 1) ?>">Без откликов</label>
 
-            <?= $form->field($searchTaskForm, "hasNoLocation", [
+            <?= $form->field($searchForm, "hasNoLocation", [
                         'template' => "{input}",
                         'options' => ['tag' => false]
                     ])->checkbox([
@@ -152,7 +159,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
         </fieldset>
 
         <label class="search-task__name" for="<?= ($specializationsCount + 3) ?>">Период</label>
-        <?= $form->field($searchTaskForm, "postingPeriod", [
+        <?= $form->field($searchForm, "postingPeriod", [
                         'template' => "{input}",
                         'options' => ['tag' => false]
                     ])->dropDownList([
@@ -169,7 +176,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                     ]); ?>
 
         <label class="search-task__name" for="<?= ($specializationsCount + 4) ?>">Поиск по названию</label>
-            <?= $form->field($searchTaskForm, 'searchedName', [
+            <?= $form->field($searchForm, 'searchedName', [
                     'template' => "{input}",
                     'options' => ['tag' => false],
                     'inputOptions' => [
