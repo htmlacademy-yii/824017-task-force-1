@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\models;
+namespace frontend\models\reviews;
 
 /**
  * This is the ActiveQuery class for [[Reviews]].
@@ -9,11 +9,6 @@ namespace frontend\models;
  */
 class ReviewsQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
-    {
-        return $this->andWhere('[[status]]=1');
-    }*/
-
     /**
      * {@inheritdoc}
      * @return Reviews[]|array

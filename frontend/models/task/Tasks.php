@@ -1,9 +1,14 @@
 <?php
 
-namespace frontend\models;
+declare(strict_types = 1);
 
-use Yii;
+namespace frontend\models\task;
+
 use TaskForce\Controllers\Task;
+use frontend\models\{
+    responses\Responses,
+    specializations\Specializations,
+};
 
 /**
  * This is the model class for table "tasks".
@@ -83,7 +88,7 @@ class Tasks extends \yii\db\ActiveRecord
             'longitude' => 'Longitude',
             'payment' => 'Payment',
             'deadline_date' => 'Deadline Date',
-            'address' => 'Address',
+            'address' => 'Address'
         ];
     }
 
@@ -186,11 +191,36 @@ class Tasks extends \yii\db\ActiveRecord
         return new TasksQuery(get_called_class());
     }
 
-    final public static function getNewTasksByDate() //стоит ли проставлять здесь тип возвращаемого значения и 
-    {                                                  //объявлять в начале declare(strict_types = 1); ?
-        return self::find()->with('specialization')->
-            where(['status' => Task::STATUS_NEW])->
-            orderBy(['posting_date' => SORT_DESC])->
-            asArray()->all();
+    final public static function findNewTasksByFilters(TaskSearchForm $form): ?array
+    {
+        $query = self::find()->with('specialization')->joinWith('responses')->
+            where(['status' => Task::STATUS_NEW])->orderBy(['posting_date' => SORT_DESC])->
+            asArray();
+
+        $query->specializationsFilter($form->searchedSpecializations);
+        $query->nameFilter($form->searchedName);
+
+        if ($form->postingPeriod) {
+            $query->period($form->postingPeriod);
+        }
+
+        if ($form->hasNoResponses) {
+            $query->withoutResponses();
+        }
+
+        if ($form->hasNoLocation) {
+            $query->withoutLocation();
+        }  
+
+        return $query->all();
+    }
+
+    final public static function findNewTasks(): ?array
+    {
+        $query = self::find()->with('specialization')->joinWith('responses')->
+            where(['status' => Task::STATUS_NEW])->orderBy(['posting_date' => SORT_DESC])->
+            asArray();
+
+        return $query->all(); 
     }
 }

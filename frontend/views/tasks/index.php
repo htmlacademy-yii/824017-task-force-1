@@ -3,6 +3,12 @@
 declare(strict_types=1);
 
 use TaskForce\Exceptions\DateIntervalInverseException;
+use yii\widgets\ActiveForm;
+use yii\widgets\ActiveField;
+use yii\helpers\Html;
+use yii\helpers\Url;
+
+$this->title = 'Список заданий';
 
 function getPassedTimeSinceLastActivity(string $startingDate): ?string
 {
@@ -50,6 +56,9 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
     return $passedTime;
 }
 ?>
+<?php $specializations = $searchForm->getSpecializations(); ?>
+<?php $specializationsCount = count($specializations); ?>
+
 
 <section class="new-task">
     <div class="new-task__wrapper">
@@ -60,23 +69,19 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
         
             <div class="new-task__card">
                 <div class="new-task__title">
-                    <a href="#" class="link-regular"><h2><?= htmlspecialchars($task['name']) ?></h2></a>
-                    <a  class="new-task__type link-regular" href="#"><p><?= htmlspecialchars($task['specialization']['name']) ?></p></a>
+                    <a href="#" class="link-regular"><h2><?= Html::encode($task['name']) ?></h2></a>
+                    <a  class="new-task__type link-regular" href="<?= Url::to(['tasks/index', 'specialization_id' => $task['specialization']['id']]) ?>"><p><?= Html::encode($task['specialization']['name']) ?></p></a>
                 </div>
-                <div class="new-task__icon new-task__icon--<?= htmlspecialchars($task['specialization']['icon']) ?>"></div>
+                <div class="new-task__icon new-task__icon--<?= Html::encode($task['specialization']['icon']) ?>"></div>
                 <p class="new-task_description">
-                    <?= htmlspecialchars($task['description']) ?>
+                    <?= Html::encode($task['description']) ?>
                 </p>
-                <b class="new-task__price new-task__price--<?= htmlspecialchars($task['specialization']['icon']) ?>"><?= htmlspecialchars($task['payment']) ?><b> ₽</b></b>
-                <p class="new-task__place">Санкт-Петербург, Центральный район</p><!-- как я понял, это реализуется в будущих заданиях посредством geocoder API -->
+                <b class="new-task__price new-task__price--<?= Html::encode($task['specialization']['icon']) ?>"><?= Html::encode($task['payment']) ?><b> ₽</b></b>
+                <p class="new-task__place">Санкт-Петербург, Центральный район</p>
                 <span class="new-task__time"><?= getPassedTimeSinceLastActivity($task['posting_date']) ?></span>
             </div>
 
         <?php endforeach; ?>
-        
-        <!-- у <fieldset>-ов почему-то рамка не появляется, в отличии от файла верстки /frontend/web/browse.html 
-        не смог понять почему...
-        UPD: уже понял. это из-за того что я не добавил стили в подключаемый в лэйауте бандл AppAsset. -->
 
     </div>
     <div class="new-task__pagination">
@@ -92,36 +97,97 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
 </section>
 <section  class="search-task">
     <div class="search-task__wrapper">
-        <form class="search-task__form" name="test" method="post" action="#">
-            <fieldset class="search-task__categories">
+
+        <?php $form = ActiveForm::begin([
+            'id' => 'searchForm', 
+            'method' => 'post',
+            'options' => [
+                'class' => 'search-task__form'
+            ]
+        ]); ?>
+
+        <fieldset class="search-task__categories">
                 <legend>Категории</legend>
-                <input class="visually-hidden checkbox__input" id="1" type="checkbox" name="" value="" checked>
-                <label for="1">Курьерские услуги </label>
-                <input class="visually-hidden checkbox__input" id="2" type="checkbox" name="" value="" checked>
-                <label  for="2">Грузоперевозки </label>
-                <input class="visually-hidden checkbox__input" id="3" type="checkbox" name="" value="">
-                <label  for="3">Переводы </label>
-                <input class="visually-hidden checkbox__input" id="4" type="checkbox" name="" value="">
-                <label  for="4">Строительство и ремонт </label>
-                <input class="visually-hidden checkbox__input" id="5" type="checkbox" name="" value="">
-                <label  for="5">Выгул животных </label>
-            </fieldset>
-            <fieldset class="search-task__categories">
-                <legend>Дополнительно</legend>
-                <input class="visually-hidden checkbox__input" id="6" type="checkbox" name="" value="">
-                <label for="6">Без откликов</label>
-               <input class="visually-hidden checkbox__input" id="7" type="checkbox" name="" value="" checked>
-                <label for="7">Удаленная работа </label>
-            </fieldset>
-           <label class="search-task__name" for="8">Период</label>
-               <select class="multiple-select input" id="8"size="1" name="time[]">
-                <option value="day">За день</option>
-                <option selected value="week">За неделю</option>
-                <option value="month">За месяц</option>
-            </select>
-            <label class="search-task__name" for="9">Поиск по названию</label>
-                <input class="input-middle input" id="9" type="search" name="q" placeholder="">
-            <button class="button" type="submit">Искать</button>
-        </form>
+                
+                <?php $i = 1; ?>
+                <?php foreach($specializations as $id => $name): ?>
+
+                    <?= $form->field($searchForm, "searchedSpecializations[$i]", [
+                        'template' => "{input}",
+                        'options' => ['tag' => false]
+                    ])->checkbox([
+                        'label' => false,
+                        'value' => $id,
+                        'uncheck' => null,
+                        'id' => $id,
+                        'class' => 'visually-hidden checkbox__input'
+                    ]) ?> 
+                    <?php $i++; ?>
+                    <label for="<?= $id ?>"><?= $name ?></label>
+
+                <?php endforeach; ?>  
+
+        </fieldset>
+
+        <fieldset class="search-task__categories">
+            <legend>Дополнительно</legend>
+
+             <?= $form->field($searchForm, "hasNoResponses", [
+                        'template' => "{input}",
+                        'options' => ['tag' => false]
+                    ])->checkbox([
+                        'label' => false,
+                        'value' => 1,
+                        'uncheck' => null,
+                        'id' => ($specializationsCount + 1),
+                        'class' => 'visually-hidden checkbox__input'
+                    ]) ?>    
+             <label for="<?= ($specializationsCount + 1) ?>">Без откликов</label>
+
+            <?= $form->field($searchForm, "hasNoLocation", [
+                        'template' => "{input}",
+                        'options' => ['tag' => false]
+                    ])->checkbox([
+                        'label' => false,
+                        'value' => 1,
+                        'uncheck' => null,
+                        'id' => ($specializationsCount + 2),
+                        'class' => 'visually-hidden checkbox__input'
+                    ]) ?>  
+             <label for="<?= ($specializationsCount + 2) ?>">Удаленная работа </label>
+
+        </fieldset>
+
+        <label class="search-task__name" for="<?= ($specializationsCount + 3) ?>">Период</label>
+        <?= $form->field($searchForm, "postingPeriod", [
+                        'template' => "{input}",
+                        'options' => ['tag' => false]
+                    ])->dropDownList([
+                        'day' => 'За день',
+                        'month' => 'За месяц'
+                    ], [
+                        'class' => 'multiple-select input',
+                        'id' => ($specializationsCount + 3),
+                        'size' => 1,
+                        'prompt' => [
+                            'text' => 'За неделю',
+                            'options' => ['value' => 'week']
+                        ]
+                    ]); ?>
+
+        <label class="search-task__name" for="<?= ($specializationsCount + 4) ?>">Поиск по названию</label>
+            <?= $form->field($searchForm, 'searchedName', [
+                    'template' => "{input}",
+                    'options' => ['tag' => false],
+                    'inputOptions' => [
+                        'class' => 'input-middle input',
+                        'type' => 'search',
+                        'id' => ($specializationsCount + 4)
+                    ]
+                ]); ?>
+
+        <button class="button" type="submit">Искать</button>
+        <?php ActiveForm::end(); ?>
+        
     </div>
 </section>

@@ -3,6 +3,12 @@
 declare(strict_types=1);
 
 use TaskForce\Exceptions\DateIntervalInverseException;
+use yii\widgets\ActiveForm;
+use yii\widgets\ActiveField;
+use yii\helpers\Html;
+use yii\helpers\Url;
+
+$this->title = 'Список исполнителей';
 
 function getPassedTimeSinceLastActivity(string $startingDate): ?string
 {
@@ -49,7 +55,9 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
 
     return $passedTime;
 }
+
 ?>
+<?php $specializations = $searchForm->getSpecializations(); ?>
 
 <section class="user__search">
 
@@ -64,7 +72,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
                 <span><?= $user['comments_count'] ?> отзывов</span>
             </div>
             <div class="feedback-card__top--name user__search-card">
-                <p class="link-name"><a href="#" class="link-regular"><?= htmlspecialchars($user['name']) ?></a></p>
+                <p class="link-name"><a href="#" class="link-regular"><?= Html::encode($user['name']) ?></a></p>
 
                 <?php $starCount = round((float) $user['rating']) ?>
 
@@ -75,7 +83,7 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
 
                 <b><?= number_format((float) $user['rating'], 2) ?></b>
                 <p class="user__search-content">
-                    <?= htmlspecialchars($user['description']) ?>
+                    <?= Html::encode($user['description']) ?>
                 </p>
             </div>
             <span class="new-task__time"><?= 'Был на сайте ' . getPassedTimeSinceLastActivity($user['last_activity']) ?></span>
@@ -83,46 +91,115 @@ function getPassedTimeSinceLastActivity(string $startingDate): ?string
         <div class="link-specialization user__search-link--bottom">
 
             <?php foreach($user['specializations'] as $specialization): ?>
-                <a href="#" class="link-regular"><?= $specialization['name'] ?></a>
+                <a href="<?= Url::to(['users/index', 'specialization_id' => $specialization['id']]) ?>" class="link-regular"><?= $specialization['name'] ?></a>
             <?php endforeach; ?>
         </div>
     </div>
 
 <?php endforeach; ?>
-<!-- у <fieldset>-ов почему-то рамка не появляется, в отличии от файла верстки /frontend/web/users.html 
-        не смог понять почему... -->
 
 </section>
+
 <section  class="search-task">
     <div class="search-task__wrapper">
-        <form class="search-task__form" name="users" method="post" action="#">
+
+        <?php $form = ActiveForm::begin([
+            'id' => 'searchForm', 
+            'method' => 'post',
+            'options' => [
+                'class' => 'search-task__form'
+            ]
+        ]); ?>
+
             <fieldset class="search-task__categories">
                 <legend>Категории</legend>
-                <input class="visually-hidden checkbox__input" id="101" type="checkbox" name="" value="" checked disabled>
-                <label for="101">Курьерские услуги </label>
-                <input class="visually-hidden checkbox__input" id="102" type="checkbox" name="" value="" checked>
-                <label  for="102">Грузоперевозки </label>
-                <input class="visually-hidden checkbox__input" id="103" type="checkbox" name="" value="">
-                <label  for="103">Переводы </label>
-                <input class="visually-hidden checkbox__input" id="104" type="checkbox" name="" value="">
-                <label  for="104">Строительство и ремонт </label>
-                <input class="visually-hidden checkbox__input" id="105" type="checkbox" name="" value="">
-                <label  for="105">Выгул животных </label>
+                
+                <?php $i = 1; ?>
+                <?php foreach($specializations as $id => $name): ?>
+
+                    <?= $form->field($searchForm, "searchedSpecializations[$i]", [
+                        'template' => "{input}",
+                        'options' => ['tag' => false]
+                    ])->checkbox([
+                        'label' => false,
+                        'value' => $id,
+                        'uncheck' => null,
+                        'id' => "10$id",
+                        'class' => 'visually-hidden checkbox__input'
+                    ]) ?>
+                    <?php $i++; ?>
+                    <label for="10<?= $id ?>"><?= $name ?></label>
+
+                <?php endforeach; ?> 
+
             </fieldset>
+
             <fieldset class="search-task__categories">
                 <legend>Дополнительно</legend>
-                <input class="visually-hidden checkbox__input" id="106" type="checkbox" name="" value="" disabled>
-                <label for="106">Сейчас свободен</label>
-                <input class="visually-hidden checkbox__input" id="107" type="checkbox" name="" value="" checked>
-                <label for="107">Сейчас онлайн</label>
-                <input class="visually-hidden checkbox__input" id="108" type="checkbox" name="" value="" checked>
-                <label for="108">Есть отзывы</label>
-                <input class="visually-hidden checkbox__input" id="109" type="checkbox" name="" value="" checked>
-                <label for="109">В избранном</label>
-            </fieldset>
-            <label class="search-task__name" for="110">Поиск по имени</label>
-            <input class="input-middle input" id="110" type="search" name="q" placeholder="">
+
+                <?= $form->field($searchForm, "isFreeNow", [
+                    'template' => "{input}",
+                    'options' => ['tag' => false]
+                ])->checkbox([
+                    'label' => false,
+                    'value' => 1,
+                    'uncheck' => null,
+                    'id' => 109,
+                    'class' => 'visually-hidden checkbox__input'
+                ]) ?>
+                <label for="109">Сейчас свободен</label>
+
+                <?= $form->field($searchForm, "isOnline", [
+                    'template' => "{input}",
+                    'options' => ['tag' => false]
+                ])->checkbox([
+                    'label' => false,
+                    'value' => 1,
+                    'uncheck' => null,
+                    'id' => 110,
+                    'class' => 'visually-hidden checkbox__input'
+                ]) ?>
+                <label for="110">Сейчас онлайн</label>
+
+                <?= $form->field($searchForm, "hasReviews", [
+                    'template' => "{input}",
+                    'options' => ['tag' => false]
+                ])->checkbox([
+                    'label' => false,
+                    'value' => 0,
+                    'uncheck' => null,
+                    'id' => 111,
+                    'class' => 'visually-hidden checkbox__input'
+                ]) ?>
+                <label for="111">Есть отзывы</label>
+
+                <?= $form->field($searchForm, "isFavorite", [
+                    'template' => "{input}",
+                    'options' => ['tag' => false]
+                ])->checkbox([
+                    'label' => false,
+                    'value' => 0,
+                    'uncheck' => null,
+                    'id' => 112,
+                    'class' => 'visually-hidden checkbox__input'
+                ]) ?>
+                <label for="112">В избранном</label>
+
+            </fieldset> 
+
+            <label class="search-task__name" for="113">Поиск по имени</label>
+            <?= $form->field($searchForm, 'searchedName', [
+                'template' => "{input}",
+                'options' => ['tag' => false],
+                'inputOptions' => [
+                    'class' => 'input-middle input',
+                    'type' => 'search',
+                    'id' => 113
+                ]
+            ]); ?>
+
             <button class="button" type="submit">Искать</button>
-        </form>
+        <?php ActiveForm::end(); ?>
+
     </div>
 </section>

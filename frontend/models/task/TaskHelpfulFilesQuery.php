@@ -1,13 +1,13 @@
 <?php
 
-namespace frontend\models;
+namespace frontend\models\task;
 
 /**
- * This is the ActiveQuery class for [[Cities]].
+ * This is the ActiveQuery class for [[TaskHelpfulFiles]].
  *
- * @see Cities
+ * @see TaskHelpfulFiles
  */
-class CitiesQuery extends \yii\db\ActiveQuery
+class TaskHelpfulFilesQuery extends \yii\db\ActiveQuery
 {
     /*public function active()
     {
@@ -16,7 +16,7 @@ class CitiesQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return Cities[]|array
+     * @return TaskHelpfulFiles[]|array
      */
     public function all($db = null)
     {
@@ -25,7 +25,7 @@ class CitiesQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return Cities|array|null
+     * @return TaskHelpfulFiles|array|null
      */
     public function one($db = null)
     {

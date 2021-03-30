@@ -1,30 +1,29 @@
 <?php
 
-namespace frontend\models;
+namespace frontend\models\chat\messages;
 
 use Yii;
 
 /**
- * This is the model class for table "notifications_history".
+ * This is the model class for table "chat_messages".
  *
  * @property int $id
- * @property int $recipient_id
+ * @property int $user_id
  * @property int $task_id
- * @property string $event_type
- * @property int $is_shown
+ * @property string $message
  * @property string $date_time
  *
- * @property User $recipient
+ * @property User $user
  * @property Task $task
  */
-class NotificationsHistory extends \yii\db\ActiveRecord
+class ChatMessages extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'notifications_history';
+        return 'chat_messages';
     }
 
     /**
@@ -33,11 +32,11 @@ class NotificationsHistory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['recipient_id', 'task_id', 'event_type', 'is_shown'], 'required'],
-            [['recipient_id', 'task_id', 'is_shown'], 'integer'],
-            [['event_type'], 'string'],
+            [['user_id', 'task_id', 'message'], 'required'],
+            [['user_id', 'task_id'], 'integer'],
             [['date_time'], 'safe'],
-            [['recipient_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['recipient_id' => 'id']],
+            [['message'], 'string', 'max' => 3000],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
@@ -49,22 +48,21 @@ class NotificationsHistory extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'recipient_id' => 'Recipient ID',
+            'user_id' => 'User ID',
             'task_id' => 'Task ID',
-            'event_type' => 'Event Type',
-            'is_shown' => 'Is Shown',
+            'message' => 'Message',
             'date_time' => 'Date Time',
         ];
     }
 
     /**
-     * Gets query for [[Recipient]].
+     * Gets query for [[User]].
      *
      * @return \yii\db\ActiveQuery|UserQuery
      */
-    public function getRecipient()
+    public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'recipient_id']);
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
     /**
@@ -79,10 +77,10 @@ class NotificationsHistory extends \yii\db\ActiveRecord
 
     /**
      * {@inheritdoc}
-     * @return NotificationsHistoryQuery the active query used by this AR class.
+     * @return ChatMessagesQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new NotificationsHistoryQuery(get_called_class());
+        return new ChatMessagesQuery(get_called_class());
     }
 }

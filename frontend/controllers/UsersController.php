@@ -5,14 +5,24 @@ declare(strict_types = 1);
 namespace frontend\controllers;
 
 use yii\web\Controller;
-use frontend\models\Users;
+use frontend\models\user\UserService;
+use frontend\models\user\UserSearchForm;
 
 class UsersController extends Controller
 {
-    public function actionIndex(): string
-    {
-        $users = Users::getExecutantsByDate();
+    private UserService $service;
 
-        return $this->render('index', ['users' => $users]);
+    public function init()
+    {
+        parent::init();
+        $this->service = new UserService($this->request);
+    }
+
+    public function actionIndex()
+    {
+        $searchForm = new UserSearchForm();
+        $users = $this->service->getUsers($searchForm);
+
+        return $this->render('index', compact('users', 'searchForm'));
     }
 }

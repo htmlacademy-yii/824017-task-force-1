@@ -1,13 +1,13 @@
 <?php
 
-namespace frontend\models;
+namespace frontend\models\chat\messages;
 
 /**
- * This is the ActiveQuery class for [[Users]].
+ * This is the ActiveQuery class for [[ChatMessages]].
  *
- * @see Users
+ * @see ChatMessages
  */
-class UsersQuery extends \yii\db\ActiveQuery
+class ChatMessagesQuery extends \yii\db\ActiveQuery
 {
     /*public function active()
     {
@@ -16,7 +16,7 @@ class UsersQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return Users[]|array
+     * @return ChatMessages[]|array
      */
     public function all($db = null)
     {
@@ -25,7 +25,7 @@ class UsersQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return Users|array|null
+     * @return ChatMessages|array|null
      */
     public function one($db = null)
     {

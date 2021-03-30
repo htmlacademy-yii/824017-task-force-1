@@ -1,13 +1,13 @@
 <?php
 
-namespace frontend\models;
+namespace frontend\models\cities;
 
 /**
- * This is the ActiveQuery class for [[ChatMessages]].
+ * This is the ActiveQuery class for [[Cities]].
  *
- * @see ChatMessages
+ * @see Cities
  */
-class ChatMessagesQuery extends \yii\db\ActiveQuery
+class CitiesQuery extends \yii\db\ActiveQuery
 {
     /*public function active()
     {
@@ -16,7 +16,7 @@ class ChatMessagesQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return ChatMessages[]|array
+     * @return Cities[]|array
      */
     public function all($db = null)
     {
@@ -25,7 +25,7 @@ class ChatMessagesQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return ChatMessages|array|null
+     * @return Cities|array|null
      */
     public function one($db = null)
     {

@@ -1,8 +1,14 @@
 <?php
 
-namespace frontend\models;
+declare(strict_types = 1);
 
-use Yii;
+namespace frontend\models\user;
+
+use frontend\models\{
+    specializations\Specializations,
+    reviews\Reviews,
+    task\Tasks,
+};
 
 /**
  * This is the model class for table "users".
@@ -63,7 +69,7 @@ class Users extends \yii\db\ActiveRecord
             [['avatar'], 'string', 'max' => 1000],
             [['phone', 'skype', 'telegram'], 'string', 'max' => 100],
             [['address'], 'string', 'max' => 500],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
+            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id']],
         ];
     }
 
@@ -160,7 +166,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getExecutantTasks()
     {
-        return $this->hasMany(Task::className(), ['executant_id' => 'id']);
+        return $this->hasMany(Tasks::className(), ['executant_id' => 'id']);
     }
 
     /**
@@ -222,15 +228,57 @@ class Users extends \yii\db\ActiveRecord
         return new UsersQuery(get_called_class());
     }
 
-    final public static function getExecutantsByDate()
+    final public static function findExecutantsByFilters(UserSearchForm $form): ?array
     {
-        return self::find()->select([
-                'users.*',
-                'AVG(rate) as rating',
-                'COUNT(rate) as finished_tasks_count',
-                'COUNT(comment) as comments_count'
-            ])->joinWith('executantReviews')->with('specializations')->
-            where(['role' => 'executant'])->groupBy('users.id')->
-            orderBy(['signing_up_date' => SORT_DESC])->asArray()->all();
+        $query = self::find()->select([
+            'users.*',
+            'AVG(rate) as rating',
+            'COUNT(rate) as finished_tasks_count',
+            'COUNT(comment) as comments_count'
+        ])->joinWith('specializations')->joinWith('executantReviews')->joinWith('executantTasks')->
+        where(['role' => 'executant'])->groupBy('users.id')->orderBy(['signing_up_date' => SORT_DESC])->
+        asArray();
+
+        if ($form->searchedName) {
+            
+            foreach ($form as $attribute => $value) {
+
+                if ($attribute !== 'searchedName') {
+                    unset($form[$attribute]);
+                }
+            }
+            $query->nameFilter($form->searchedName);
+            
+        } else {
+            $query->specializationsFilter($form->searchedSpecializations);
+            $query->nameFilter($form->searchedName);
+            $query->favoriteFilter($form->isFavorite);
+
+            if ($form->isFreeNow) {
+                $query->freeNow();
+            }
+
+            if ($form->isOnline) {
+                $query->online();
+            }
+
+            $query->withReviewsFilter($form->hasReviews);
+        }
+
+        return $query->all();
+    }
+
+    final public static function findExecutants(): ?array
+    {
+        $query = self::find()->select([
+            'users.*',
+            'AVG(rate) as rating',
+            'COUNT(rate) as finished_tasks_count',
+            'COUNT(comment) as comments_count'
+        ])->joinWith('specializations')->joinWith('executantReviews')->joinWith('executantTasks')->
+        where(['role' => 'executant'])->groupBy('users.id')->orderBy(['signing_up_date' => SORT_DESC])->
+        asArray();
+
+        return $query->all(); 
     }
 }

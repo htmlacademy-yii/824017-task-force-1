@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\models;
+namespace frontend\models\specializations;
 
 use Yii;
 
@@ -86,5 +86,10 @@ class Specializations extends \yii\db\ActiveRecord
     public static function find()
     {
         return new SpecializationsQuery(get_called_class());
+    }
+
+    final public static function getAll()
+    {
+        return self::find()->asArray()->all();
     }
 }
