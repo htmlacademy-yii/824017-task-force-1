@@ -10,7 +10,6 @@ use frontend\models\task\TaskService;
 use frontend\models\task\TaskSearchForm;
 use frontend\models\task\Tasks;
 
-
 class TasksController extends Controller
 {
     private TaskService $service;
@@ -29,12 +28,9 @@ class TasksController extends Controller
         return $this->render('index', compact('tasks', 'searchForm'));
     }
 
-    public function actionView($id = null)
+    public function actionView(?string $id = null)
     {
-        $task = Tasks::findOne($id);
-        if (!$task) { 
-            throw new NotFoundHttpException("Страница не найдена");
-        }
+        $task = $this->service->getOneTask($id);
 
         return $this->render('view', ['task' => $task]);
     }

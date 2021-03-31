@@ -14,7 +14,6 @@ return [
             'showScriptName' => false,
             'enableStrictParsing' => false,
             'rules' => [
-                /*'//' => '/',   это правило было в учебнике. Подскажи, плиз, что оно значит? в поисковике не нашел...*/
                 'task/view/<id>' => 'tasks/view',
                 'user/view/<id>' => 'users/view',
             ],

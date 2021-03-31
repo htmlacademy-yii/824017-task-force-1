@@ -28,6 +28,16 @@ class TaskService extends BaseObject
         return Tasks::findNewTasks();
     }
 
+    public function getOneTask(?string $id = null): Tasks
+    {
+        $task = Tasks::findOne($id);
+        if (!$task) { 
+            throw new NotFoundHttpException("Страница не найдена");
+        }
+
+        return $task;
+    }
+
     private function getFiltering(TaskSearchForm $form): void
     {
         $id = $this->request->get('specialization_id');
@@ -41,6 +51,4 @@ class TaskService extends BaseObject
     {
         $form->load($this->request->post());
     }
-
-
 }
