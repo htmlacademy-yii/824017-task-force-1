@@ -5,10 +5,8 @@ declare(strict_types = 1);
 namespace frontend\controllers;
 
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
 use frontend\models\task\TaskService;
 use frontend\models\task\TaskSearchForm;
-use frontend\models\task\Tasks;
 
 class TasksController extends Controller
 {

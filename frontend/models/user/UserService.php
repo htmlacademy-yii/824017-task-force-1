@@ -6,6 +6,7 @@ namespace frontend\models\user;
 
 use yii\web\Request;
 use yii\base\BaseObject;
+use yii\web\NotFoundHttpException;
 
 class UserService extends BaseObject
 {
@@ -15,6 +16,27 @@ class UserService extends BaseObject
     {
         parent::__construct($config);
         $this->request = $request;
+    }
+
+    public function getUsers(UserSearchForm $form): ?array
+    {
+        $this->request->isGet ? $this->getFiltering($form) : $this->postFiltering($form);
+
+        if (array_filter($form->attributes)) {
+            return Users::findExecutantsByFilters($form);
+        }
+
+        return Users::findExecutants();
+    }
+
+    public function getOneUser(?string $id = null): Users
+    {
+        $user = Users::findOne($id);
+        if (!$user || $user->role !== 'executant') {
+            throw new NotFoundHttpException("Страница не найдена");
+        }
+
+        return $user;
     }
 
     private function getFiltering(UserSearchForm $form)
@@ -29,16 +51,5 @@ class UserService extends BaseObject
     private function postFiltering(UserSearchForm $form)
     {
         $form->load($this->request->post());
-    }
-
-    public function getUsers(UserSearchForm $form): ?array
-    {
-        $this->request->isGet ? $this->getFiltering($form) : $this->postFiltering($form);
-
-        if (array_filter($form->attributes)) {
-            return Users::findExecutantsByFilters($form);
-        }
-
-        return Users::findExecutants();
     }
 }

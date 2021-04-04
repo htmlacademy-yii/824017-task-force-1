@@ -6,55 +6,10 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use TaskForce\Exceptions\DateIntervalInverseException;
 
-function getPassedTimeSinceLastActivity(string $startingDate): ?string
-{
-    $passedTime = null;
-
-    $dt_now = date_create();
-    $startingDate = date_create($startingDate);
-    $dt_diff = date_diff($startingDate, $dt_now);
-
-    if ($dt_diff->invert) {
-        throw new DateIntervalInverseException("Дата публикации задания больше текущей даты");
-    }
-
-    $minute_endings = [1 => 'у', 2 => 'ы', 3 => 'ы', 4 => 'ы', 5 => '', 6 => '', 7 => '', 8 => '', 9 => '', 10 => '', 11 => '', 12 => '', 13 => '', 14 => '', 15 => '', 16 => '', 17 => '', 18 => '', 19 => '', 20 => '', 21 => 'у', 22 => 'ы', 23 => 'ы', 24 => 'ы', 25 => '', 26 => '', 27 => '', 28 => '', 29 => '', 30 => '', 31 => 'у', 32 => 'ы', 33 => 'ы', 34 => 'ы', 35 => '', 36 => '', 37 => '', 38 => '', 39 => '', 40 => '', 41 => 'у', 42 => 'ы', 43 => 'ы', 44 => 'ы', 45 => '', 46 => '', 47 => '', 48 => '', 49 => '', 50 => '', 51 => 'у', 52 => 'ы', 53 => 'ы', 54 => 'ы', 55 => '', 56 => '', 57 => '', 58 => '', 59 => ''];
-    $hour_endings = [1 => '', 2 => 'а', 3 => 'а', 4 => 'а', 5 => 'ов', 6 => 'ов', 7 => 'ов', 8 => 'ов', 9 => 'ов', 10 => 'ов', 11 => 'ов', 12 => 'ов', 13 => 'ов', 14 => 'ов', 15 => 'ов', 16 => 'ов', 17 => 'ов', 18 => 'ов', 19 => 'ов', 20 => 'ов', 21 => '', 22 => 'а', 23 => 'а'];
-    $y = $dt_diff->y;
-    $m = $dt_diff->m;
-    $d = $dt_diff->d;
-    $h = $dt_diff->h;
-    $i = $dt_diff->i;
-
-    $dt_yesterday = date_add($dt_now, date_interval_create_from_date_string('yesterday'));
-        
-    if (date_format($dt_yesterday, 'Y-m-d') === date_format($startingDate, 'Y-m-d')) {
-        $passedTime = 'Вчера, в ' . date_format($startingDate, 'H:i');
-    } else {
-
-        if ($y || $m || $d) {
-            $passedTime = date_format($startingDate, 'd.m.y в H:i');
-        } else {
-
-            if (!$h && !$i) {
-                $passedTime = 'только что';
-            } else {
-
-                if ($h) {
-                    $passedTime = $h . ' час' . $hour_endings[$h] . ' назад';
-                } else {
-                    $passedTime = $i . ' минут' . $minute_endings[$i] . ' назад';
-                }
-            }
-        }
-    }
-
-    return $passedTime;
-}
-
 $this->title = 'Просмотр задания';
+$formatter = \Yii::$app->formatter;
 
- ?>
+?>
 
       <section class="content-view">
         <div class="content-view__card">
@@ -64,9 +19,10 @@ $this->title = 'Просмотр задания';
                 <h1><?= Html::encode($task->name) ?></h1>
                 <span>Размещено в категории
                                     <a href="<?= Url::to(['tasks/index', 'specialization_id' => $task->specialization->id]) ?>" class="link-regular"><?= $task->specialization->name ?></a>
-                                    <?= getPassedTimeSinceLastActivity($task->posting_date) ?></span>
+                                    <?= $formatter->asRelativeTime($task->posting_date, strftime("%F %T")) ?></span>
               </div>
-              <b class="new-task__price new-task__price--<?= $task->specialization->icon ?> content-view-price"><?= $task->payment /*А вот стоит ли кодировать вывод суммы вознаграждения, если мы при валидации формы создания задания будем проверять, чтобы значение было целым числом, а также если нам известно, что тип данных этого поля в БД - INT ? Я не закодировал.*/ ?><b> ₽</b></b>
+              <b class="new-task__price new-task__price--<?= $task->specialization->icon ?> content-view-price"><?= $task->payment /*А вот стоит ли кодировать вывод суммы вознаграждения? При условии, что при валидации формы создания задания мы будем проверять, чтобы значение было целым числом, а также при условии, что нам известно, что тип данных этого поля в БД - INT ? Я не закодировал.
+              AAAAAAAAAAAA ПАМАГИТЕ*/ ?><b> ₽</b></b>
               <div class="new-task__icon new-task__icon--<?= $task->specialization->icon ?> content-view-icon"></div>
             </div>
             <div class="content-view__description">
@@ -124,7 +80,7 @@ $this->title = 'Просмотр задания';
 
             <div class="content-view__feedback-card">
               <div class="feedback-card__top">
-                <a href="<?= Url::to(['users/view', 'id' => $response->user->id]) ?>"><img src="<?= $response->user->avatar /*вывод пути к картинке тоже не кодирую. Мы же сами будем создавать и сохранять в бд путь. А не пользователь.*/ ?>" width="55" height="55"></a>
+                <a href="<?= Url::to(['users/view', 'id' => $response->user->id]) ?>"><img src="<?= $response->user->avatar ?>" width="55" height="55"></a>
                 <div class="feedback-card__top--name">
                   <p><a href="<?= Url::to(['users/view', 'id' => $response->user->id]) ?>" class="link-regular"><?= Html::encode($response->user->name) ?></a></p>
                   <?php
@@ -148,7 +104,7 @@ $this->title = 'Просмотр задания';
   
                   <b><?= $rating ?></b>
                 </div>
-                <span class="new-task__time"><?= getPassedTimeSinceLastActivity($response->date_time) ?></span>
+                <span class="new-task__time"><?= $formatter->asRelativeTime($response->date_time, strftime("%F %T")) ?></span>
               </div>
               <div class="feedback-card__content">
                 <p>

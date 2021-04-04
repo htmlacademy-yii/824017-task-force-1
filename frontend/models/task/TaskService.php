@@ -6,6 +6,7 @@ namespace frontend\models\task;
 
 use yii\web\Request;
 use yii\base\BaseObject;
+use yii\web\NotFoundHttpException;
 
 class TaskService extends BaseObject
 {
