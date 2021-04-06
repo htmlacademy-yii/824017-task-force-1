@@ -25,4 +25,20 @@ class UsersController extends Controller
 
         return $this->render('index', compact('users', 'searchForm'));
     }
+
+    public function actionView(?string $id = null)
+    {
+        $user = $this->service->getOneUser($id);
+
+        return $this->render('view', ['user' => $user]);
+    }
+
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+        ];
+    }
 }

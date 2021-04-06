@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\models;
+namespace frontend\models\user;
 
 /**
  * This is the ActiveQuery class for [[UsersAccomplishedTasksPhotos]].

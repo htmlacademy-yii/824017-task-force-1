@@ -8,6 +8,7 @@ use frontend\models\{
     specializations\Specializations,
     reviews\Reviews,
     task\Tasks,
+    cities\Cities,
 };
 
 /**
@@ -156,7 +157,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getCustomerTasks()
     {
-        return $this->hasMany(Task::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Tasks::className(), ['customer_id' => 'id']);
     }
 
     /**
@@ -196,7 +197,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getCity()
     {
-        return $this->hasOne(City::className(), ['id' => 'city_id']);
+        return $this->hasOne(Cities::className(), ['id' => 'city_id']);
     }
 
     /**
@@ -206,7 +207,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getUsersAccomplishedTasksPhotos()
     {
-        return $this->hasMany(UsersAccomplishedTasksPhoto::className(), ['user_id' => 'id']);
+        return $this->hasMany(UsersAccomplishedTasksPhotos::className(), ['user_id' => 'id']);
     }
 
     /**
@@ -279,6 +280,6 @@ class Users extends \yii\db\ActiveRecord
         where(['role' => 'executant'])->groupBy('users.id')->orderBy(['signing_up_date' => SORT_DESC])->
         asArray();
 
-        return $query->all(); 
+        return $query->all();
     }
 }

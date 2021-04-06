@@ -25,4 +25,20 @@ class TasksController extends Controller
 
         return $this->render('index', compact('tasks', 'searchForm'));
     }
+
+    public function actionView(?string $id = null)
+    {
+        $task = $this->service->getOneTask($id);
+
+        return $this->render('view', ['task' => $task]);
+    }
+
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+        ];
+    }
 }

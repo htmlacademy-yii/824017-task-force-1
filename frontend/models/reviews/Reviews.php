@@ -2,6 +2,8 @@
 
 namespace frontend\models\reviews;
 
+use frontend\models\task\Tasks;
+use frontend\models\user\Users;
 use Yii;
 
 /**
@@ -41,9 +43,9 @@ class Reviews extends \yii\db\ActiveRecord
             [['task_id', 'customer_id', 'executant_id', 'rate'], 'integer'],
             [['completion'], 'string'],
             [['comment'], 'string', 'max' => 3000],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
-            [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['customer_id' => 'id']],
-            [['executant_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['executant_id' => 'id']],
+            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
+            [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['customer_id' => 'id']],
+            [['executant_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['executant_id' => 'id']],
         ];
     }
 
@@ -71,7 +73,7 @@ class Reviews extends \yii\db\ActiveRecord
      */
     public function getTask()
     {
-        return $this->hasOne(Task::className(), ['id' => 'task_id']);
+        return $this->hasOne(Tasks::className(), ['id' => 'task_id']);
     }
 
     /**
@@ -81,7 +83,7 @@ class Reviews extends \yii\db\ActiveRecord
      */
     public function getCustomer()
     {
-        return $this->hasOne(User::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Users::className(), ['id' => 'customer_id']);
     }
 
     /**
@@ -91,7 +93,7 @@ class Reviews extends \yii\db\ActiveRecord
      */
     public function getExecutant()
     {
-        return $this->hasOne(User::className(), ['id' => 'executant_id']);
+        return $this->hasOne(Users::className(), ['id' => 'executant_id']);
     }
 
     /**

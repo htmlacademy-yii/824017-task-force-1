@@ -6,6 +6,7 @@ namespace frontend\models\task;
 
 use yii\web\Request;
 use yii\base\BaseObject;
+use yii\web\NotFoundHttpException;
 
 class TaskService extends BaseObject
 {
@@ -25,10 +26,20 @@ class TaskService extends BaseObject
             return Tasks::findNewTasksByFilters($form);
         }
 
-        return Tasks::findNewTasks();    
+        return Tasks::findNewTasks();
     }
 
-    private function getFiltering(TaskSearchForm $form)
+    public function getOneTask(?string $id = null): Tasks
+    {
+        $task = Tasks::findOne($id);
+        if (!$task) { 
+            throw new NotFoundHttpException("Страница не найдена");
+        }
+
+        return $task;
+    }
+
+    private function getFiltering(TaskSearchForm $form): void
     {
         $id = $this->request->get('specialization_id');
 
@@ -37,7 +48,7 @@ class TaskService extends BaseObject
         }
     }
 
-    private function postFiltering(TaskSearchForm $form)
+    private function postFiltering(TaskSearchForm $form): void
     {
         $form->load($this->request->post());
     }
