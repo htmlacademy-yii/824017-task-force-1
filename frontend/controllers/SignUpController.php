@@ -8,25 +8,32 @@ use yii\web\Controller;
 use frontend\models\user\Users;
 use yii\helpers\ArrayHelper;
 use frontend\models\cities\Cities;
+use frontend\models\user\SignUpForm;
 use Yii;
 
 class SignUpController extends Controller
 {
     public function actionIndex()
     {
-        $cities = ArrayHelper::map(Cities::find()->asArray()->all(), 'id', 'name');
-        $user = new Users;
-        
-        if (Yii::$app->request->getIsPost()) {
-            $user->load(Yii::$app->request->post());
+        $signUpForm = new SignUpForm;
 
-            if ($user->validate()) {
-                $user->password = Yii::$app->security->generatePasswordHash($user->password);
-                $user->save(false);
+
+
+        if ($signUpForm->load(Yii::$app->request->post())) {
+            //var_dump($signUpForm->attributes);
+            if ($signUpForm->validate()) {
+                $signUpForm->password = Yii::$app->security->generatePasswordHash($signUpForm->password);
+                $newUser = new Users(['attributes' => $signUpForm->attributes]);
+                
+                var_dump($newUser->attributes);
+                
+
+                $newUser->save(false);
                 $this->goHome();
             }
         }
+        
 
-        return $this->render('index', ['model' => $user, 'cities' => $cities]);
+        return $this->render('index', ['model' => $signUpForm]);
     }
 }

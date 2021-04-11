@@ -9,6 +9,8 @@ use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
 use common\widgets\Alert;
+use yii\helpers\Url;
+
 
 AppAsset::register($this);
 ?>
@@ -85,7 +87,8 @@ AppAsset::register($this);
           </svg>
         </a>
       </div>
-      <!-- php if (Yii::$app->request->absoluteUrl !== 'http://yii-taskforce/index.php?=sign-up/index'): ?> -->
+      
+      <?php if (Url::current() !== Url::to(['sign-up/index'])): ?>
       <div class="header__nav">
         <ul class="header-nav__list site-list">
           <li class="site-list__item">
@@ -150,8 +153,8 @@ AppAsset::register($this);
           </li>
         </ul>
       </div>
-    <!--  endif; ?> -->
-
+    <?php endif; ?>
+    
     </div>
   </header>
 
@@ -203,6 +206,22 @@ AppAsset::register($this);
                alt="Логотип HTML Academy">
         </a>
       </div>
+
+      <?php if ($this->title === 'Регистрация аккаунта'): ?>
+      <div class="clipart-woman">
+          <img src="../img/clipart-woman.png" width="238" height="450">
+      </div>
+      <div class="clipart-message">
+          <div class="clipart-message-text">
+          <h2>Знаете ли вы, что?</h2>
+          <p>После регистрации вам будет доступно более
+              двух тысяч заданий из двадцати разных категорий.</p>
+              <p>В среднем, наши исполнители зарабатывают
+              от 500 рублей в час.</p>
+          </div>
+      </div>
+      <?php endif; ?>
+
     </div>
   </footer>
 </div>

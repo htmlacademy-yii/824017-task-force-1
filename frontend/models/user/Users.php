@@ -63,7 +63,7 @@ class Users extends \yii\db\ActiveRecord
         return [
             [['city_id', 'name', 'email', 'password'], 'required', 'message' => "Поле «{attribute}» не может быть пустым"],
             [['city_id', 'favorite_count', 'failure_count'], 'integer', 'message' => "Выбрано не валидное значение «{value}» поля «{attribute}»"],
-            [['signing_up_date', 'birthday', 'last_activity_date_time'], 'safe'],
+            [['city_id', 'name', 'email', 'password'], 'safe'],
             [['role'], 'string', 'max' => 50],
             [['name', 'email'], 'string', 'max' => 300, 'message' =>  "Превышена максимальная длинна поля «{attribute}»"],
             [['password', 'description'], 'string', 'max' => 3000, 'min' => 8, 'tooShort' =>  "Длина пароля от 8 символов", 'tooLong' => "Максимальная длинна 3000 символов"],

@@ -3,68 +3,62 @@
 declare(strict_types = 1);
 
 use yii\widgets\ActiveForm;
-use yii\widgets\ActiveField;
 
+$this->title = 'Регистрация аккаунта';
+$cities = $model->getCities();
 ?>
-            <section class="registration__user">
-                <h1>Регистрация аккаунта</h1>
-                <div class="registration-wrapper">
 
-                    <?php $form = ActiveForm::begin([
-                        'id' => 'signup-form', 
-                        'method' => 'post',
-                        'options' => [
-                            'class' => 'registration__user-form form-create'
-                        ],
-                        'fieldConfig' => [
-                            'template' => "{label}\n{input}\n{error}",         
-                            'inputOptions' => ['class' => 'input'],
-                            'errorOptions' => ['tag' => 'span'],/*,
-                            'options' => ['tag' => false]*/
-                            'labelOptions' => ['class' => null],/*'input-danger'*/
-                            /*'addAriaAttributes' => false,*/
-                        ]
-                    ]); ?>
+<section class="registration__user">
+    <h1>Регистрация аккаунта</h1>
+    <div class="registration-wrapper">
+        <?php $form = ActiveForm::begin([
+            'id' => 'signup-form', 
+            'method' => 'post',
+            'options' => [
+                'class' => 'registration__user-form form-create'
+            ],
+            'validationStateOn' => 'input',
+            'errorCssClass' => 'input-danger',
+            'fieldConfig' => [
+                'template' => "{label}\n{input}\n{error}", 
+                'options' => ['style' => 'margin-bottom: 27px'],        
+                'inputOptions' => [
+                    'class' => 'input textarea',
+                    'style' => 'width: 328px; margin-top: 12px; margin-bottom: 0px;',
+                ],
+                'errorOptions' => ['tag' => 'span'],
+                'labelOptions' => ['class' => null],
+            ]
+        ]); ?>
 
+            <?= $form->field($model, "email", [
+                'inputOptions' => [
+                    'id' => 16,
+                    'rows' => 1
+                ]
+            ])->textArea() ?> 
+            <?= $form->field($model, "name", [
+                'inputOptions' => [
+                    'id' => 17,
+                    'rows' => 1
+                ]
+            ])->textArea() ?> 
+            <?= $form->field($model, "city_id")->dropDownList($cities, [
+                'class' => 'multiple-select input town-select registration-town',
+                'id' => 18,
+                'size' => 1,
+                'style' => 'width: 360px; margin-top: 12px; margin-bottom: 0px;'
+            ]); ?>
+            <?= $form->field($model, "password", [
+                'inputOptions' => [
+                    'id' => 19,
+                    'style' => 'width: 328px; margin-top: 12px; margin-bottom: 5px;'
+                ]
+            ])->passwordInput()?>
 
-                            <?= $form->field($model, "email", [
-                                /*'options' => ['tag' => false],*/
-                                'inputOptions' => [
-                                    'id' => 16,
-                                    'class' => 'input textarea',
-                                    'row' => 1,
-                                ]
-                            ])->textArea() ?> 
-
-
-                            <?= $form->field($model, "name", [
-                                /*'options' => ['tag' => false],*/
-                                'inputOptions' => [
-                                    'id' => 17,
-                                    'class' => 'input textarea',
-                                    'row' => 1,
-                                ]
-                            ])->textArea() ?> 
-
-                            <?= $form->field($model, "city_id"/*, [
-                                            'options' => ['tag' => false]
-                                        ]*/)->dropDownList($cities, [
-                                            'class' => 'multiple-select input town-select registration-town',
-                                            'id' => 18,
-                                            'size' => 1
-                                        ]); ?>
-
-                            <?= $form->field($model, "password", [
-                                /*'options' => ['tag' => false],*/
-                                'inputOptions' => [
-                                    'id' => 19,
-                                    'class' => 'input textarea'
-                                ]
-                            ])->passwordInput()?>
-
-                            <button class="button button__registration" type="submit">Cоздать аккаунт</button>
-                            <?php ActiveForm::end(); ?>
-                </div>
-            </section>
+            <button class="button button__registration" type="submit">Cоздать аккаунт</button>
+        <?php ActiveForm::end(); ?>
+    </div>
+</section>
 
         
