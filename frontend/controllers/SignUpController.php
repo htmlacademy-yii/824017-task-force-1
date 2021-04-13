@@ -6,6 +6,7 @@ namespace frontend\controllers;
 
 use yii\web\Controller;
 use frontend\models\user\SignUpForm;
+use frontend\models\user\SignUpHandler;
 use Yii;
 
 class SignUpController extends Controller
@@ -15,16 +16,14 @@ class SignUpController extends Controller
         $signUpForm = new SignUpForm;
 
         if ($signUpForm->load(Yii::$app->request->post())) {
+            $signUpHandler = new SignUpHandler($signUpForm);
 
-            if ($signUpForm->validate()) {
-                $newUser = $signUpForm;
-                $newUser->password = Yii::$app->security->generatePasswordHash($newUser->password);
-                $newUser->save(false);
+            if ($signUpHandler->signUp()) {
 
                 return $this->goHome();
             }
         }
-        
+
         return $this->render('index', ['model' => $signUpForm]);
     }
 }

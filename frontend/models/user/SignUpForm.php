@@ -7,14 +7,13 @@ namespace frontend\models\user;
 use frontend\models\cities\Cities;
 use yii\helpers\ArrayHelper;
 
-class SignUpForm extends \yii\db\ActiveRecord
+class SignUpForm extends \yii\base\Model
 {
+    public $city_id;
+    public $name;
+    public $email;
+    public $password;
     private array $cities;
-
-    public static function tableName()
-    {
-        return 'users';
-    }
 
     public function getCities(): array
     {
@@ -31,9 +30,9 @@ class SignUpForm extends \yii\db\ActiveRecord
             [['city_id', 'name', 'email', 'password'], 'required', 'message' => "Поле «{attribute}» не может быть пустым"],
             [['city_id'], 'integer', 'message' => "Выбрано не валидное значение «{value}» поля «{attribute}»"],
             [['password'], 'string', 'min' => 8, 'tooShort' =>  "Длина пароля от 8 символов"],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id'], 'message' => "Выбран несуществующий город"],
+            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::class, 'targetAttribute' => ['city_id' => 'id'], 'message' => "Выбран несуществующий город"],
             [['email'], 'email', 'message' => 'Введите валидный адрес электронной почты'],
-            [['email'], 'unique', 'targetAttribute' => 'email', 'message' => "Пользователь с еmail «{value}» уже зарегистрирован"],
+            [['email'], 'unique', 'targetAttribute' => 'email', 'targetClass' => Users::class, 'message' => "Пользователь с еmail «{value}» уже зарегистрирован"],
             [['city_id', 'name', 'email', 'password'], 'safe']
         ];
     }
