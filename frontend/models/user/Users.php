@@ -61,16 +61,7 @@ class Users extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['city_id', 'role', 'name', 'email', 'password', 'favorite_count', 'failure_count'], 'required'],
-            [['city_id', 'favorite_count', 'failure_count'], 'integer'],
-            [['signing_up_date', 'birthday', 'last_activity_date_time'], 'safe'],
-            [['role'], 'string', 'max' => 50],
-            [['name', 'email'], 'string', 'max' => 300],
-            [['password', 'description'], 'string', 'max' => 3000],
-            [['avatar'], 'string', 'max' => 1000],
-            [['phone', 'skype', 'telegram'], 'string', 'max' => 100],
-            [['address'], 'string', 'max' => 500],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id']],
+            [['city_id', 'name', 'email', 'password'], 'safe']
         ];
     }
 
@@ -81,12 +72,12 @@ class Users extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'city_id' => 'City ID',
+            'city_id' => 'Город проживания',
             'signing_up_date' => 'Signing Up Date',
             'role' => 'Role',
-            'name' => 'Name',
-            'email' => 'Email',
-            'password' => 'Password',
+            'name' => 'Ваше имя',
+            'email' => 'Электронная почта',
+            'password' => 'Пароль',
             'avatar' => 'Avatar',
             'birthday' => 'Birthday',
             'description' => 'Description',

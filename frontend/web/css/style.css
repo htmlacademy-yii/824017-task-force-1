@@ -636,10 +636,15 @@ footer {
     .input:disabled::-webkit-input-placeholder {
       color: #D4D9E2; }
 
-.input-danger + input {
+/*.input-danger + input {
   border-color: #FF116E; }
   .input-danger + input + span {
-    color: #FF116E; }
+    color: #FF116E; }*/
+
+.input-danger {
+  border-color: #FF116E; }
+  .input-danger + span {
+    color: #FF116E !important; }
 
 .input-middle {
   padding-top: 14px;
