@@ -19,7 +19,11 @@ return [
                 'user/view/<id>' => 'users/view'
             ],
         ],
+        'formatter' => [
+            'language' => 'ru',
+        ],
     ],
+    'timeZone' => 'Europe/Moscow',
     'defaultRoute' => ['landing/index'],
     'homeUrl' => ['tasks/index'],
 ];

@@ -10,6 +10,8 @@ use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
 use common\widgets\Alert;
+use yii\helpers\Url;
+
 
 AppAsset::register($this);
 $user = $this->context->user;
@@ -25,8 +27,10 @@ $user = $this->context->user;
     
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
+
     <!-- <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/style.css"> -->
+
 </head>
 <body>
 <?php $this->beginBody() ?>
@@ -85,6 +89,7 @@ $user = $this->context->user;
           </svg>
         </a>
       </div>
+
       <?php if (!Yii::$app->user->isGuest): ?>
       <div class="header__nav">
         <ul class="header-nav__list site-list">
@@ -150,8 +155,7 @@ $user = $this->context->user;
           </li>
         </ul>
       </div>
-    <?php  endif; ?>
-
+    <?php endif; ?>
     </div>
   </header>
 
@@ -203,11 +207,26 @@ $user = $this->context->user;
                alt="Логотип HTML Academy">
         </a>
       </div>
+
+      <?php if ($this->title === 'Регистрация аккаунта'): ?>
+      <div class="clipart-woman">
+          <img src="../img/clipart-woman.png" width="238" height="450">
+      </div>
+      <div class="clipart-message">
+          <div class="clipart-message-text">
+          <h2>Знаете ли вы, что?</h2>
+          <p>После регистрации вам будет доступно более
+              двух тысяч заданий из двадцати разных категорий.</p>
+              <p>В среднем, наши исполнители зарабатывают
+              от 500 рублей в час.</p>
+          </div>
+      </div>
+      <?php endif; ?>
+
     </div>
   </footer>
 </div>
-<!-- <script src="js/dropzone.js"></script>
- --><script>
+<script>
   Dropzone.autoDiscover = false;
 
   var dropzone = new Dropzone(".dropzone", {url: window.location.href, maxFiles: 6, uploadMultiple: true,
