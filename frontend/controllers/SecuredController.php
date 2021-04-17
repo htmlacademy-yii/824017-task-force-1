@@ -5,7 +5,7 @@ namespace frontend\controllers;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use Yii;
-use frontend\models\Users;
+use frontend\models\user\Users;
 
 abstract class SecuredController extends Controller
 {

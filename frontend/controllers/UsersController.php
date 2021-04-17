@@ -4,16 +4,7 @@ declare(strict_types = 1);
 
 namespace frontend\controllers;
 
-use yii\web\Controller;
-
-use yii\web\NotFoundHttpException;
-use frontend\models\SearchUserForm;
-use frontend\models\Users;
-use yii\helpers\ArrayHelper;
-use frontend\models\Specializations;
 use frontend\controllers\SecuredController;
-use Yii;
-
 use frontend\models\user\UserService;
 use frontend\models\user\UserSearchForm;
 

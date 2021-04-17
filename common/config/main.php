@@ -21,6 +21,7 @@ return [
         ],
         'formatter' => [
             'language' => 'ru',
+            'thousandSeparator' => ' '
         ],
     ],
     'timeZone' => 'Europe/Moscow',

@@ -16,7 +16,7 @@ return [
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
-            'identityClass' => 'frontend\models\UserIdentity',
+            'identityClass' => 'frontend\models\user\UserIdentity',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
             'loginUrl' => ['landing/index']
@@ -37,17 +37,6 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        
-        /*'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'enableStrictParsing' => false,
-            'rules' => [
-                '//' => '/',
-                'task/view/<id>' => 'tasks/view'
-            ],
-        ],*/
-        
     ],
     'params' => $params,
 ];

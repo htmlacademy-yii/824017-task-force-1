@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-use TaskForce\Exceptions\DateIntervalInverseException;
 
 $this->title = 'Просмотр задания';
 $formatter = \Yii::$app->formatter;
@@ -21,8 +20,7 @@ $formatter = \Yii::$app->formatter;
                                     <a href="<?= Url::to(['tasks/index', 'specialization_id' => $task->specialization->id]) ?>" class="link-regular"><?= $task->specialization->name ?></a>
                                     <?= $formatter->asRelativeTime($task->posting_date, strftime("%F %T")) ?></span>
               </div>
-              <b class="new-task__price new-task__price--<?= $task->specialization->icon ?> content-view-price"><?= $task->payment /*А вот стоит ли кодировать вывод суммы вознаграждения? При условии, что при валидации формы создания задания мы будем проверять, чтобы значение было целым числом, а также при условии, что нам известно, что тип данных этого поля в БД - INT ? Я не закодировал.
-              AAAAAAAAAAAA ПАМАГИТЕ*/ ?><b> ₽</b></b>
+              <b class="new-task__price new-task__price--<?= $task->specialization->icon ?> content-view-price"><?= $task->payment ?><b> ₽</b></b>
               <div class="new-task__icon new-task__icon--<?= $task->specialization->icon ?> content-view-icon"></div>
             </div>
             <div class="content-view__description">

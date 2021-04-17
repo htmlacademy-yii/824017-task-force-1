@@ -218,10 +218,15 @@ class Tasks extends \yii\db\ActiveRecord
 
     final public static function findNewTasks(): ?array
     {
-        $query = self::find()->with('specialization')->joinWith('responses')->
-            where(['status' => Task::STATUS_NEW])->orderBy(['posting_date' => SORT_DESC])->
-            asArray();
+        $query = self::find()->with('specialization')->where(['status' => Task::STATUS_NEW])->
+        orderBy(['posting_date' => SORT_DESC])->asArray();
 
-        return $query->all(); 
+        return $query->all();
+    }
+
+    final public static function findLastFourTasks(): ?array
+    {
+        return self::find()->with('specialization')->where(['status' => Task::STATUS_NEW])->
+        orderBy(['posting_date' => SORT_DESC])->limit(4)->asArray()->all();
     }
 }

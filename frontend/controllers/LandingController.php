@@ -6,12 +6,20 @@ namespace frontend\controllers;
 
 use yii\web\Controller;
 use yii\filters\AccessControl;
+use frontend\models\task\Tasks;
 
 class LandingController extends Controller
 {
-	public $layout = 'anon';
+    public $layout = 'anon';
 
-	public function behaviors()
+    public function actionIndex()
+    {
+        $tasks = Tasks::findLastFourTasks();
+
+        return $this->render('index', ['tasks' => $tasks]);
+    }
+
+    public function behaviors()
     {
         return [
             'access' => [
@@ -27,10 +35,5 @@ class LandingController extends Controller
                 ]
             ]
         ];
-    }
-
-    public function actionIndex()
-    {
-        return $this->render('index');
     }
 }

@@ -8,7 +8,7 @@ use yii\web\Request;
 use yii\base\BaseObject;
 use yii\web\NotFoundHttpException;
 
-class UserService extends BaseObject//а зачем мы наследовались здесь от BaseObject? мы же не используем фичи set{Field}(), get{Field}() BaseObject'а...или вопрос наоборот, почему SignUpHandler мы не делаем наследником BaseObject? хочу понимать)
+class UserService extends BaseObject
 {
     private Request $request;
 
