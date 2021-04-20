@@ -24,7 +24,7 @@ final class CsvToSqlConverter
         $dataBaseTable = explode('.', $csvName)[0] ?? null;
 
         if (!$dataBaseTable) {
-            throw new GivenArgumentException("Попытка присвоить dataBaseTable пустое значение")
+            throw new GivenArgumentException("Попытка присвоить dataBaseTable пустое значение");
         }
 
         $this->dataBaseTable = $dataBaseTable
