@@ -25,6 +25,4 @@ return [
         ],
     ],
     'timeZone' => 'Europe/Moscow',
-    'defaultRoute' => ['landing/index'],
-    'homeUrl' => ['tasks/index'],
 ];
