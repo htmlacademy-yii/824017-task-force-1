@@ -29,7 +29,7 @@ class SignController extends Controller
 
         if ($signupForm->load(Yii::$app->request->post())) {
 
-            if ($this->$signHandler->signup($signupForm)) {
+            if ($this->signHandler->signup($signupForm)) {
 
                 return $this->goHome();
             }

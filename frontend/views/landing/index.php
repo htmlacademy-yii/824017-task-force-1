@@ -18,7 +18,7 @@ $formatter = \Yii::$app->formatter;
         <div class="landing-task-top task-<?= $task['specialization']['icon'] ?>"></div>
         <div class="landing-task-description">
           <h3><a href="<?= Url::toRoute(['tasks/view', 'id' => $task['id']]) ?>" class="link-regular"><?= Html::encode($task['name']) ?></a></h3>
-          <p><?= Html::encode($task['description']) ?></p>
+          <p><?= Html::encode(mb_substr($task['description'], 0, 65)) . '...' ?></p>
         </div>
         <div class="landing-task-info">
           <div class="task-info-left">

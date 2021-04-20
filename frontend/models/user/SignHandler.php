@@ -12,7 +12,7 @@ final class SignHandler
 {
     public function signup(SignupForm $form): bool
     {
-        if (!$this->form->validate()) {
+        if (!$form->validate()) {
 
             return false;
         }
