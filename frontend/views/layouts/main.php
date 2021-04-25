@@ -5,7 +5,7 @@ use yii\helpers\Url;
 use frontend\assets\AppAsset;
 
 AppAsset::register($this);
-$user = $this->context->user;
+$user = \Yii::$app->user->getIdentity();
 ?>
 
 <?php $this->beginPage() ?>

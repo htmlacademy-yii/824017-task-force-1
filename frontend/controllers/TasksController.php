@@ -4,12 +4,13 @@ declare(strict_types = 1);
 
 namespace frontend\controllers;
 
-use frontend\controllers\SecuredController;
+use yii\web\Controller;
+use yii\filters\AccessControl;
 use frontend\models\task\TaskService;
 use frontend\models\task\TaskSearchForm;
 use Yii;
 
-class TasksController extends SecuredController
+class TasksController extends Controller
 {
     private TaskService $service;
 
@@ -17,6 +18,22 @@ class TasksController extends SecuredController
     {
         parent::init();
         $this->service = new TaskService($this->request);
+    }
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index', 'view'],
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ]
+            ]
+        ];
     }
 
     public function actionIndex()

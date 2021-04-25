@@ -12,28 +12,29 @@ class LandingController extends Controller
 {
     public $layout = 'anon';
 
-    public function actionIndex()
-    {
-        $tasks = Tasks::findLastFourTasks();
-
-        return $this->render('index', ['tasks' => $tasks]);
-    }
-
     public function behaviors()
     {
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'denyCallback' => function($rule, $action) {
-                    $this->redirect(['tasks/index']);
-                },
                 'rules' => [
                     [
+                        'actions' => ['index'],
                         'allow' => true,
                         'roles' => ['?']
                     ]
-                ]
+                ],
+                'denyCallback' => function($rule, $action) {
+                    return $this->goHome();
+                },
             ]
         ];
+    }
+
+    public function actionIndex()
+    {
+        $tasks = Tasks::findLastFourTasks();
+
+        return $this->render('index', ['tasks' => $tasks]);
     }
 }

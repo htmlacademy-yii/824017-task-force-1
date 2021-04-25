@@ -23,6 +23,36 @@ class SignController extends Controller
         $this->signHandler = new SignHandler();
     }
 
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['signup', 'login'],
+                        'allow' => true,
+                        'roles' => ['?']
+                    ],
+                    [
+                        'actions' => ['logout'],
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ],
+                'denyCallback' => function($rule, $action) {
+                    if ($action->actionMethod === 'actionLogout') {
+
+                       return $this->redirect(['landing/index']);
+                    } else {
+
+                        return $this->goHome();
+                    }
+                }
+            ]
+        ];
+    }
+
     public function actionSignup()
     {
         $signupForm = new SignupForm;
@@ -64,24 +94,5 @@ class SignController extends Controller
         }
 
         return $this->redirect(['landing/index']);
-    }
-
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'only' => ['signup', 'login'],
-                'denyCallback' => function($rule, $action) {
-                    $this->redirect(['tasks/index']);
-                },
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['?']
-                    ]
-                ]
-            ]
-        ];
     }
 }

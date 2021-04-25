@@ -2,9 +2,9 @@
 
 namespace frontend\controllers;
 
-use frontend\controllers\SecuredController;
+use yii\web\Controller;
 
-class SiteController extends SecuredController
+class SiteController extends Controller
 {
     public function actions()
     {

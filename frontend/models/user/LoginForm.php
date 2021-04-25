@@ -10,7 +10,7 @@ class LoginForm extends Model
 {
     public $email;
     public $password;
-    private $_user;
+    private $user;
 
     public function attributeLabels()
     {
@@ -42,10 +42,10 @@ class LoginForm extends Model
 
     protected function getUser()
     {
-        if ($this->_user === null) {
-            $this->_user = UserIdentity::findOne(['email' => $this->email]);
+        if ($this->user === null) {
+            $this->user = UserIdentity::findOne(['email' => $this->email]);
         }
 
-        return $this->_user;
+        return $this->user;
     }
 }
