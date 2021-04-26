@@ -17,7 +17,8 @@ class AppAsset extends AssetBundle
     ];
     public $sourcePath = '@webroot';
     public $js = [
-        'js/dropzone.js'
+        'js/dropzone.js',
+        'js/main.js'
     ];
     public $depends = [
         /*'yii\web\YiiAsset',

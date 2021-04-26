@@ -8,6 +8,7 @@ use yii\web\Controller;
 use frontend\models\user\UserService;
 use frontend\models\user\UserSearchForm;
 
+
 class UsersController extends Controller
 {
     private UserService $service;
@@ -16,6 +17,22 @@ class UsersController extends Controller
     {
         parent::init();
         $this->service = new UserService($this->request);
+    }
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index', 'view'],
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ]
+            ]
+        ];
     }
 
     public function actionIndex()

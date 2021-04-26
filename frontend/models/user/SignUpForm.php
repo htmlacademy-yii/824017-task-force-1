@@ -6,8 +6,9 @@ namespace frontend\models\user;
 
 use frontend\models\cities\Cities;
 use yii\helpers\ArrayHelper;
+use yii\base\Model;
 
-class SignUpForm extends \yii\base\Model
+class SignUpForm extends Model
 {
     public $city_id;
     public $name;
