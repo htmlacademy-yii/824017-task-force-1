@@ -31,6 +31,7 @@ $specializationsCount = count($specializations);
                 'nextPageLabel' => 'next',
             ]
         ]) ?>
+
 </section>
 <section  class="search-task">
     <div class="search-task__wrapper">

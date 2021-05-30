@@ -13,20 +13,21 @@ final class CsvToSqlConverter
 {
     private string $csvName;
     private string $sqlName;
-    private ?string $dataBaseTable;
+    private string $dataBaseTable;
 
     public function __construct(string $csvName)
     {
         if (!is_readable('data/' . $csvName)) {
-            throw new SourceFileException("CSV файл '$csvName' либо не существует в директории 'data' либо он не доступен для чтения");
+            throw new SourceFileException("CSV файл '$csvName' либо не существует в директории 'data' либо не доступен для чтения");
         }
 
-        $this->dataBaseTable = explode('.', $csvName)[0] ?? null;
+        $dataBaseTable = explode('.', $csvName)[0] ?? null;
 
         if (!$dataBaseTable) {
             throw new GivenArgumentException("Попытка присвоить dataBaseTable пустое значение");
         }
 
+        $this->dataBaseTable = $dataBaseTable
         $this->sqlName = 'data/sql/' . $this->dataBaseTable . '.sql';
         $this->csvName = 'data/' . $csvName;
     }

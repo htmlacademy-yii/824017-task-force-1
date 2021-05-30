@@ -37,12 +37,14 @@ $cities = $model->getCities();
                     'rows' => 1
                 ]
             ])->textArea() ?>
+
             <?= $form->field($model, "name", [
                 'inputOptions' => [
                     'id' => 17,
                     'rows' => 1
                 ]
             ])->textArea() ?>
+
             <?= $form->field($model, "city_id")->dropDownList($cities, [
                 'class' => 'multiple-select input town-select registration-town',
                 'id' => 18,

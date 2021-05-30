@@ -12,6 +12,7 @@ $this->title = 'Список исполнителей';
 $formatter = \Yii::$app->formatter;
 $specializations = $searchForm->getSpecializations();
 ?>
+<?php $specializations = $searchForm->getSpecializations(); ?>
 
 <section class="user__search">
 <?php foreach ($users as $user): ?>
