@@ -41,6 +41,6 @@ return [
         ],
     ],
     'params' => $params,
-    'defaultRoute' => ['landing/index'],
+    'defaultRoute' => 'landing/index',
     'homeUrl' => ['tasks/index'],
 ];

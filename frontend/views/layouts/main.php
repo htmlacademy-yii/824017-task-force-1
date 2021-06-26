@@ -78,8 +78,7 @@ $user = \Yii::$app->user->getIdentity();
           </svg>
         </a>
       </div>
-
-      <?php if (Url::current() !== Url::to(['sign-up/index'])): ?>
+      <?php if (Url::current() !== Url::to(['/sign/signup'])): ?>
       <div class="header__nav">
         <ul class="header-nav__list site-list">
           <li class="site-list__item">
@@ -123,9 +122,9 @@ $user = \Yii::$app->user->getIdentity();
       </div>
       <div class="header__account">
         <a class="header__account-photo">
-          <img src="<?= $user->avatar ?>"
-               width="43" height="44"
-               alt="Аватар пользователя">
+        <img src="<?= $user->avatar ?>"
+             width="43" height="44"
+             alt="Аватар пользователя">
         </a>
         <span class="header__account-name">
                  <?= Html::encode($user->name) ?>

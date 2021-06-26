@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace frontend\models\user;
 
-use yii\web\{Request, NotFoundHttpException};
+use yii\web\Request;
 use yii\base\BaseObject;
 
 /**
@@ -55,19 +55,13 @@ class UserService extends BaseObject
     /**
      * Находит одного исполнителя по первичному ключу.
      *
-     * @param string|null $id Id исполнителя.
+     * @param  int $id Id исполнителя.
      *
-     * @throws NotFoundHttpException Если исполнитель с переданным id не
-     * был найдено, или если параметр запроса не был передан.
-     *
-     * @return Users Объект исполнителя.
+     * @return Users|null Объект исполнителя, если найден, иначе null.
      */
-    public function getOneUser(?string $id = null): Users
+    public function getOneUser(int $id): ?Users
     {
         $user = Users::findOne($id);
-        if (!$user || $user->role !== 'executant') {
-            throw new NotFoundHttpException("Страница не найдена");
-        }
 
         return $user;
     }

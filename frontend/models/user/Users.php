@@ -151,7 +151,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getCustomerTasks()
     {
-        return $this->hasMany(Task::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Tasks::className(), ['customer_id' => 'id']);
     }
 
     /**
@@ -161,7 +161,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getExecutantTasks()
     {
-        return $this->hasMany(Task::className(), ['executant_id' => 'id']);
+        return $this->hasMany(Tasks::className(), ['executant_id' => 'id']);
     }
 
     /**
@@ -201,7 +201,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getUsersAccomplishedTasksPhotos()
     {
-        return $this->hasMany(UsersAccomplishedTasksPhoto::className(), ['user_id' => 'id']);
+        return $this->hasMany(UsersAccomplishedTasksPhotos::className(), ['user_id' => 'id']);
     }
 
     /**

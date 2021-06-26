@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace frontend\models\task;
 
-use yii\web\{Request, UploadedFile, NotFoundHttpException};
+use yii\web\Request;
 use yii\base\{BaseObject, Model};
 use yii\data\ActiveDataProvider;
 use TaskForce\Controllers\Task;
@@ -63,19 +63,13 @@ class TaskService extends BaseObject
     /**
      * Находит одно задание по первичному ключу.
      *
-     * @param string|null $id Id задания.
+     * @param  int $id Id задания.
      *
-     * @throws NotFoundHttpException Если задание с переданным id не
-     * было найдено, или если параметр запроса не был передан.
-     *
-     * @return Tasks Объект задания.
+     * @return Tasks|null Объект задания, если найден, иначе null.
      */
-    public function getOneTask(?string $id = null): Tasks
+    public function getOneTask(int $id): ?Tasks
     {
         $task = Tasks::findOne($id);
-        if (!$task) {
-            throw new NotFoundHttpException("Страница не найдена");
-        }
 
         return $task;
     }

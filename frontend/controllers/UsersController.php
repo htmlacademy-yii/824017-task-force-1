@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace frontend\controllers;
 
 use yii\web\Controller;
-use frontend\models\user\{UserService, UserSearchForm};
 use yii\filters\AccessControl;
 
 /**
@@ -14,23 +13,6 @@ use yii\filters\AccessControl;
  */
 class UsersController extends Controller
 {
-    /** @var UserService $service */
-    private UserService $service;
-
-    /**
-     * Выполняет инициализацию объекта.
-     *
-     * После инициализации создает объект UserService
-     * и присваивает его свойству $service.
-     *
-     * @return void
-     */
-    public function init()
-    {
-        parent::init();
-        $this->service = new UserService($this->request);
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -50,36 +32,15 @@ class UsersController extends Controller
         ];
     }
 
-    /**
-     * Отображает всех исполнителей.
-     *
-     * Обращается к объекту свойства $service за получением массива
-     * исполнителей, передовая аргументом модель формы поиска исполнителей.
-     *
-     * @return string
-     */
-    public function actionIndex()
-    {
-        $searchForm = new UserSearchForm();
-        $users = $this->service->getUsers($searchForm);
-
-        return $this->render('index', compact('users', 'searchForm'));
-    }
 
     /**
-     * Отображает одного исполнителя по его ID.
-     *
-     * Обращается к объекту свойства $service за получением объекта
-     * исполнителя, передовая аргументом ID исполнителя.
-     *
-     * @param  string|null $id
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function actionView(?string $id = null)
+    public function actions()
     {
-        $user = $this->service->getOneUser($id);
-
-        return $this->render('view', ['user' => $user]);
+        return [
+            'index' => \frontend\controllers\actions\users\IndexAction::class,
+            'view' => \frontend\controllers\actions\users\ViewAction::class,
+        ];
     }
 }
