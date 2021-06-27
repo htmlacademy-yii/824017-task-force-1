@@ -108,7 +108,10 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getNotificationsHistories()
     {
-        return $this->hasMany(NotificationsHistory::className(), ['recipient_id' => 'id']);
+        return $this->hasMany(
+            NotificationsHistory::className(),
+            ['recipient_id' => 'id']
+        );
     }
 
     /**
@@ -232,7 +235,7 @@ class Users extends \yii\db\ActiveRecord
         asArray();
 
         if ($form->searchedName) {
-            
+
             foreach ($form as $attribute => $value) {
 
                 if ($attribute !== 'searchedName') {
@@ -240,7 +243,7 @@ class Users extends \yii\db\ActiveRecord
                 }
             }
             $query->nameFilter($form->searchedName);
-            
+
         } else {
             $query->specializationsFilter($form->searchedSpecializations);
             $query->nameFilter($form->searchedName);

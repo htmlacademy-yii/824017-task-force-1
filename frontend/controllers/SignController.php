@@ -5,24 +5,17 @@ declare(strict_types = 1);
 namespace frontend\controllers;
 
 use yii\web\Controller;
-use frontend\models\user\LoginForm;
-use yii\web\Response;
-use yii\widgets\ActiveForm;
-use Yii;
-use frontend\models\user\SignUpForm;
-use frontend\models\user\SignHandler;
 use yii\filters\AccessControl;
 
+/**
+ * SignController организовывает вход/выход пользователя,
+ * регистрацию нового пользователя.
+ */
 class SignController extends Controller
 {
-    private SignHandler $signHandler;
-    
-    public function init()
-    {
-        parent::init();
-        $this->signHandler = new SignHandler();
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function behaviors()
     {
         return [
@@ -41,7 +34,7 @@ class SignController extends Controller
                     ]
                 ],
                 'denyCallback' => function($rule, $action) {
-                    if ($action->actionMethod === 'actionLogout') {
+                    if ($action->id === 'logout') {
 
                        return $this->redirect(['landing/index']);
                     } else {
@@ -53,46 +46,15 @@ class SignController extends Controller
         ];
     }
 
-    public function actionSignup()
+    /**
+     * {@inheritdoc}
+     */
+    public function actions()
     {
-        $signupForm = new SignupForm;
-
-        if ($signupForm->load(Yii::$app->request->post())) {
-
-            if ($this->signHandler->signup($signupForm)) {
-
-                return $this->goHome();
-            }
-        }
-        
-        return $this->render('index', ['model' => $signupForm]);
-    }
-
-    public function actionLogout()
-    {
-        $this->signHandler->logout();
-
-        return $this->redirect(['landing/index']);
-    }
-
-    public function actionLogin()
-    {
-        $loginForm = new LoginForm();
-
-        if ($loginForm->load(Yii::$app->request->post())) {
-
-            if (Yii::$app->request->isAjax) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-
-                return ActiveForm::validate($loginForm);
-            }
-
-            if ($this->signHandler->login($loginForm)) {
-
-                return $this->goHome();
-            }
-        }
-
-        return $this->redirect(['landing/index']);
+        return [
+            'signup' => \frontend\controllers\actions\sign\SignupAction::class,
+            'login' => \frontend\controllers\actions\sign\LoginAction::class,
+            'logout' => \frontend\controllers\actions\sign\LogoutAction::class,
+        ];
     }
 }

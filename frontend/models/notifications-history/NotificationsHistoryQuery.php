@@ -9,11 +9,6 @@ namespace frontend\models\notifications\history;
  */
 class NotificationsHistoryQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
-    {
-        return $this->andWhere('[[status]]=1');
-    }*/
-
     /**
      * {@inheritdoc}
      * @return NotificationsHistory[]|array

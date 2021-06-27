@@ -1,10 +1,21 @@
-<?php 
+<?php
 
 declare(strict_types = 1);
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use TaskForce\Controllers\{
+    Task,
+    ExecuteAction,
+    CancelAction,
+    FailAction,
+    AccomplishAction
+};
 
+$taskHelper = new Task($task->customer_id, $task->executant_id, $task->status);
+
+$this->registerJsFile('/js/main.js'/*, ['depends' => [AppAsset::class]]*/);
+$this->registerJsFile('/js/messenger.js'/*, ['depends' => [AppAsset::class]]*/);
 $this->title = 'Просмотр задания';
 $formatter = \Yii::$app->formatter;
 
@@ -55,27 +66,40 @@ $formatter = \Yii::$app->formatter;
             </div>
           </div>
           <div class="content-view__action-buttons">
-            <button class=" button button__big-color response-button open-modal"
-                    type="button" data-for="response-form">Откликнуться
+
+            <?php $isUserAuthorOfResponse = false; //нужно ли тут сделать перенос на след строку, чтобы «<?php» был единственным на строке?
+                  //нужно ли делать отступ от открывающего тега «<?php»? (например, на следущей строке - 6 пробелов.)
+                  foreach ($task->responses as $response) {// можно ли в виде не использовать альтернативный ситаксис, как я делаю, например, здесь?
+                    if ($response->user_id === $user->id) {//из скольки пробелов должен состоять отступ на этой строке? т.е. когда это не чистый php код, а вставки в верстку. (тут например сейчас 2 пробела, а не 4).
+                      $isUserAuthorOfResponse = true;
+                      break;
+                    }
+                  } ?>  <!-- как будет правильно разместить закрывающий php-тег на отлельной строке или на текущей -->
+            <?php $action = $taskHelper->getAvailableAction($user->id, $user->role); /*var_dump($action instanceof ExecuteAction && !$isUserAuthorOfResponse);*/ ?>
+            
+            <?php if (                                                                //if нужно размещать на одной строке с открывающим php-тегом или на отдельной?
+                      $action instanceof ExecuteAction && !$isUserAuthorOfResponse
+                      || $action instanceof CancelAction
+                      || $action instanceof FailAction
+                      || $action instanceof AccomplishAction
+                  ): ?> <!-- закрывающий php-тег нужно на этой же строке оставлять или на отдельной следующей? -->
+            <button class="button button__big-color <?= $action->getInternalName() ?>-button open-modal"
+                    type="button" data-for="<?= $action->getInternalName() ?>-form"><?= $action->getDisplayingName() ?>
             </button>
-            <button class="button button__big-color refusal-button open-modal"
-                    type="button" data-for="refuse-form">Отказаться
-            </button>
-            <button class="button button__big-color request-button open-modal"
-                    type="button" data-for="complete-form">Завершить
-            </button>
+            <?php endif; ?>
           </div>
         </div>
 
-        <?php $responseCount = count($task->responses); ?>
-        
-        <?php if ($responseCount): ?>
+        <?php $responseCount = count($task->responses); ?> 
+
+        <?php if ($responseCount and $user->id === $task->customer_id || $isUserAuthorOfResponse): ?>
         <div class="content-view__feedback">
           <h2>Отклики <span>(<?= $responseCount ?>)</span></h2>
           <div class="content-view__feedback-wrapper">
 
           <?php foreach ($task->responses as $response): ?>
 
+            <?php if ($response->user_id === $user->id || $user->id === $task->customer_id): ?>
             <div class="content-view__feedback-card">
               <div class="feedback-card__top">
                 <a href="<?= Url::to(['users/view', 'id' => $response->user->id]) ?>"><img src="<?= $response->user->avatar ?>" width="55" height="55"></a>
@@ -93,13 +117,13 @@ $formatter = \Yii::$app->formatter;
                       $rating = round(($ratesSum / $ratesCount), 2);
                     }
                   ?>
-                  
+
                 <?php $starCount =  round($rating) ?>
                 <?php for($i = 1; $i <= 5; $i++): ?>
 
                     <span class="<?= $starCount < $i ? 'star-disabled' : '' ?>"></span>
                 <?php endfor; ?>
-  
+
                   <b><?= $rating ?></b>
                 </div>
                 <span class="new-task__time"><?= $formatter->asRelativeTime($response->date_time, strftime("%F %T")) ?></span>
@@ -110,15 +134,20 @@ $formatter = \Yii::$app->formatter;
                 </p>
                 <span><?= $response->payment ?> ₽</span>
               </div>
+
+              <?php if ($user->id === $task->customer_id && !$response->is_refused && $task->status === Task::STATUS_NEW): ?>
               <div class="feedback-card__actions">
                 <a class="button__small-color request-button button"
-                   type="button">Подтвердить</a>
+                   type="button" href="<?= Url::to(['tasks/start-executing', 'taskId' => $task->id, 'executantId' => $response->user_id]) ?>">Подтвердить</a>
                 <a class="button__small-color refusal-button button"
-                   type="button">Отказать</a>
+                   type="button" href="<?= Url::to(['tasks/refuse-response', 'responseId' => $response->id]) ?>">Отказать</a>
               </div>
-            </div>
+              <?php endif; ?>
 
-          <?php endforeach; ?>  
+            </div>
+            <?php endif; ?>
+
+          <?php endforeach; ?>
 
         </div>
       <?php endif; ?>
@@ -135,13 +164,13 @@ $formatter = \Yii::$app->formatter;
             </div>
             <p class="info-customer"><span><?= count($task->customer->customerTasks) ?> заданий</span>
               <?php $passedTimeSinceSigningUp = strftime("%Y") - substr($task->customer->signing_up_date, 0, 4); ?>
-              
+
               <span class="last-"><?= $passedTimeSinceSigningUp ?> года на сайте</span></p>
             <a href="<?= Url::to(['users/view', 'id' => $task->customer->id]) ?>" class="link-regular">Смотреть профиль</a>
           </div>
         </div>
         <div id="chat-container">
           <!--                    добавьте сюда атрибут task с указанием в нем id текущего задания-->
-          <chat class="connect-desk__chat"></chat>
+          <chat class="connect-desk__chat" task="<?= $task->id ?>"></chat>
         </div>
       </section>

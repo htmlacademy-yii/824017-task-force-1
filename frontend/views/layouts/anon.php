@@ -8,8 +8,8 @@ use frontend\assets\AppAsset;
 use frontend\models\user\LoginForm;
 
 AppAsset::register($this);
-$this->title = 'TaskForce';
 
+$this->title = 'TaskForce';
 ?>
 
 <?php $this->beginPage() ?>
@@ -156,7 +156,7 @@ $this->title = 'TaskForce';
           </div>
         </div>
       </div>
-      <?= $content ?> 
+      <?= $content ?>
     </div>
   </main>
   <footer class="page-footer">

@@ -64,4 +64,3 @@ class TasksQuery extends \yii\db\ActiveQuery
         return $this->andWhere(['latitude' => null]);
     }
 }
-

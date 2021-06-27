@@ -24,7 +24,7 @@ final class ExecuteAction extends AbstractAction
         return $this->displayingName;
     }
 
-    public function canUserAct(int $customerId, int $executantId, int $currentUserId, ?string $currentUserRole): bool
+    public function canUserAct(int $customerId, ?int $executantId, int $currentUserId, ?string $currentUserRole): bool
     {
         return $currentUserRole === self::ROLE_EXECUTANT && $currentUserId !== $customerId;
     }

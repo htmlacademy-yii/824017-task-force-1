@@ -9,11 +9,6 @@ namespace frontend\models\user;
  */
 class UsersQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
-    {
-        return $this->andWhere('[[status]]=1');
-    }*/
-
     /**
      * {@inheritdoc}
      * @return Users[]|array
@@ -56,7 +51,7 @@ class UsersQuery extends \yii\db\ActiveQuery
     {
         return $this->andWhere(['tasks.id' => null]);
     }
-    
+
     public function online(): self
     {
         return $this->andWhere([

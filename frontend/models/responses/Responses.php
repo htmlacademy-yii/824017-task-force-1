@@ -3,6 +3,7 @@
 namespace frontend\models\responses;
 
 use frontend\models\user\Users;
+use frontend\models\task\Tasks;
 
 use Yii;
 
@@ -37,10 +38,10 @@ class Responses extends \yii\db\ActiveRecord
         return [
             [['user_id', 'task_id'], 'required'],
             [['user_id', 'task_id', 'payment'], 'integer'],
-            [['date_time'], 'safe'],
+            [['task_id', 'user_id', 'comment', 'payment'], 'safe'],
             [['comment'], 'string', 'max' => 3000],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
 

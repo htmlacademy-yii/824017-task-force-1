@@ -6,12 +6,20 @@ namespace frontend\controllers;
 
 use yii\web\Controller;
 use yii\filters\AccessControl;
-use frontend\models\task\Tasks;
 
+/**
+ * LandingController отвечает за работу с посадочной страницей.
+ */
 class LandingController extends Controller
 {
+    /**
+     * {@inheritdoc}
+     */
     public $layout = 'anon';
 
+    /**
+     * {@inheritdoc}
+     */
     public function behaviors()
     {
         return [
@@ -31,10 +39,13 @@ class LandingController extends Controller
         ];
     }
 
-    public function actionIndex()
+    /**
+     * {@inheritdoc}
+     */
+    public function actions()
     {
-        $tasks = Tasks::findLastFourTasks();
-
-        return $this->render('index', ['tasks' => $tasks]);
+        return [
+            'index' => \frontend\controllers\actions\landing\IndexAction::class,
+        ];
     }
 }

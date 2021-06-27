@@ -8,11 +8,11 @@ use yii\helpers\Url;
 <section class="modal enter-form form-modal" id="enter-form">
     <h2>Вход на сайт</h2>
     <?php $form = ActiveForm::begin([
-                    'id' => 'login-form', 
+                    'id' => 'login-form',
                     'method' => 'post',
                     'action' => Url::toRoute('sign/login'),
                     'fieldConfig' => [
-                        'template' => "{label}\n{input}\n{error}",       
+                        'template' => "{label}\n{input}\n{error}",
                         'inputOptions' => ['class' => 'enter-form-email input input-middle'],
                         'errorOptions' => ['tag' => 'span', 'style' => 'margin: -30px 0 20px;'],
                         'options' => ['tag' => 'p'],
@@ -28,7 +28,7 @@ use yii\helpers\Url;
                                     'id' => 'enter-email',
                                     'type' => 'email'
                                 ]
-                            ]) ?> 
+                            ]) ?>
         <?= $form->field($model, "password", [
             'inputOptions' => [
                 'id' => 'enter-password'

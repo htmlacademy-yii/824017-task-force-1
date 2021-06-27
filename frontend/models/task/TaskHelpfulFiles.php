@@ -31,7 +31,7 @@ class TaskHelpfulFiles extends \yii\db\ActiveRecord
             [['task_id', 'helpful_file'], 'required'],
             [['task_id'], 'integer'],
             [['helpful_file'], 'string', 'max' => 1000],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
+            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
 
@@ -42,7 +42,7 @@ class TaskHelpfulFiles extends \yii\db\ActiveRecord
     {
         return [
             'task_id' => 'Task ID',
-            'helpful_file' => 'Helpful File',
+            'helpful_file' => 'Файлы',
         ];
     }
 
@@ -53,7 +53,7 @@ class TaskHelpfulFiles extends \yii\db\ActiveRecord
      */
     public function getTask()
     {
-        return $this->hasOne(Task::className(), ['id' => 'task_id']);
+        return $this->hasOne(Tasks::className(), ['id' => 'task_id']);
     }
 
     /**

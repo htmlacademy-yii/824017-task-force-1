@@ -38,10 +38,11 @@ class Reviews extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['adding_date'], 'safe'],
-            [['task_id', 'customer_id', 'executant_id', 'completion', 'rate'], 'required'],
+            [['completion', 'comment', 'rate', 'task_id'], 'safe'],
+            [['task_id', 'customer_id', 'executant_id', 'completion'], 'required'],
             [['task_id', 'customer_id', 'executant_id', 'rate'], 'integer'],
             [['completion'], 'string'],
+            [['comment'], 'default'],
             [['comment'], 'string', 'max' => 3000],
             [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
             [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['customer_id' => 'id']],

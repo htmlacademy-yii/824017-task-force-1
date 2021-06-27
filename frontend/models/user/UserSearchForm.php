@@ -21,7 +21,7 @@ class UserSearchForm extends \yii\base\Model
         if (!isset($this->specializations)) {
             $this->specializations = ArrayHelper::map(Specializations::getAll(), 'id', 'name');
         }
-        
+
         return $this->specializations;
     }
 

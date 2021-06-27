@@ -9,11 +9,6 @@ namespace frontend\models\cities;
  */
 class CitiesQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
-    {
-        return $this->andWhere('[[status]]=1');
-    }*/
-
     /**
      * {@inheritdoc}
      * @return Cities[]|array

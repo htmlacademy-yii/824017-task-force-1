@@ -809,8 +809,15 @@ footer {
 .refusal-button {
   background-color: #ff3d71; }
 
+.cancel-button {
+  background-color: green; }
+
 .connection-button {
   background-color: #00e096; }
+
+.complete-button {
+  background-color: #3366ff;
+}
 
 .request-button {
   background-color: #3366ff;
@@ -912,6 +919,9 @@ footer {
 .pagination__item--current,
 .pagination__item:hover {
   background-color: #1a34b8; }
+
+.pagination__item__zero_opacity.pagination__item a, .pagination__item__zero_opacity span {
+  opacity: 0;}
 
 .link-regular {
   color: #1e90ff;
