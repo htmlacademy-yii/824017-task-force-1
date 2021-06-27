@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 declare(strict_types = 1);
 
@@ -68,7 +68,7 @@ $formatter = \Yii::$app->formatter;
         </div>
 
         <?php $responseCount = count($task->responses); ?>
-        
+
         <?php if ($responseCount): ?>
         <div class="content-view__feedback">
           <h2>Отклики <span>(<?= $responseCount ?>)</span></h2>
@@ -93,13 +93,13 @@ $formatter = \Yii::$app->formatter;
                       $rating = round(($ratesSum / $ratesCount), 2);
                     }
                   ?>
-                  
+
                 <?php $starCount =  round($rating) ?>
                 <?php for($i = 1; $i <= 5; $i++): ?>
 
                     <span class="<?= $starCount < $i ? 'star-disabled' : '' ?>"></span>
                 <?php endfor; ?>
-  
+
                   <b><?= $rating ?></b>
                 </div>
                 <span class="new-task__time"><?= $formatter->asRelativeTime($response->date_time, strftime("%F %T")) ?></span>
@@ -118,7 +118,7 @@ $formatter = \Yii::$app->formatter;
               </div>
             </div>
 
-          <?php endforeach; ?>  
+          <?php endforeach; ?>
 
         </div>
       <?php endif; ?>
@@ -135,7 +135,7 @@ $formatter = \Yii::$app->formatter;
             </div>
             <p class="info-customer"><span><?= count($task->customer->customerTasks) ?> заданий</span>
               <?php $passedTimeSinceSigningUp = strftime("%Y") - substr($task->customer->signing_up_date, 0, 4); ?>
-              
+
               <span class="last-"><?= $passedTimeSinceSigningUp ?> года на сайте</span></p>
             <a href="<?= Url::to(['users/view', 'id' => $task->customer->id]) ?>" class="link-regular">Смотреть профиль</a>
           </div>

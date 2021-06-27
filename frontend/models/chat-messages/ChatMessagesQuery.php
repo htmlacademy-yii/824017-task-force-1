@@ -9,11 +9,6 @@ namespace frontend\models\chat\messages;
  */
 class ChatMessagesQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
-    {
-        return $this->andWhere('[[status]]=1');
-    }*/
-
     /**
      * {@inheritdoc}
      * @return ChatMessages[]|array

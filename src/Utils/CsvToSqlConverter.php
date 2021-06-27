@@ -43,7 +43,7 @@ final class CsvToSqlConverter
             throw new SourceFileException("Не удалось создать SQL файл для записи");
         }
 
-        $csvFileObject->setFlags(SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE); 
+        $csvFileObject->setFlags(SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
 
         $columns = $this->getColumns($csvFileObject);
 
@@ -60,11 +60,11 @@ final class CsvToSqlConverter
             $line = str_replace('"NULL"','NULL',$line);
             $this->writeLine($sqlFileObject, $line);
         }
-        
+
         $sqlFileObject->fseek(-3, SEEK_END);
         $sqlFileObject->fwrite(';');
     }
-    
+
     private function getColumns(SplFileObject $csvFileObject): string {
         $csvFileObject->rewind();
         $data = $csvFileObject->fgetcsv();
@@ -79,7 +79,7 @@ final class CsvToSqlConverter
 
     private function getNextLine(SplFileObject $csvFileObject): iterable {
         while (!$csvFileObject->eof()) {
-            
+
             yield $csvFileObject->fgetcsv();
         }
     }

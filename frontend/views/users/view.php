@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 declare(strict_types = 1);
 
@@ -30,11 +30,11 @@ $formatter = \Yii::$app->formatter;
                             foreach ($reviews as $review) {
                               $ratesCount++;
                               $ratesSum += $review->rate;
-                            } 
+                            }
 
                             $rating = round(($ratesSum / $ratesCount), 2);
                         } ?>
-                                
+
                         <?php $starCount =  round($rating) ?>
 
                         <?php for($i = 1; $i <= 5; $i++): ?>

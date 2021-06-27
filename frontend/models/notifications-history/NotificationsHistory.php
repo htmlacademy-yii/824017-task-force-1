@@ -37,8 +37,18 @@ class NotificationsHistory extends \yii\db\ActiveRecord
             [['recipient_id', 'task_id', 'is_shown'], 'integer'],
             [['event_type'], 'string'],
             [['date_time'], 'safe'],
-            [['recipient_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['recipient_id' => 'id']],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
+            [
+                'recipient_id',
+                'exist',
+                'targetClass' => User::className(),
+                'targetAttribute' => ['recipient_id' => 'id']
+            ],
+            [
+                'task_id',
+                'exist',
+                'targetClass' => Task::className(),
+                'targetAttribute' => ['task_id' => 'id']
+            ],
         ];
     }
 

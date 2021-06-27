@@ -5,6 +5,7 @@ use yii\helpers\Url;
 use frontend\assets\AppAsset;
 
 AppAsset::register($this);
+
 $user = \Yii::$app->user->getIdentity();
 ?>
 
@@ -13,6 +14,7 @@ $user = \Yii::$app->user->getIdentity();
 <html lang="<?= Yii::$app->language ?>">
 <head>
     <?php $this->head() ?>
+
     <meta charset="<?= Yii::$app->charset ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -76,8 +78,7 @@ $user = \Yii::$app->user->getIdentity();
           </svg>
         </a>
       </div>
-
-      <?php if (!Yii::$app->user->isGuest): ?>
+      <?php if (Url::current() !== Url::to(['/sign/signup'])): ?>
       <div class="header__nav">
         <ul class="header-nav__list site-list">
           <li class="site-list__item">
@@ -121,9 +122,9 @@ $user = \Yii::$app->user->getIdentity();
       </div>
       <div class="header__account">
         <a class="header__account-photo">
-          <img src="<?= $user->avatar ?>"
-               width="43" height="44"
-               alt="Аватар пользователя">
+        <img src="<?= $user->avatar ?>"
+             width="43" height="44"
+             alt="Аватар пользователя">
         </a>
         <span class="header__account-name">
                  <?= Html::encode($user->name) ?>
@@ -143,6 +144,7 @@ $user = \Yii::$app->user->getIdentity();
         </ul>
       </div>
     <?php endif; ?>
+
     </div>
   </header>
 

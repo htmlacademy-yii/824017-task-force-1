@@ -913,6 +913,9 @@ footer {
 .pagination__item:hover {
   background-color: #1a34b8; }
 
+.pagination__item__zero_opacity.pagination__item a, .pagination__item__zero_opacity span {
+  opacity: 0;}
+
 .link-regular {
   color: #1e90ff;
   cursor:pointer;

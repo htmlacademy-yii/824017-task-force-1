@@ -5,20 +5,17 @@ declare(strict_types = 1);
 namespace frontend\controllers;
 
 use yii\web\Controller;
-use frontend\models\user\UserService;
-use frontend\models\user\UserSearchForm;
+use yii\filters\AccessControl;
 
-
+/**
+ * UsersController выполняет действия по отображению
+ * списка исполнителей или одного исполнителя.
+ */
 class UsersController extends Controller
 {
-    private UserService $service;
-
-    public function init()
-    {
-        parent::init();
-        $this->service = new UserService($this->request);
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function behaviors()
     {
         return [
@@ -35,27 +32,15 @@ class UsersController extends Controller
         ];
     }
 
-    public function actionIndex()
-    {
-        $searchForm = new UserSearchForm();
-        $users = $this->service->getUsers($searchForm);
 
-        return $this->render('index', compact('users', 'searchForm'));
-    }
-
-    public function actionView(?string $id = null)
-    {
-        $user = $this->service->getOneUser($id);
-
-        return $this->render('view', ['user' => $user]);
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function actions()
     {
         return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
+            'index' => \frontend\controllers\actions\users\IndexAction::class,
+            'view' => \frontend\controllers\actions\users\ViewAction::class,
         ];
     }
 }

@@ -12,7 +12,7 @@ $cities = $model->getCities();
     <h1>Регистрация аккаунта</h1>
     <div class="registration-wrapper">
         <?php $form = ActiveForm::begin([
-            'id' => 'signup-form', 
+            'id' => 'signup-form',
             'method' => 'post',
             'options' => [
                 'class' => 'registration__user-form form-create'
@@ -20,8 +20,8 @@ $cities = $model->getCities();
             'validationStateOn' => 'input',
             'errorCssClass' => 'input-danger',
             'fieldConfig' => [
-                'template' => "{label}\n{input}\n{error}", 
-                'options' => ['style' => 'margin-bottom: 27px'],        
+                'template' => "{label}\n{input}\n{error}",
+                'options' => ['style' => 'margin-bottom: 27px'],
                 'inputOptions' => [
                     'class' => 'input textarea',
                     'style' => 'width: 328px; margin-top: 12px; margin-bottom: 0px;',
@@ -36,13 +36,15 @@ $cities = $model->getCities();
                     'id' => 16,
                     'rows' => 1
                 ]
-            ])->textArea() ?> 
+            ])->textArea() ?>
+
             <?= $form->field($model, "name", [
                 'inputOptions' => [
                     'id' => 17,
                     'rows' => 1
                 ]
-            ])->textArea() ?> 
+            ])->textArea() ?>
+
             <?= $form->field($model, "city_id")->dropDownList($cities, [
                 'class' => 'multiple-select input town-select registration-town',
                 'id' => 18,
@@ -60,5 +62,3 @@ $cities = $model->getCities();
         <?php ActiveForm::end(); ?>
     </div>
 </section>
-
-        

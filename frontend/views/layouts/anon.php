@@ -156,7 +156,7 @@ $this->title = 'TaskForce';
           </div>
         </div>
       </div>
-      <?= $content ?> 
+      <?= $content ?>
     </div>
   </main>
   <footer class="page-footer">

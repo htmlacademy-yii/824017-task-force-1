@@ -14,9 +14,8 @@ return [
             'showScriptName' => false,
             'enableStrictParsing' => false,
             'rules' => [
-                '/' => 'landing/index',
                 'task/view/<id>' => 'tasks/view',
-                'user/view/<id>' => 'users/view'
+                'user/view/<id>' => 'users/view',
             ],
         ],
         'formatter' => [
@@ -25,4 +24,5 @@ return [
         ],
     ],
     'timeZone' => 'Europe/Moscow',
+    'language' => 'ru-RU'
 ];

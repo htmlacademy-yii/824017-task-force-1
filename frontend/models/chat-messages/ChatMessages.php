@@ -34,10 +34,20 @@ class ChatMessages extends \yii\db\ActiveRecord
         return [
             [['user_id', 'task_id', 'message'], 'required'],
             [['user_id', 'task_id'], 'integer'],
-            [['date_time'], 'safe'],
-            [['message'], 'string', 'max' => 3000],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
+            ['date_time', 'safe'],
+            ['message', 'string', 'max' => 3000],
+            [
+                'user_id',
+                'exist',
+                'targetClass' => User::className(),
+                'targetAttribute' => ['user_id' => 'id']
+            ],
+            [
+                'task_id',
+                'exist',
+                'targetClass' => Task::className(),
+                'targetAttribute' => ['task_id' => 'id']
+            ],
         ];
     }
 

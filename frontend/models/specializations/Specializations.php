@@ -79,15 +79,6 @@ class Specializations extends \yii\db\ActiveRecord
         return $this->hasMany(User::className(), ['id' => 'user_id'])->viaTable('user_specialization', ['specialization_id' => 'id']);
     }
 
-    /**
-     * {@inheritdoc}
-     * @return SpecializationsQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new SpecializationsQuery(get_called_class());
-    }
-
     final public static function getAll()
     {
         return self::find()->asArray()->all();

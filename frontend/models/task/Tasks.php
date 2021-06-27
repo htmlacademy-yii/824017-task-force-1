@@ -55,18 +55,7 @@ class Tasks extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['customer_id', 'status', 'name', 'description'], 'required'],
-            [['customer_id', 'executant_id', 'city_id', 'specialization_id'], 'integer'],
-            [['posting_date', 'deadline_date'], 'safe'],
-            [['latitude', 'longitude'], 'number'],
-            [['status'], 'string', 'max' => 50],
-            [['name'], 'string', 'max' => 1000],
-            [['description'], 'string', 'max' => 3000],
-            [['payment', 'address'], 'string', 'max' => 500],
-            [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['customer_id' => 'id']],
-            [['executant_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['executant_id' => 'id']],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id']],
-            [['specialization_id'], 'exist', 'skipOnError' => true, 'targetClass' => Specializations::className(), 'targetAttribute' => ['specialization_id' => 'id']],
+            [['name', 'description', 'specialization_id', 'deadline_date', 'payment'], 'safe'],
         ];
     }
 
@@ -80,15 +69,15 @@ class Tasks extends \yii\db\ActiveRecord
             'customer_id' => 'Customer ID',
             'executant_id' => 'Executant ID',
             'city_id' => 'City ID',
-            'specialization_id' => 'Specialization ID',
+            'specialization_id' => 'Категория',
             'posting_date' => 'Posting Date',
             'status' => 'Status',
-            'name' => 'Name',
-            'description' => 'Description',
+            'name' => 'Мне нужно',
+            'description' => 'Подробности задания',
             'latitude' => 'Latitude',
             'longitude' => 'Longitude',
-            'payment' => 'Payment',
-            'deadline_date' => 'Deadline Date',
+            'payment' => 'Бюджет',
+            'deadline_date' => 'Срок исполнения',
             'address' => 'Address'
         ];
     }
@@ -192,7 +181,7 @@ class Tasks extends \yii\db\ActiveRecord
         return new TasksQuery(get_called_class());
     }
 
-    final public static function findNewTasksByFilters(TaskSearchForm $form): ?array
+    final public static function findNewTasksByFilters(TaskSearchForm $form): TasksQuery
     {
         $query = self::find()->with('specialization')->joinWith('responses')->
             where(['status' => Task::STATUS_NEW])->orderBy(['posting_date' => SORT_DESC])->
@@ -211,17 +200,15 @@ class Tasks extends \yii\db\ActiveRecord
 
         if ($form->hasNoLocation) {
             $query->withoutLocation();
-        }  
+        }
 
-        return $query->all();
+        return $query;
     }
 
-    final public static function findNewTasks(): ?array
+    final public static function findNewTasks(): TasksQuery
     {
-        $query = self::find()->with('specialization')->where(['status' => Task::STATUS_NEW])->
+        return self::find()->with('specialization')->where(['status' => Task::STATUS_NEW])->
         orderBy(['posting_date' => SORT_DESC])->asArray();
-
-        return $query->all();
     }
 
     final public static function findLastFourTasks(): ?array

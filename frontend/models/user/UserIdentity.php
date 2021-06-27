@@ -41,6 +41,9 @@ class UserIdentity extends ActiveRecord implements IdentityInterface
 
     public function validatePassword($password)
     {
-        return \Yii::$app->security->validatePassword($password, $this->password);
+        return \Yii::$app->security->validatePassword(
+            $password,
+            $this->password
+        );
     }
 }

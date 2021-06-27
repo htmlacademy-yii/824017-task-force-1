@@ -6,26 +6,31 @@ namespace frontend\controllers;
 
 use yii\web\Controller;
 use yii\filters\AccessControl;
-use frontend\models\task\TaskService;
-use frontend\models\task\TaskSearchForm;
 use Yii;
 
+/**
+ * TasksController организовывает просмотр заданий и добавление нового задания.
+ */
 class TasksController extends Controller
 {
-    private TaskService $service;
-
-    public function init()
-    {
-        parent::init();
-        $this->service = new TaskService($this->request);
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function behaviors()
     {
         return [
             'access' => [
                 'class' => AccessControl::class,
+                'only' => ['index', 'view', 'upload', 'add'],
                 'rules' => [
+                    [
+                        'actions' => ['add', 'upload-file'],
+                        'allow' => true,
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->user
+                                ->getIdentity()->role === 'customer';
+                        }
+                    ],
                     [
                         'actions' => ['index', 'view'],
                         'allow' => true,
@@ -36,27 +41,17 @@ class TasksController extends Controller
         ];
     }
 
-    public function actionIndex()
-    {
-        $searchForm = new TaskSearchForm();
-        $tasks = $this->service->getTasks($searchForm);
-
-        return $this->render('index', compact('tasks', 'searchForm'));
-    }
-
-    public function actionView(?string $id = null)
-    {
-        $task = $this->service->getOneTask($id);
-
-        return $this->render('view', ['task' => $task]);
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function actions()
     {
         return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
+            'index' => \frontend\controllers\actions\tasks\IndexAction::class,
+            'view' => \frontend\controllers\actions\tasks\ViewAction::class,
+            'upload-file' => \frontend\controllers\actions\tasks\UploadFileAction::class,
+            'add' => \frontend\controllers\actions\tasks\AddAction::class,
+            'error' => \yii\web\ErrorAction::class,
         ];
     }
 }
