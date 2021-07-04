@@ -14,8 +14,6 @@ use yii\helpers\Url;
     Это действие приведёт к снижению вашего рейтинга.
     Вы уверены?
   </p>
-  <!-- я не знаю что это за извращение, но в задании прямо сказано 'форма', 'кнопка батн должна иметь тип submit и отправлять форму'.
-        какого же убогого качества материалы интенсива...) -->
   <?php $form = ActiveForm::begin([
         'id' => 'fail-form', 
         'method' => 'post',
@@ -35,6 +33,6 @@ use yii\helpers\Url;
   <?php ActiveForm::end(); ?>
   <button class="button__form-modal button" id="close-modal"
             type="button">Отмена
-    </button><!-- внес кнопку 'отмена' из формы, чтобы js срабатывал и скрывал окно, если оставить в форме - не скрывает. -->
+  </button>
   <button class="form-modal-close" type="button">Закрыть</button>
 </section>

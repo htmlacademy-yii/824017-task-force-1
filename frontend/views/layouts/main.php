@@ -6,7 +6,7 @@ use frontend\assets\AppAsset;
 use frontend\models\{
     responses\ResponseForm,
     reviews\ReviewForm,
-    FailForm,
+    task\FailForm,
 };
 
 AppAsset::register($this);

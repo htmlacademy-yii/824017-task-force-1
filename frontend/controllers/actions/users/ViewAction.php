@@ -21,7 +21,7 @@ class ViewAction extends BaseAction
      *
      * @return string
      */
-    public function run(int $id)
+    public function run(int $id): string
     {
         $user = $this->service->getOneUser($id);
 

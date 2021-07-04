@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\models;
+namespace frontend\models\task;
 
 class FailForm extends \yii\base\Model
 {

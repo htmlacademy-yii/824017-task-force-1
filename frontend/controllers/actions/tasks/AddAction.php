@@ -20,12 +20,15 @@ class AddAction extends BaseAction
      */
     public function run()
     {
-        $model = \Yii::$container->get(TaskCreatingForm::class);
+        $model = $this->container->get(TaskCreatingForm::class);
 
         if ($this->service->add($model)) {
             return $this->controller->goHome();
         }
 
-        return $this->controller->render('add', ['taskCreatingForm' => $model]);
+        return $this->controller->render(
+            'add',
+            ['taskCreatingForm' => $model]
+        );
     }
 }

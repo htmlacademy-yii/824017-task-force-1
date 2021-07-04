@@ -13,9 +13,9 @@ use TaskForce\Controllers\{
 };
 
 $taskHelper = new Task($task->customer_id, $task->executant_id, $task->status);
+$user = \Yii::$app->user->getIdentity();
 
-$this->registerJsFile('/js/main.js'/*, ['depends' => [AppAsset::class]]*/);
-$this->registerJsFile('/js/messenger.js'/*, ['depends' => [AppAsset::class]]*/);
+$this->registerJsFile('/js/messenger.js');
 $this->title = 'Просмотр задания';
 $formatter = \Yii::$app->formatter;
 
@@ -67,22 +67,22 @@ $formatter = \Yii::$app->formatter;
           </div>
           <div class="content-view__action-buttons">
 
-            <?php $isUserAuthorOfResponse = false; //нужно ли тут сделать перенос на след строку, чтобы «<?php» был единственным на строке?
-                  //нужно ли делать отступ от открывающего тега «<?php»? (например, на следущей строке - 6 пробелов.)
-                  foreach ($task->responses as $response) {// можно ли в виде не использовать альтернативный ситаксис, как я делаю, например, здесь?
-                    if ($response->user_id === $user->id) {//из скольки пробелов должен состоять отступ на этой строке? т.е. когда это не чистый php код, а вставки в верстку. (тут например сейчас 2 пробела, а не 4).
+            <?php $isUserAuthorOfResponse = false;
+
+                  foreach ($task->responses as $response) {
+                    if ($response->user_id === $user->id) {
                       $isUserAuthorOfResponse = true;
                       break;
                     }
-                  } ?>  <!-- как будет правильно разместить закрывающий php-тег на отлельной строке или на текущей -->
-            <?php $action = $taskHelper->getAvailableAction($user->id, $user->role); /*var_dump($action instanceof ExecuteAction && !$isUserAuthorOfResponse);*/ ?>
+                  } ?>
+            <?php $action = $taskHelper->getAvailableAction($user->id, $user->role); ?>
             
-            <?php if (                                                                //if нужно размещать на одной строке с открывающим php-тегом или на отдельной?
+            <?php if (
                       $action instanceof ExecuteAction && !$isUserAuthorOfResponse
                       || $action instanceof CancelAction
                       || $action instanceof FailAction
                       || $action instanceof AccomplishAction
-                  ): ?> <!-- закрывающий php-тег нужно на этой же строке оставлять или на отдельной следующей? -->
+                  ): ?>
             <button class="button button__big-color <?= $action->getInternalName() ?>-button open-modal"
                     type="button" data-for="<?= $action->getInternalName() ?>-form"><?= $action->getDisplayingName() ?>
             </button>

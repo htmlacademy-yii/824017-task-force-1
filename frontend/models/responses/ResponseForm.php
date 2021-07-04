@@ -17,10 +17,6 @@ class ResponseForm extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            /*['user_id', 'unique',
-                 'filter' => ['task_id' => 1 как сделать чтобы сюда динамически добавлялось значение аттрибута task_id, Кирилл, хелп, плиз! $this->task_id дает null
-            ],
-            'message' => 'Вы уже откликались на это задание'],*/
             ['payment', 'integer', 'min' => 1,
                 'message' => 'Значение должно быть целым положительным числом',
                 'tooSmall' => 'Значение должно быть целым положительным числом'],

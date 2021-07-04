@@ -16,6 +16,7 @@ use Yii;
  * @property int|null $payment
  * @property string|null $comment
  * @property string $date_time
+ * @property bool $is_refused
  *
  * @property User $user
  * @property Task $task
@@ -38,7 +39,7 @@ class Responses extends \yii\db\ActiveRecord
         return [
             [['user_id', 'task_id'], 'required'],
             [['user_id', 'task_id', 'payment'], 'integer'],
-            [['task_id', 'user_id', 'comment', 'payment'], 'safe'],
+            [['task_id', 'user_id', 'comment', 'payment', 'is_refused'], 'safe'],
             [['comment'], 'string', 'max' => 3000],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],

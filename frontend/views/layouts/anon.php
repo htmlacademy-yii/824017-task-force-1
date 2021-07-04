@@ -8,7 +8,6 @@ use frontend\assets\AppAsset;
 use frontend\models\user\LoginForm;
 
 AppAsset::register($this);
-
 $this->title = 'TaskForce';
 ?>
 
@@ -196,7 +195,7 @@ $this->title = 'TaskForce';
       <div class="page-footer__copyright">
         <a href="https://htmlacademy.ru">
           <img class="copyright-logo"
-             src="./img/academy-logo.png"
+             src="../img/academy-logo.png"
              width="185" height="63"
              alt="Логотип HTML Academy">
         </a>

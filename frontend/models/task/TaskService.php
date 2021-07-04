@@ -8,13 +8,10 @@ use yii\web\Request;
 use yii\base\{BaseObject, Model};
 use yii\data\ActiveDataProvider;
 use TaskForce\Controllers\Task;
-use frontend\models\task\TaskCreatingForm;
 use frontend\models\responses\ResponseForm;
 use frontend\models\responses\Responses;
 use frontend\models\reviews\ReviewForm;
 use frontend\models\reviews\Reviews;
-use frontend\models\FailForm;
-use frontend\models\task\Tasks;
 use frontend\models\user\Users;
 
 /**
@@ -116,6 +113,7 @@ class TaskService extends BaseObject
                     ]);
                     $newTaskHelpfulFile->save(false);
                 }
+                unset($session['paths']);
 
                 return true;
             }
@@ -124,7 +122,7 @@ class TaskService extends BaseObject
         return false;
     }
 
-    public function addResponse(ResponseForm $form): void //одноименный метод. как у контроллера... 
+    public function addResponse(ResponseForm $form): void
     {
         $this->loadFromPost($form);
         $form->user_id = \Yii::$app->user->id;
@@ -154,15 +152,17 @@ class TaskService extends BaseObject
     public function fail(FailForm $form): void
     {
         $this->loadFromPost($form);
+
         $task = Tasks::findOne($form->task_id);
         $task->status = Task::STATUS_FAILED;
-        $task->save();//стоит ли добавить пустую строку, как в методе выше?
+        $task->save();
+
         $executant = Users::findOne($task->executant_id);
         $executant->failure_count++;
         $executant->save();
     }
 
-    public function cancel(string $task_id): void
+    public function cancel(int $task_id): void
     {
         $task = Tasks::findOne($task_id);
         $taskHelper = new Task($task->customer_id, $task->executant_id, $task->status);

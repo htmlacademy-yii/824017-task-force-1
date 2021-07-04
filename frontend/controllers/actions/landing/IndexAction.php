@@ -14,10 +14,13 @@ class IndexAction extends Action
      *
      * @return string
      */
-    public function run()
+    public function run(): string
     {
         $tasks = Tasks::findLastFourTasks();
 
-        return $this->controller->render('index', compact('tasks'));
+        return $this->controller->render(
+            'index',
+            compact('tasks')
+        );
     }
 }

@@ -216,9 +216,4 @@ class Tasks extends \yii\db\ActiveRecord
         return self::find()->with('specialization')->where(['status' => Task::STATUS_NEW])->
         orderBy(['posting_date' => SORT_DESC])->limit(4)->asArray()->all();
     }
-
-    /*final public static function saveNewTask(TaskCreatingForm $TaskCreatingForm, FilesUploadingForm $FilesUploadingForm): bool
-    {
-
-    }*/
 }
