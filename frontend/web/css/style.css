@@ -7,7 +7,7 @@ body {
   background-color: #ffffff;
   color: #333438; }
   body.landing {
-    background-image: url("../img/polygon.png");
+    background-image: url("../img/Polygon.png");
     background-repeat: no-repeat;
     background-position-x: center;
     background-position-y: -413px; }
@@ -809,8 +809,15 @@ footer {
 .refusal-button {
   background-color: #ff3d71; }
 
+.cancel-button {
+  background-color: green; }
+
 .connection-button {
   background-color: #00e096; }
+
+.complete-button {
+  background-color: #3366ff;
+}
 
 .request-button {
   background-color: #3366ff;
@@ -1700,7 +1707,7 @@ footer {
   left: 411px; }
 
 .clipart-message {
-  background-image: url("../img/oval.png");
+  background-image: url("../img/Oval.png");
   background-repeat: no-repeat;
   background-position: center;
   width: 456px;

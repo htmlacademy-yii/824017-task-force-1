@@ -12,9 +12,12 @@ class BaseAction extends Action
     /** @var UserService $service */
     protected UserService $service;
 
-    public function __construct($id, $controller, UserService $userService, $config = [])
-    {
+    public function __construct(
+        $id,
+        $controller,
+        UserService $userService
+    ) {
         $this->service = $userService;
-        parent::__construct($id, $controller, $config);
+        parent::__construct($id, $controller);
     }
 }

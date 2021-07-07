@@ -1,12 +1,17 @@
 <?php
 
-use yii\helpers\Html;
-use yii\helpers\Url;
+use yii\helpers\{Html, Url};
 use frontend\assets\AppAsset;
+use frontend\models\user\UserIdentity;
+
+/** @var yii\web\View $this */
+/** @var string $content */
+
+/** @var UserIdentity $user Залогиненный пользователь. */
+$user = \Yii::$app->user->getIdentity();
 
 AppAsset::register($this);
 
-$user = \Yii::$app->user->getIdentity();
 ?>
 
 <?php $this->beginPage() ?>
@@ -14,7 +19,6 @@ $user = \Yii::$app->user->getIdentity();
 <html lang="<?= Yii::$app->language ?>">
 <head>
     <?php $this->head() ?>
-
     <meta charset="<?= Yii::$app->charset ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,7 +27,6 @@ $user = \Yii::$app->user->getIdentity();
 </head>
 <body>
 <?php $this->beginBody() ?>
-
 <div class="table-layout">
   <header class="page-header">
     <div class="main-container page-header__container">
@@ -78,7 +81,7 @@ $user = \Yii::$app->user->getIdentity();
           </svg>
         </a>
       </div>
-      <?php if (Url::current() !== Url::to(['/sign/signup'])): ?>
+      <?php if ($user !== null): ?>
       <div class="header__nav">
         <ul class="header-nav__list site-list">
           <li class="site-list__item">
@@ -166,6 +169,7 @@ $user = \Yii::$app->user->getIdentity();
           mail@taskforce.com
         </p>
       </div>
+      <?php if ($user !== null): ?>
       <div class="page-footer__links">
         <ul class="links__list">
           <li class="links__item">
@@ -188,18 +192,19 @@ $user = \Yii::$app->user->getIdentity();
           </li>
         </ul>
       </div>
+      <?php endif; ?>
       <div class="page-footer__copyright">
         <a>
           <img class="copyright-logo"
-               src="../img/academy-logo.png"
+               src="<?= Url::to('@web/img/academy-logo.png') ?>"
                width="185" height="63"
                alt="Логотип HTML Academy">
         </a>
       </div>
 
-      <?php if ($this->title === 'Регистрация аккаунта'): ?>
+      <?php if ($user === null): ?>
       <div class="clipart-woman">
-          <img src="../img/clipart-woman.png" width="238" height="450">
+          <img src="<?= Url::to('@web/img/clipart-woman.png') ?>" width="238" height="450">
       </div>
       <div class="clipart-message">
           <div class="clipart-message-text">
@@ -213,8 +218,10 @@ $user = \Yii::$app->user->getIdentity();
       <?php endif; ?>
 
     </div>
-  </footer>
+</footer>
+<?= $this->params['modals'] ?? '' ?>
 </div>
+<div class="overlay"></div>
 
 <?php $this->endBody() ?>
 </body>

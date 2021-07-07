@@ -47,6 +47,9 @@ use frontend\models\{
  */
 class Users extends \yii\db\ActiveRecord
 {
+    public const ROLE_CUSTOMER = 'customer';
+    public const ROLE_EXECUTANT = 'executant';
+
     /**
      * {@inheritdoc}
      */

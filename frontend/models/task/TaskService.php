@@ -8,6 +8,17 @@ use yii\web\Request;
 use yii\base\{BaseObject, Model};
 use yii\data\ActiveDataProvider;
 use TaskForce\Controllers\Task;
+use frontend\models\responses\ResponseForm;
+use frontend\models\responses\Responses;
+use frontend\models\reviews\ReviewForm;
+use frontend\models\reviews\Reviews;
+use frontend\models\user\Users;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request as GuzzleRequest;
+use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ServerException;
+use Yii;
 
 /**
  * TaskService предоставляет информацию об заданиях, сохраняет новое задание.
@@ -92,21 +103,28 @@ class TaskService extends BaseObject
         if ($this->loadFromPost($taskCreatingForm)) {
 
             if ($taskCreatingForm->validate()) {
-
                 $newTask = new Tasks([
                     'attributes' => $taskCreatingForm->attributes
                 ]);
                 $newTask->customer_id = \Yii::$app->user->id;
+                $newTask->city_id = Users::findOne($newTask->customer_id)->city_id;
                 $newTask->status = Task::STATUS_NEW;
-                $newTask->save(false);
 
+                if ($newTask->address ?? null) {
+                    $coordinates = $this->getCoordinates($newTask->address);
+                    $newTask->longitude = $coordinates[0] ?? null;
+                    $newTask->latitude = $coordinates[1] ?? null;
+                }
+                $newTask->save(false);
                 $session = \Yii::$app->session;
 
                 foreach ($session['paths'] ?? [] as $path) {
-                    $newTaskHelpfulFile = new TaskHelpfulFiles([
-                        'helpful_file' => $path,
-                        'task_id' => $newTask->id
-                    ]);
+                    $newTaskHelpfulFile = new TaskHelpfulFiles(
+                        [
+                            'path' => $path,
+                            'task_id' => $newTask->id
+                        ]
+                    );
                     $newTaskHelpfulFile->save(false);
                 }
                 unset($session['paths']);
@@ -116,6 +134,89 @@ class TaskService extends BaseObject
         }
 
         return false;
+    }
+
+    private function getCoordinates(string $address): ?array
+    {
+        $coordinates = null;
+        $client = new Client(['base_uri' => 'https://geocode-maps.yandex.ru/']);
+        $request = new GuzzleRequest('GET', '1.x');
+        $response = $client->send($request, [
+            'query' => [
+                'geocode' => $address,
+                'apikey' => Yii::$app->params['apiKey'],
+                'format' => 'json',
+            ]
+        ]);
+        
+        if ($response->getStatusCode() !== 200) {
+            throw new BadResponseException("Ошибка ответа: " . $response->getReasonPhrase(), $request, $response);
+        }
+        $jsonResponseData = $response->getBody()->getContents();
+        $responseData = json_decode($jsonResponseData, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new ServerException("Некорректный json-формат", $request, $response);
+        }
+        $error = $responseData['message'] ?? null;
+
+        if ($error) {
+            throw new BadResponseException("API ошибка: " . $error, $request, $response);
+        }
+
+        if ($responseData['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos'] ?? null) {
+            $coordinates = explode(' ', $responseData['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos']);
+        }
+    
+        return $coordinates;
+    }
+
+    public function addResponse(ResponseForm $form): void
+    {
+        $this->loadFromPost($form);
+        $form->user_id = \Yii::$app->user->id;
+
+        if ($form->validate()) {
+            $newResponse = new Responses(['attributes' => $form->attributes]);
+            $newResponse->save();
+        }
+    }
+
+    public function accomplish(ReviewForm $form): void
+    {
+        $this->loadFromPost($form);
+
+        if ($form->validate()) {
+            $task = Tasks::findOne($form->task_id);
+            $task->status = $form->completion === '1' ? Task::STATUS_ACCOMPLISHED : Task::STATUS_FAILED;
+            $task->save();
+
+            $newReview = new Reviews(['attributes' => $form->attributes]);
+            $newReview->executant_id = $task->executant_id;
+            $newReview->customer_id = $task->customer_id;
+            $newReview->save();
+        }
+    }
+
+    public function fail(FailForm $form): void
+    {
+        $this->loadFromPost($form);
+
+        $task = Tasks::findOne($form->task_id);
+        $task->status = Task::STATUS_FAILED;
+        $task->save();
+
+        $executant = Users::findOne($task->executant_id);
+        $executant->failure_count++;
+        $executant->save();
+    }
+
+    public function cancel(int $task_id): void
+    {
+        $task = Tasks::findOne($task_id);
+        $taskHelper = new Task($task->id, $task->customer_id, $task->executant_id, $task->status);
+        $task->status = $taskHelper->getStatusCausedByAction(Task::TO_CANCEL);
+        $task->save();
     }
 
     /**

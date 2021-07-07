@@ -4,13 +4,22 @@ declare(strict_types=1);
 
 namespace frontend\controllers\actions\sign;
 
-use yii\web\Response;
+use frontend\models\user\SignHandler;
+use yii\web\{Response, Request};
 use frontend\models\user\LoginForm;
 use yii\widgets\ActiveForm;
-use Yii;
 
 class LoginAction extends BaseAction
 {
+    /** @var LoginForm $form */
+    private LoginForm $form;
+
+    public function __construct($id, $controller, LoginForm $form, SignHandler $handler)
+    {
+        $this->form = $form;
+        parent::__construct($id, $controller, $handler);
+    }
+
     /**
      * Организовывает аутентификацию пользователя.
      *
@@ -20,18 +29,16 @@ class LoginAction extends BaseAction
      *
      * @return Response|array
      */
-    public function run()
+    public function run(Request $request)
     {
-        $loginForm = Yii::$container->get(LoginForm::class);
+        if ($this->form->load($request->post())) {
 
-        if ($loginForm->load(Yii::$app->request->post())) {
-
-            if (Yii::$app->request->isAjax) {
+            if ($request->isAjax) {
                 return $this->controller
-                    ->asJson(ActiveForm::validate($loginForm));
+                    ->asJson(ActiveForm::validate($this->form));
             }
 
-            if ($this->signHandler->login($loginForm)) {
+            if ($this->signHandler->login($this->form)) {
                 return $this->controller->goHome();
             }
         }

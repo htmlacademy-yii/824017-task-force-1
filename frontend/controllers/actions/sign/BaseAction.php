@@ -6,6 +6,7 @@ namespace frontend\controllers\actions\sign;
 
 use frontend\models\user\SignHandler;
 use yii\base\Action;
+use yii\di\Container;
 
 class BaseAction extends Action
 {
@@ -14,9 +15,12 @@ class BaseAction extends Action
     /** @var SignHandler $signHandler */
     protected SignHandler $signHandler;
 
-    public function __construct($id, $controller, SignHandler $signHandler, $config = [])
-    {
+    public function __construct(
+        $id,
+        $controller,
+        SignHandler $signHandler
+    ) {
         $this->signHandler = $signHandler;
-        parent::__construct($id, $controller, $config);
+        parent::__construct($id, $controller);
     }
 }

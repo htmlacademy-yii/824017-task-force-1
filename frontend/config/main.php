@@ -40,7 +40,9 @@ return [
             'errorAction' => 'tasks/error',
         ],
     ],
-    'params' => $params,
     'defaultRoute' => 'landing/index',
     'homeUrl' => ['tasks/index'],
+    'aliases' => [
+        '@modalPath' => '@frontend/views/modals',
+    ],
 ];

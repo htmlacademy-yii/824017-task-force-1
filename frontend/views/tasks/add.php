@@ -1,14 +1,23 @@
-<?php
+<?php 
 
 declare(strict_types=1);
 
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
-use frontend\assets\{AppAsset, UploadFileAsset};
+use yii\helpers\ArrayHelper;
+use yii\web\View;
 
-UploadFileAsset::register($this);
-$this->title = 'Добавление задания';
+/*use yii\helpers\Html;*/
+/*Html::csrfMetaTags();*/
+
+$this->registerJsFile('/js/uploadFile.js', ['depends' => [AppAsset::class]]);
+/*$this->registerJsFile('/js/autoComplete.js-9.0.0/dist/js/autoComplete.js');
+$this->registerJsFile('/js/my-autoComplete.js');*/
+
 $specializations = $taskCreatingForm->getSpecializations();
+
+$this->title = 'Добавление задания';
+
 ?>
 
 <section class="create__task">
@@ -58,9 +67,19 @@ $specializations = $taskCreatingForm->getSpecializations();
     <div class="create__file">
         <span>Добавить новый файл</span>
     </div>
-    <label for="13">Локация</label>
-    <input class="input-navigation input-middle input" id="13" type="search" name="q" placeholder="Санкт-Петербург, Калининский район">
-    <span>Укажите адрес исполнения, если задание требует присутствия</span>
+    <?= $form->field($taskCreatingForm, "address", [
+            'options' => ['style' => 'margin-top: 29px;'],
+            'template' =>
+                "{label}\n{input}\n"
+                . "<span>Укажите адрес исполнения, если задание требует присутствия</span>",
+            'inputOptions' => [
+                'id' => 13,
+                'class' => 'input-navigation input-middle input',
+                'placeholder' => 'Санкт-Петербург, Калининский район',
+                'type' => 'search',
+                'style' => 'width: 520px; margin-top: 12px; margin-bottom: 2px;',
+            ]
+        ]) ?>
     <div class="create__price-time">
     <?= $form->field($taskCreatingForm, "payment", [
         'options' => ['class' => 'create__price-time--wrapper', 'style' => 'margin-top: 0'],
@@ -103,8 +122,6 @@ $specializations = $taskCreatingForm->getSpecializations();
                 <p><?= $message[0] ?></p>
             <?php endforeach; ?>
         </div>
-        <?php endif; ?>
-    </div>
     </div>
     <button form="task-form" class="button" type="submit">Опубликовать</button>
 </section>

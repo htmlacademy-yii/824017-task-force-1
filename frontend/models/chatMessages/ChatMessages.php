@@ -1,8 +1,12 @@
 <?php
 
-namespace frontend\models\chat\messages;
+namespace frontend\models\chatMessages;
 
 use Yii;
+use frontend\models\{
+    task\Tasks,
+    user\Users,
+};
 
 /**
  * This is the model class for table "chat_messages".

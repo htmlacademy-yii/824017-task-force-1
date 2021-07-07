@@ -22,7 +22,7 @@ final class CancelAction extends AbstractAction
         return $this->displayingName;
     }
 
-    public function canUserAct(int $customerId, int $executantId, int $currentUserId, ?string $currentUserRole): bool
+    public function canUserAct(int $customerId, ?int $executantId, int $currentUserId, ?string $currentUserRole): bool
     {
         return $currentUserId === $customerId;
     }

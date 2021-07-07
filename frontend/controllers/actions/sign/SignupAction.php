@@ -4,12 +4,21 @@ declare(strict_types=1);
 
 namespace frontend\controllers\actions\sign;
 
-use yii\web\Response;
+use frontend\models\user\SignHandler;
+use yii\web\{Response, Request};
 use frontend\models\user\SignUpForm;
-use Yii;
 
 class SignupAction extends BaseAction
 {
+    /** @var SignupForm $form */
+    private SignupForm $form;
+
+    public function __construct($id, $controller, SignupForm $form, SignHandler $handler)
+    {
+        $this->form = $form;
+        parent::__construct($id, $controller, $handler);
+    }
+
     /**
      * Организовывает регистрацию пользователя.
      *
@@ -18,18 +27,19 @@ class SignupAction extends BaseAction
      *
      * @return Response|string
      */
-    public function run()
+    public function run(Request $request)
     {
-        $model = Yii::$container->get(SignupForm::class);
+        if ($this->form->load($request->post())) {
 
-        if ($model->load(Yii::$app->request->post())) {
-
-            if ($this->signHandler->signup($model)) {
+            if ($this->signHandler->signup($this->form)) {
 
                 return $this->controller->goHome();
             }
         }
 
-        return $this->controller->render('index', compact('model'));
+        return $this->controller->render(
+            'index',
+            ['model' => $this->form]
+        );
     }
 }
