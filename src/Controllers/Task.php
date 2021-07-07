@@ -13,10 +13,10 @@ class Task
     const STATUS_EXECUTING = 'executing';
     const STATUS_ACCOMPLISHED = 'accomplished';
     const STATUS_FAILED = 'failed';
-    const TO_CANCEL = 'to cancel';
-    const TO_EXECUTE = 'to execute';
-    const TO_ACCOMPLISH = 'to accomplish';
-    const TO_FAIL = 'to fail';
+    const TO_CANCEL = 'cancel';
+    const TO_EXECUTE = 'response';
+    const TO_ACCOMPLISH = 'complete';
+    const TO_FAIL = 'refuse';
 
     private string $currentStatus;
     private int $customerId;
@@ -109,14 +109,5 @@ class Task
     public function getMappingElementValue(string $actionOrStatusName): ?string
     {
         return $this->mapping[$actionOrStatusName] ?? null;
-    }
-
-    //метод для тестирования класса.
-    //по завершении задания удалю его.
-    public function setStatus(string $newStatus): string
-    {
-        $this->currentStatus = $newStatus;
-
-        return "статус сменен на $this->currentStatus <br><br>";
     }
 }

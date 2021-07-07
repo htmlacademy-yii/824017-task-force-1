@@ -3,6 +3,11 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use frontend\assets\AppAsset;
+use frontend\models\{
+    responses\ResponseForm,
+    reviews\ReviewForm,
+    task\FailForm,
+};
 
 AppAsset::register($this);
 
@@ -214,7 +219,19 @@ $user = \Yii::$app->user->getIdentity();
 
     </div>
   </footer>
+<?php if ($this->title === 'Просмотр задания'): ?>
+
+<?= $this->render('//modals/_response_form', ['model' => new ResponseForm]); ?>
+<?= $this->render('//modals/_completion_form', ['model' => new ReviewForm]); ?>
+<?= $this->render('//modals/_fail_form', ['model' => new FailForm]); ?>
+<?= $this->render('//modals/_cancel_form'); ?>
+
 </div>
+<div class="overlay"></div>
+
+<?php else: ?>
+</div>
+<?php endif; ?>
 
 <?php $this->endBody() ?>
 </body>

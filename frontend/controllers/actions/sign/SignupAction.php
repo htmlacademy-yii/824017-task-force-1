@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace frontend\controllers\actions\sign;
 
-use yii\web\Response;
+use yii\web\{Response, Request};
 use frontend\models\user\SignUpForm;
-use Yii;
 
 class SignupAction extends BaseAction
 {
@@ -18,11 +17,11 @@ class SignupAction extends BaseAction
      *
      * @return Response|string
      */
-    public function run()
+    public function run(Request $request)
     {
-        $model = Yii::$container->get(SignupForm::class);
+        $model = $this->container->get(SignupForm::class);
 
-        if ($model->load(Yii::$app->request->post())) {
+        if ($model->load($request->post())) {
 
             if ($this->signHandler->signup($model)) {
 
@@ -30,6 +29,9 @@ class SignupAction extends BaseAction
             }
         }
 
-        return $this->controller->render('index', compact('model'));
+        return $this->controller->render(
+            'index',
+            compact('model')
+        );
     }
 }

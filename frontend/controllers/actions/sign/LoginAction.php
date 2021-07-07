@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace frontend\controllers\actions\sign;
 
-use yii\web\Response;
+use yii\web\{Response, Request};
 use frontend\models\user\LoginForm;
 use yii\widgets\ActiveForm;
-use Yii;
 
 class LoginAction extends BaseAction
 {
@@ -20,13 +19,13 @@ class LoginAction extends BaseAction
      *
      * @return Response|array
      */
-    public function run()
+    public function run(Request $request)
     {
-        $loginForm = Yii::$container->get(LoginForm::class);
+        $loginForm = $this->container->get(LoginForm::class);
 
-        if ($loginForm->load(Yii::$app->request->post())) {
+        if ($loginForm->load($request->post())) {
 
-            if (Yii::$app->request->isAjax) {
+            if ($request->isAjax) {
                 return $this->controller
                     ->asJson(ActiveForm::validate($loginForm));
             }

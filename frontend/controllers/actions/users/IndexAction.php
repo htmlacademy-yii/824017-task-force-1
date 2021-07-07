@@ -16,12 +16,15 @@ class IndexAction extends BaseAction
      *
      * @return string
      */
-    public function run()
+    public function run(): string
     {
-        $searchForm = \Yii::$container->get(UserSearchForm::class);
+        $searchForm = $this->container->get(UserSearchForm::class);
 
         $users = $this->service->getUsers($searchForm);
 
-        return $this->controller->render('index', compact('users', 'searchForm'));
+        return $this->controller->render(
+            'index',
+            compact('users', 'searchForm')
+        );
     }
 }

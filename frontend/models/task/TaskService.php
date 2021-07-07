@@ -8,6 +8,11 @@ use yii\web\Request;
 use yii\base\{BaseObject, Model};
 use yii\data\ActiveDataProvider;
 use TaskForce\Controllers\Task;
+use frontend\models\responses\ResponseForm;
+use frontend\models\responses\Responses;
+use frontend\models\reviews\ReviewForm;
+use frontend\models\reviews\Reviews;
+use frontend\models\user\Users;
 
 /**
  * TaskService предоставляет информацию об заданиях, сохраняет новое задание.
@@ -92,7 +97,6 @@ class TaskService extends BaseObject
         if ($this->loadFromPost($taskCreatingForm)) {
 
             if ($taskCreatingForm->validate()) {
-
                 $newTask = new Tasks([
                     'attributes' => $taskCreatingForm->attributes
                 ]);
@@ -116,6 +120,54 @@ class TaskService extends BaseObject
         }
 
         return false;
+    }
+
+    public function addResponse(ResponseForm $form): void
+    {
+        $this->loadFromPost($form);
+        $form->user_id = \Yii::$app->user->id;
+
+        if ($form->validate()) {
+            $newResponse = new Responses(['attributes' => $form->attributes]);
+            $newResponse->save();
+        }
+    }
+
+    public function accomplish(ReviewForm $form): void
+    {
+        $this->loadFromPost($form);
+
+        if ($form->validate()) {
+            $task = Tasks::findOne($form->task_id);
+            $task->status = $form->completion === '1' ? Task::STATUS_ACCOMPLISHED : Task::STATUS_FAILED;
+            $task->save();
+
+            $newReview = new Reviews(['attributes' => $form->attributes]);
+            $newReview->executant_id = $task->executant_id;
+            $newReview->customer_id = $task->customer_id;
+            $newReview->save();
+        }
+    }
+
+    public function fail(FailForm $form): void
+    {
+        $this->loadFromPost($form);
+
+        $task = Tasks::findOne($form->task_id);
+        $task->status = Task::STATUS_FAILED;
+        $task->save();
+
+        $executant = Users::findOne($task->executant_id);
+        $executant->failure_count++;
+        $executant->save();
+    }
+
+    public function cancel(int $task_id): void
+    {
+        $task = Tasks::findOne($task_id);
+        $taskHelper = new Task($task->customer_id, $task->executant_id, $task->status);
+        $task->status = $taskHelper->getStatusCausedByAction(Task::TO_CANCEL);
+        $task->save();
     }
 
     /**

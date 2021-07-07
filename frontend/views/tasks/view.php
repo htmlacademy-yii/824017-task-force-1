@@ -4,7 +4,18 @@ declare(strict_types = 1);
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use TaskForce\Controllers\{
+    Task,
+    ExecuteAction,
+    CancelAction,
+    FailAction,
+    AccomplishAction
+};
 
+$taskHelper = new Task($task->customer_id, $task->executant_id, $task->status);
+$user = \Yii::$app->user->getIdentity();
+
+$this->registerJsFile('/js/messenger.js');
 $this->title = 'Просмотр задания';
 $formatter = \Yii::$app->formatter;
 
@@ -55,27 +66,40 @@ $formatter = \Yii::$app->formatter;
             </div>
           </div>
           <div class="content-view__action-buttons">
-            <button class=" button button__big-color response-button open-modal"
-                    type="button" data-for="response-form">Откликнуться
+
+            <?php $isUserAuthorOfResponse = false;
+
+                  foreach ($task->responses as $response) {
+                    if ($response->user_id === $user->id) {
+                      $isUserAuthorOfResponse = true;
+                      break;
+                    }
+                  } ?>
+            <?php $action = $taskHelper->getAvailableAction($user->id, $user->role); ?>
+            
+            <?php if (
+                      $action instanceof ExecuteAction && !$isUserAuthorOfResponse
+                      || $action instanceof CancelAction
+                      || $action instanceof FailAction
+                      || $action instanceof AccomplishAction
+                  ): ?>
+            <button class="button button__big-color <?= $action->getInternalName() ?>-button open-modal"
+                    type="button" data-for="<?= $action->getInternalName() ?>-form"><?= $action->getDisplayingName() ?>
             </button>
-            <button class="button button__big-color refusal-button open-modal"
-                    type="button" data-for="refuse-form">Отказаться
-            </button>
-            <button class="button button__big-color request-button open-modal"
-                    type="button" data-for="complete-form">Завершить
-            </button>
+            <?php endif; ?>
           </div>
         </div>
 
-        <?php $responseCount = count($task->responses); ?>
+        <?php $responseCount = count($task->responses); ?> 
 
-        <?php if ($responseCount): ?>
+        <?php if ($responseCount and $user->id === $task->customer_id || $isUserAuthorOfResponse): ?>
         <div class="content-view__feedback">
           <h2>Отклики <span>(<?= $responseCount ?>)</span></h2>
           <div class="content-view__feedback-wrapper">
 
           <?php foreach ($task->responses as $response): ?>
 
+            <?php if ($response->user_id === $user->id || $user->id === $task->customer_id): ?>
             <div class="content-view__feedback-card">
               <div class="feedback-card__top">
                 <a href="<?= Url::to(['users/view', 'id' => $response->user->id]) ?>"><img src="<?= $response->user->avatar ?>" width="55" height="55"></a>
@@ -110,13 +134,18 @@ $formatter = \Yii::$app->formatter;
                 </p>
                 <span><?= $response->payment ?> ₽</span>
               </div>
+
+              <?php if ($user->id === $task->customer_id && !$response->is_refused && $task->status === Task::STATUS_NEW): ?>
               <div class="feedback-card__actions">
                 <a class="button__small-color request-button button"
-                   type="button">Подтвердить</a>
+                   type="button" href="<?= Url::to(['tasks/start-executing', 'taskId' => $task->id, 'executantId' => $response->user_id]) ?>">Подтвердить</a>
                 <a class="button__small-color refusal-button button"
-                   type="button">Отказать</a>
+                   type="button" href="<?= Url::to(['tasks/refuse-response', 'responseId' => $response->id]) ?>">Отказать</a>
               </div>
+              <?php endif; ?>
+
             </div>
+            <?php endif; ?>
 
           <?php endforeach; ?>
 
@@ -142,6 +171,6 @@ $formatter = \Yii::$app->formatter;
         </div>
         <div id="chat-container">
           <!--                    добавьте сюда атрибут task с указанием в нем id текущего задания-->
-          <chat class="connect-desk__chat"></chat>
+          <chat class="connect-desk__chat" task="<?= $task->id ?>"></chat>
         </div>
       </section>

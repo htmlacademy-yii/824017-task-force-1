@@ -18,11 +18,13 @@ class IndexAction extends BaseAction
      */
     public function run()
     {
-        $searchForm = \Yii::$container->get(TaskSearchForm::class);
+        $searchForm = $this->container->get(TaskSearchForm::class);
 
         $dataProvider = $this->service->getDataProvider($searchForm);
 
-        return $this->controller
-            ->render('index', compact('searchForm', 'dataProvider'));
+        return $this->controller->render(
+            'index',
+            compact('searchForm', 'dataProvider')
+        );
     }
 }
