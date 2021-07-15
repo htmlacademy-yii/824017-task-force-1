@@ -17,9 +17,5 @@ class YandexMapAsset extends AssetBundle
         'http://api-maps.yandex.ru/2.1/?apikey=' . self::API_KEY . '&lang=ru_RU',
         'js/yandexMap.js',
     ];
-    public $depends = [
-
-    ];
-
     public $jsOptions = ['type' => 'text/javascript'];
 }

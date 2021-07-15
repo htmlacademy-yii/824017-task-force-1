@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace frontend\controllers\actions\tasks;
 
-use frontend\models\responses\ResponseForm;
-use frontend\models\responses\Responses;
+use frontend\models\responses\{ResponseForm, Responses};
 use frontend\models\reviews\ReviewForm;
 use frontend\models\task\FailForm;
 use frontend\models\user\Users;
-use yii\web\{NotFoundHttpException, View, User};
+use yii\web\{NotFoundHttpException, User, View};
 
 class ViewAction extends BaseAction
 {
@@ -17,9 +16,8 @@ class ViewAction extends BaseAction
         '_response_form' => ResponseForm::class,
         '_completion_form' => ReviewForm::class,
         '_fail_form' => FailForm::class,
-        '_cancel_form' => '',
+        '_cancel_form' => ''
     ];
-
 
     /**
      * Отображает одно задание по его ID.
@@ -44,10 +42,10 @@ class ViewAction extends BaseAction
         $view->params['task_id'] = $id;
         $view->params['modals'] = '';
 
-        foreach (self::MODALS as $modal => $model) {
+        foreach (self::MODALS as $name => $form) {
             $view->params['modals'] .= $this->controller->renderPartial(
-                '@modalPath/' . $modal,
-                ['model' => class_exists($model) ? new $model() : $model]
+                '@modalPath/' . $name,
+                ['model' => class_exists($form) ? new $form() : $form]
             );
         }
 

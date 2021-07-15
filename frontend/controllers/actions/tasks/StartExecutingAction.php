@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace frontend\controllers\actions\tasks;
 
 use frontend\models\task\Tasks;
-use yii\web\NotFoundHttpException;
-use yii\web\Response;
 use TaskForce\Controllers\Task;
+use yii\web\{NotFoundHttpException, Response};
 
 class StartExecutingAction extends BaseAction
 {
@@ -16,7 +15,10 @@ class StartExecutingAction extends BaseAction
         $task = Tasks::findOne($taskId);
 
         if ($task === null) {
-            throw new NotFoundHttpException("Задание с id '$taskId', которое вы хотите поручить исполнителю, не существует");
+            throw new NotFoundHttpException(
+                "Задание с id '$taskId', которое вы хотите "
+                . "поручить исполнителю, не существует"
+            );
         }
 
         $task->setAttributes([

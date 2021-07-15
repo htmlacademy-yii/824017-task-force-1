@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace frontend\controllers\actions\sign;
 
-use frontend\models\user\SignHandler;
-use yii\web\{Response, Request};
 use frontend\models\user\LoginForm;
+use frontend\models\user\SignHandler;
+use yii\web\{Request, Response};
 use yii\widgets\ActiveForm;
 
 class LoginAction extends BaseAction
@@ -27,9 +27,9 @@ class LoginAction extends BaseAction
      * формы входа в формате json. В случае успешной аутентификации
      * перенаправляет на домашнюю страницу, в ином случае - на главную.
      *
-     * @return Response|array
+     * @return Response
      */
-    public function run(Request $request)
+    public function run(Request $request): Response
     {
         if ($this->form->load($request->post())) {
 

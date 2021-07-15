@@ -13,8 +13,12 @@ class AccomplishAction extends BaseAction
     /** @var ReviewForm $form */
     private ReviewForm $form;
 
-    public function __construct($id, $controller, ReviewForm $form, TaskService $service)
-    {
+    public function __construct(
+        $id,
+        $controller,
+        ReviewForm $form,
+        TaskService $service
+    ) {
         $this->form = $form;
         parent::__construct($id, $controller, $service);
     }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 declare(strict_types=1);
 
@@ -6,14 +6,10 @@ use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\web\View;
+use frontend\assets\{AppAsset, UploadFileAsset};
 
-/*use yii\helpers\Html;*/
-/*Html::csrfMetaTags();*/
 
-$this->registerJsFile('/js/uploadFile.js', ['depends' => [AppAsset::class]]);
-/*$this->registerJsFile('/js/autoComplete.js-9.0.0/dist/js/autoComplete.js');
-$this->registerJsFile('/js/my-autoComplete.js');*/
-
+UploadFileAsset::register($this);
 $specializations = $taskCreatingForm->getSpecializations();
 
 $this->title = 'Добавление задания';
@@ -122,6 +118,8 @@ $this->title = 'Добавление задания';
                 <p><?= $message[0] ?></p>
             <?php endforeach; ?>
         </div>
+        <?php endif; ?>
+    </div>
     </div>
     <button form="task-form" class="button" type="submit">Опубликовать</button>
 </section>

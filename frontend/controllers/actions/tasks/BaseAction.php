@@ -6,7 +6,6 @@ namespace frontend\controllers\actions\tasks;
 
 use frontend\models\task\TaskService;
 use yii\base\Action;
-use yii\di\Container;
 
 class BaseAction extends Action
 {

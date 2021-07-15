@@ -45,7 +45,6 @@ $formatter = \Yii::$app->formatter;
                 <h3 class="content-view__h3">Общее описание</h3>
                 <p><?= Html::encode($task->description) ?></p>
             </div>
-
             <?php if ($task->taskHelpfulFiles): ?>
                 <div class="content-view__attach">
                     <h3 class="content-view__h3">Вложения</h3>
@@ -54,7 +53,6 @@ $formatter = \Yii::$app->formatter;
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
-
             <div class="content-view__location">
                 <h3 class="content-view__h3">Расположение</h3>
                 <div class="content-view__location-wrapper">
@@ -78,40 +76,20 @@ $formatter = \Yii::$app->formatter;
             <?php endif; ?>
         </div>
     </div>
-
     <?php if ($responses): ?>
     <div class="content-view__feedback">
         <h2>Отклики <span>(<?= count($responses) ?>)</span></h2>
         <div class="content-view__feedback-wrapper">
-
         <?php foreach ($responses as $response): ?>
             <div class="content-view__feedback-card">
                 <div class="feedback-card__top">
-                    <a href="<?= Url::to(['users/view', 'id' => $response->user->id]) ?>"><img src="<?= $response->user->avatar ?>" width="55" height="55"></a>
+                    <a href="<?= Url::to(['users/view', 'id' => $response->author->id]) ?>"><img src="<?= $response->author->avatar ?>" width="55" height="55"></a>
                     <div class="feedback-card__top--name">
-                        <p><a href="<?= Url::to(['users/view', 'id' => $response->user->id]) ?>" class="link-regular"><?= Html::encode($response->user->name) ?></a></p>
-                        <!--       этот кусок логики уберу из вида..            -->
-                        <?php
-                            $rating = 0;
-                            $reviews = $response->user->executantReviews;
-                            $ratesCount = 0;
-                            $ratesSum = 0;
-
-                            foreach ($reviews as $review) {
-                                $ratesCount++;
-                                $ratesSum += $review->rate;
-                                $rating = round(($ratesSum / $ratesCount), 2);
-                            }
-                        ?>
-
-                    <?php $starCount =    round($rating) ?>
-                    <?php for($i = 1; $i <= 5; $i++): ?>
-
-                            <span class="<?= $starCount < $i ? 'star-disabled' : '' ?>"></span>
-                    <?php endfor; ?>
-                        <!--      "конец куска который тут не должен быть"              -->
-
-                        <b><?= $rating ?></b>
+                        <p><a href="<?= Url::to(['users/view', 'id' => $response->author->id]) ?>" class="link-regular"><?= Html::encode($response->author->name) ?></a></p>
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <span class="<?= round($response->author->getRating()) < $i ? 'star-disabled' : '' ?>"></span>
+                        <?php endfor; ?>
+                        <b><?= $response->author->getRating() ?></b>
                     </div>
                     <span class="new-task__time"><?= $formatter->asRelativeTime($response->date_time, strftime("%F %T")) ?></span>
                 </div>
@@ -121,8 +99,7 @@ $formatter = \Yii::$app->formatter;
                     </p>
                     <span><?= $response->payment ?> ₽</span>
                 </div>
-
-                <?php if ($user->id === $task->customer_id && !$response->is_refused && $task->status === TaskHelper::STATUS_NEW): ?><!--в этой строке тоже логику уберу..-->
+                <?php if ($user->id === $task->customer_id && !$response->is_refused && $task->status === TaskHelper::STATUS_NEW): ?>
                 <div class="feedback-card__actions">
                     <a class="button__small-color request-button button"
                          type="button" href="<?= Url::to(['tasks/start-executing', 'taskId' => $task->id, 'executantId' => $response->user_id]) ?>">Подтвердить</a>
@@ -130,14 +107,12 @@ $formatter = \Yii::$app->formatter;
                          type="button" href="<?= Url::to(['tasks/refuse-response', 'responseId' => $response->id]) ?>">Отказать</a>
                 </div>
                 <?php endif; ?>
-
             </div>
         <?php endforeach; ?>
     </div>
     </div>
 <?php endif; ?>
 </section>
-
 <section class="connect-desk">
     <div class="connect-desk__profile-mini">
         <div class="profile-mini__wrapper">
@@ -149,9 +124,7 @@ $formatter = \Yii::$app->formatter;
                 </div>
             </div>
             <p class="info-customer"><span><?= count($task->customer->customerTasks) ?> заданий</span>
-                <?php $passedTimeSinceSigningUp = strftime("%Y") - substr($task->customer->signing_up_date, 0, 4); ?>
-
-                <span class="last-"><?= $passedTimeSinceSigningUp ?> года на сайте</span></p>
+                <span class="last-"><?= (int)strftime("%Y") - (int)substr($task->customer->signing_up_date, 0, 4) ?> года на сайте</span></p>
             <a href="<?= Url::to(['users/view', 'id' => $task->customer->id]) ?>" class="link-regular">Смотреть профиль</a>
         </div>
     </div>

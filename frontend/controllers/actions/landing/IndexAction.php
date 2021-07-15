@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace frontend\controllers\actions\landing;
 
-use yii\base\Action;
 use frontend\models\task\Tasks;
+use yii\base\Action;
 
 class IndexAction extends Action
 {

@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace frontend\controllers\actions\users;
 
-use frontend\models\user\UserSearchForm;
-use frontend\models\user\UserService;
+use frontend\models\user\{UserSearchForm, UserService};
 
 class IndexAction extends BaseAction
 {
     /** @var UserSearchForm $form */
     private UserSearchForm $form;
 
-    public function __construct($id, $controller, UserSearchForm $form, UserService $service)
-    {
+    public function __construct(
+        $id,
+        $controller,
+        UserSearchForm $form,
+        UserService $service
+    ) {
         $this->form = $form;
         parent::__construct($id, $controller, $service);
     }

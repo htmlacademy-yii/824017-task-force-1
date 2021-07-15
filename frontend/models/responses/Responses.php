@@ -53,7 +53,7 @@ class Responses extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|UsersQuery
      */
-    public function getUser()
+    public function getAuthor()
     {
         return $this->hasOne(Users::class, ['id' => 'user_id']);
     }

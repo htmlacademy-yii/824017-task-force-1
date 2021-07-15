@@ -98,7 +98,6 @@ CREATE TABLE responses (
 	payment INT UNSIGNED,
 	comment VARCHAR(3000),
 	date_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	is_refused BOOLEAN NOT NULL DEFAULT 0,
 	INDEX user_id (user_id),
 	INDEX task_id (task_id)
 );

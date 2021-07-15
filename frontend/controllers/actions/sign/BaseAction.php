@@ -6,7 +6,6 @@ namespace frontend\controllers\actions\sign;
 
 use frontend\models\user\SignHandler;
 use yii\base\Action;
-use yii\di\Container;
 
 class BaseAction extends Action
 {

@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace frontend\controllers\actions\tasks;
 
-use frontend\models\task\TaskSearchForm;
-use frontend\models\task\TaskService;
+use frontend\models\task\{TaskSearchForm, TaskService};
 
 class IndexAction extends BaseAction
 {
     /** @var TaskSearchForm $form */
     private TaskSearchForm $form;
 
-    public function __construct($id, $controller, TaskSearchForm $form, TaskService $service)
-    {
+    public function __construct(
+        $id,
+        $controller,
+        TaskSearchForm $form,
+        TaskService $service
+    ) {
         $this->form = $form;
         parent::__construct($id, $controller, $service);
     }
@@ -26,7 +29,7 @@ class IndexAction extends BaseAction
      *
      * @return string
      */
-    public function run()
+    public function run(): string
     {
         $dataProvider = $this->service->getDataProvider($this->form);
 

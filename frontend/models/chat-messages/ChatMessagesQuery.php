@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\models\chatMessages;
+namespace frontend\models\chat\messages;
 
 /**
  * This is the ActiveQuery class for [[ChatMessages]].

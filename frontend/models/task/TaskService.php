@@ -1,23 +1,19 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace frontend\models\task;
 
-use yii\web\Request;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\{BadResponseException, ServerException};
+use GuzzleHttp\Psr7\Request as GuzzleRequest;
+use frontend\models\responses\{ResponseForm, Responses};
+use frontend\models\reviews\{ReviewForm, Reviews};
+use frontend\models\user\Users;
+use TaskForce\Controllers\Task;
 use yii\base\{BaseObject, Model};
 use yii\data\ActiveDataProvider;
-use TaskForce\Controllers\Task;
-use frontend\models\responses\ResponseForm;
-use frontend\models\responses\Responses;
-use frontend\models\reviews\ReviewForm;
-use frontend\models\reviews\Reviews;
-use frontend\models\user\Users;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request as GuzzleRequest;
-use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Exception\ServerException;
+use yii\web\Request;
 use Yii;
 
 /**
@@ -33,10 +29,10 @@ class TaskService extends BaseObject
      *
      * @param Request $request
      */
-    public function __construct(Request $request, array $config = [])
+    public function __construct(Request $request)
     {
         $this->request = $request;
-        parent::__construct($config);
+        parent::__construct();
     }
 
     /**
@@ -53,7 +49,9 @@ class TaskService extends BaseObject
      */
     public function getDataProvider(TaskSearchForm $form): ActiveDataProvider
     {
-        $this->request->isGet ? $this->loadFromGet($form) : $this->loadFromPost($form);
+        $this->request->isGet
+            ? $this->loadFromGet($form)
+            : $this->loadFromPost($form);
 
         if (array_filter($form->attributes)) {
             $query = Tasks::findNewTasksByFilters($form);
@@ -61,14 +59,12 @@ class TaskService extends BaseObject
             $query = Tasks::findNewTasks();
         }
 
-        $dataProvider = new ActiveDataProvider([
+        return new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
                 'pageSize' => 5
             ]
         ]);
-
-        return $dataProvider;
     }
 
     /**
@@ -101,7 +97,6 @@ class TaskService extends BaseObject
     public function add(TaskCreatingForm $taskCreatingForm): bool
     {
         if ($this->loadFromPost($taskCreatingForm)) {
-
             if ($taskCreatingForm->validate()) {
                 $newTask = new Tasks([
                     'attributes' => $taskCreatingForm->attributes
