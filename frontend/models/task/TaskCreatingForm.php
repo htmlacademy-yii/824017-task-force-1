@@ -4,14 +4,9 @@ declare(strict_types = 1);
 
 namespace frontend\models\task;
 
-use Yii;
+use frontend\models\specializations\Specializations;
 use yii\helpers\ArrayHelper;
 use yii\base\Model;
-use frontend\models\{
-    specializations\Specializations,
-    cities\Cities,
-    user\Users,
-};
 
 class TaskCreatingForm extends Model
 {
@@ -20,6 +15,10 @@ class TaskCreatingForm extends Model
     public $specialization_id;
     public $payment;
     public $deadline_date;
+    public $address;
+    public $latitude;
+    public $longitude;
+
     private array $specializations;
 
     /**
@@ -42,19 +41,21 @@ class TaskCreatingForm extends Model
         return $this->specializations;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function rules()
     {
         return [
             ['name', 'required', 'message' => 'Кратко опишите суть работы'],
             ['description', 'required',
-                'message' => 'Укажите все пожелания и детали, чтобы исполнителям было проще соориентироваться'
-            ],
+                'message' => 'Укажите все пожелания и детали, чтобы исполнителям было проще соориентироваться'],
             ['specialization_id', 'required', 'message' => 'Выберите категорию'],
             ['name', 'match', 'pattern' => "/(?=(.*[^ ]){10,})/",
                 'message' => 'Длина поля «{attribute}» должна быть не меньше 10 не пробельных символов'
             ],
             /*['description', 'match', 'pattern' => "/(?=(.*[^ ]){30,})/", 'message' => 'Длина поля «{attribute}» должна быть не меньше 30 не пробельных символов'],*/
-            [['name', 'description', 'specialization_id', 'payment', 'deadline_date'], 'safe'],
+            [['name', 'description', 'specialization_id', 'payment', 'deadline_date', 'address'], 'safe'],
             [['specialization_id'], 'exist', 'skipOnError' => true, 'targetClass' => Specializations::class,
                 'targetAttribute' => ['specialization_id' => 'id'],
                 'message' => 'Такой специализации не существует'
@@ -67,14 +68,26 @@ class TaskCreatingForm extends Model
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function attributeLabels()
     {
         return [
+            'id' => 'ID',
+            'customer_id' => 'Customer ID',
+            'executant_id' => 'Executant ID',
+            'city_id' => 'City ID',
+            'specialization_id' => 'Категория',
+            'posting_date' => 'Posting Date',
+            'status' => 'Status',
             'name' => 'Мне нужно',
             'description' => 'Подробности задания',
-            'specialization_id' => 'Категория',
+            'latitude' => 'Latitude',
+            'longitude' => 'Longitude',
             'payment' => 'Бюджет',
             'deadline_date' => 'Срок исполнения',
+            'address' => 'Локация'
         ];
     }
 }

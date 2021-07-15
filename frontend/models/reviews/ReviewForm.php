@@ -14,7 +14,7 @@ class ReviewForm extends \yii\base\Model
         return [
             [['completion', 'rate', 'comment', 'task_id'], 'safe'],
             ['rate', 'integer', 'min' => 1, 'max' => 5],
-            ['completion', 'required']
+            [['completion', 'rate'], 'required']
         ];
     }
 

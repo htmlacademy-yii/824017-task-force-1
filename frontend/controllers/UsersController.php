@@ -1,11 +1,11 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace frontend\controllers;
 
-use yii\web\Controller;
 use yii\filters\AccessControl;
+use yii\web\Controller;
 
 /**
  * UsersController выполняет действия по отображению
@@ -31,7 +31,6 @@ class UsersController extends Controller
             ]
         ];
     }
-
 
     /**
      * {@inheritdoc}

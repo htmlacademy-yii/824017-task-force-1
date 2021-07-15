@@ -1,11 +1,11 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace frontend\controllers;
 
-use yii\web\Controller;
 use yii\filters\AccessControl;
+use yii\web\Controller;
 
 /**
  * SignController организовывает вход/выход пользователя,
@@ -33,12 +33,10 @@ class SignController extends Controller
                         'roles' => ['@']
                     ]
                 ],
-                'denyCallback' => function($rule, $action) {
+                'denyCallback' => function ($rule, $action) {
                     if ($action->id === 'logout') {
-
                        return $this->redirect(['landing/index']);
                     } else {
-
                         return $this->goHome();
                     }
                 }

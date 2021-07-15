@@ -4,11 +4,24 @@ declare(strict_types=1);
 
 namespace frontend\controllers\actions\tasks;
 
-use frontend\models\task\TaskCreatingForm;
+use frontend\models\task\{TaskCreatingForm, TaskService};
 use yii\web\Response;
 
 class AddAction extends BaseAction
 {
+    /** @var TaskCreatingForm $form */
+    private TaskCreatingForm $form;
+
+    public function __construct(
+        $id,
+        $controller,
+        TaskCreatingForm $form,
+        TaskService $service
+    ) {
+        $this->form = $form;
+        parent::__construct($id, $controller, $service);
+    }
+
     /**
      * Организовывает добавление нового задания.
      *
@@ -18,17 +31,15 @@ class AddAction extends BaseAction
      *
      * @return Response|string
      */
-    public function run()
+    public function run(): Response|string
     {
-        $model = $this->container->get(TaskCreatingForm::class);
-
-        if ($this->service->add($model)) {
+        if ($this->service->add($this->form)) {
             return $this->controller->goHome();
         }
 
         return $this->controller->render(
             'add',
-            ['taskCreatingForm' => $model]
+            ['taskCreatingForm' => $this->form]
         );
     }
 }

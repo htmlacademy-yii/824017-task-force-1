@@ -1,11 +1,11 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace frontend\controllers;
 
-use yii\web\Controller;
 use yii\filters\AccessControl;
+use yii\web\Controller;
 
 /**
  * LandingController отвечает за работу с посадочной страницей.
@@ -32,7 +32,7 @@ class LandingController extends Controller
                         'roles' => ['?']
                     ]
                 ],
-                'denyCallback' => function($rule, $action) {
+                'denyCallback' => function ($rule, $action) {
                     return $this->goHome();
                 },
             ]

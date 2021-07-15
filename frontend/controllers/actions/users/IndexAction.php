@@ -4,10 +4,23 @@ declare(strict_types=1);
 
 namespace frontend\controllers\actions\users;
 
-use frontend\models\user\UserSearchForm;
+use frontend\models\user\{UserSearchForm, UserService};
 
 class IndexAction extends BaseAction
 {
+    /** @var UserSearchForm $form */
+    private UserSearchForm $form;
+
+    public function __construct(
+        $id,
+        $controller,
+        UserSearchForm $form,
+        UserService $service
+    ) {
+        $this->form = $form;
+        parent::__construct($id, $controller, $service);
+    }
+
     /**
      * Отображает всех исполнителей.
      *
@@ -18,13 +31,14 @@ class IndexAction extends BaseAction
      */
     public function run(): string
     {
-        $searchForm = $this->container->get(UserSearchForm::class);
-
-        $users = $this->service->getUsers($searchForm);
+        $users = $this->service->getUsers($this->form);
 
         return $this->controller->render(
             'index',
-            compact('users', 'searchForm')
+            [
+                'users' => $users,
+                'searchForm' => $this->form
+            ]
         );
     }
 }

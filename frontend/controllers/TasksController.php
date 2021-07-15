@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace frontend\controllers;
 
 use frontend\models\task\Tasks;
-use yii\web\Controller;
 use yii\filters\AccessControl;
+use yii\web\Controller;
 use Yii;
 
 /**
@@ -19,7 +19,14 @@ class TasksController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['index', 'view', 'upload', 'add', 'accomplish', 'fail'],
+                'only' => [
+                    'index',
+                    'view',
+                    'upload',
+                    'add',
+                    'accomplish',
+                    'fail',
+                ],
                 'rules' => [
                     [
                         'actions' => ['add', 'upload-file'],
@@ -42,7 +49,8 @@ class TasksController extends Controller
                             $id = $post['ReviewForm']['task_id'];
                             $taskToBeAccomplished = Tasks::findOne($id);
 
-                            return $this->user->id === $taskToBeAccomplished->customer_id;
+                            return Yii::$app->user->getIdentity()
+                                    ->id === $taskToBeAccomplished->customer_id;
                         }
                     ],
                     [
@@ -53,7 +61,8 @@ class TasksController extends Controller
                             $id = $post['FailForm']['task_id'];
                             $taskToBeFailed = Tasks::findOne($id);
 
-                            return $this->user->id === $taskToBeFailed->executant_id;
+                            return Yii::$app->user->getIdentity()
+                                    ->id === $taskToBeFailed->executant_id;
                         }
                     ]
                 ]

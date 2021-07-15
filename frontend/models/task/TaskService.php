@@ -1,18 +1,20 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace frontend\models\task;
 
-use yii\web\Request;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\{BadResponseException, ServerException};
+use GuzzleHttp\Psr7\Request as GuzzleRequest;
+use frontend\models\responses\{ResponseForm, Responses};
+use frontend\models\reviews\{ReviewForm, Reviews};
+use frontend\models\user\Users;
+use TaskForce\Controllers\Task;
 use yii\base\{BaseObject, Model};
 use yii\data\ActiveDataProvider;
-use TaskForce\Controllers\Task;
-use frontend\models\responses\ResponseForm;
-use frontend\models\responses\Responses;
-use frontend\models\reviews\ReviewForm;
-use frontend\models\reviews\Reviews;
-use frontend\models\user\Users;
+use yii\web\Request;
+use Yii;
 
 /**
  * TaskService предоставляет информацию об заданиях, сохраняет новое задание.
@@ -27,10 +29,10 @@ class TaskService extends BaseObject
      *
      * @param Request $request
      */
-    public function __construct(Request $request, array $config = [])
+    public function __construct(Request $request)
     {
         $this->request = $request;
-        parent::__construct($config);
+        parent::__construct();
     }
 
     /**
@@ -47,7 +49,9 @@ class TaskService extends BaseObject
      */
     public function getDataProvider(TaskSearchForm $form): ActiveDataProvider
     {
-        $this->request->isGet ? $this->loadFromGet($form) : $this->loadFromPost($form);
+        $this->request->isGet
+            ? $this->loadFromGet($form)
+            : $this->loadFromPost($form);
 
         if (array_filter($form->attributes)) {
             $query = Tasks::findNewTasksByFilters($form);
@@ -55,14 +59,12 @@ class TaskService extends BaseObject
             $query = Tasks::findNewTasks();
         }
 
-        $dataProvider = new ActiveDataProvider([
+        return new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
                 'pageSize' => 5
             ]
         ]);
-
-        return $dataProvider;
     }
 
     /**
@@ -95,22 +97,29 @@ class TaskService extends BaseObject
     public function add(TaskCreatingForm $taskCreatingForm): bool
     {
         if ($this->loadFromPost($taskCreatingForm)) {
-
             if ($taskCreatingForm->validate()) {
                 $newTask = new Tasks([
                     'attributes' => $taskCreatingForm->attributes
                 ]);
                 $newTask->customer_id = \Yii::$app->user->id;
+                $newTask->city_id = Users::findOne($newTask->customer_id)->city_id;
                 $newTask->status = Task::STATUS_NEW;
-                $newTask->save(false);
 
+                if ($newTask->address ?? null) {
+                    $coordinates = $this->getCoordinates($newTask->address);
+                    $newTask->longitude = $coordinates[0] ?? null;
+                    $newTask->latitude = $coordinates[1] ?? null;
+                }
+                $newTask->save(false);
                 $session = \Yii::$app->session;
 
                 foreach ($session['paths'] ?? [] as $path) {
-                    $newTaskHelpfulFile = new TaskHelpfulFiles([
-                        'helpful_file' => $path,
-                        'task_id' => $newTask->id
-                    ]);
+                    $newTaskHelpfulFile = new TaskHelpfulFiles(
+                        [
+                            'path' => $path,
+                            'task_id' => $newTask->id
+                        ]
+                    );
                     $newTaskHelpfulFile->save(false);
                 }
                 unset($session['paths']);
@@ -120,6 +129,41 @@ class TaskService extends BaseObject
         }
 
         return false;
+    }
+
+    private function getCoordinates(string $address): ?array
+    {
+        $coordinates = null;
+        $client = new Client(['base_uri' => 'https://geocode-maps.yandex.ru/']);
+        $request = new GuzzleRequest('GET', '1.x');
+        $response = $client->send($request, [
+            'query' => [
+                'geocode' => $address,
+                'apikey' => Yii::$app->params['apiKey'],
+                'format' => 'json',
+            ]
+        ]);
+        
+        if ($response->getStatusCode() !== 200) {
+            throw new BadResponseException("Ошибка ответа: " . $response->getReasonPhrase(), $request, $response);
+        }
+        $jsonResponseData = $response->getBody()->getContents();
+        $responseData = json_decode($jsonResponseData, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new ServerException("Некорректный json-формат", $request, $response);
+        }
+        $error = $responseData['message'] ?? null;
+
+        if ($error) {
+            throw new BadResponseException("API ошибка: " . $error, $request, $response);
+        }
+
+        if ($responseData['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos'] ?? null) {
+            $coordinates = explode(' ', $responseData['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos']);
+        }
+    
+        return $coordinates;
     }
 
     public function addResponse(ResponseForm $form): void
@@ -165,7 +209,7 @@ class TaskService extends BaseObject
     public function cancel(int $task_id): void
     {
         $task = Tasks::findOne($task_id);
-        $taskHelper = new Task($task->customer_id, $task->executant_id, $task->status);
+        $taskHelper = new Task($task->id, $task->customer_id, $task->executant_id, $task->status);
         $task->status = $taskHelper->getStatusCausedByAction(Task::TO_CANCEL);
         $task->save();
     }

@@ -9,7 +9,9 @@ use frontend\models\{
     responses\Responses,
     specializations\Specializations,
     user\Users,
+    cities\Cities,
 };
+use frontend\models\chatMessages\ChatMessages;
 
 /**
  * This is the model class for table "tasks".
@@ -55,7 +57,7 @@ class Tasks extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'description', 'specialization_id', 'deadline_date', 'payment'], 'safe'],
+            [['name', 'description', 'specialization_id', 'deadline_date', 'payment', 'executant_id', 'status', 'address'], 'safe'],
         ];
     }
 
@@ -139,7 +141,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getCustomer()
     {
-        return $this->hasOne(Users::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Users::className(), ['id' => 'customer_id'])->one();
     }
 
     /**

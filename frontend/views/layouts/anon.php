@@ -173,19 +173,7 @@ $this->title = 'TaskForce';
       <div class="page-footer__links">
         <ul class="links__list">
           <li class="links__item">
-            <a href="<?= Url::toRoute('tasks/index') ?>">Задания</a>
-          </li>
-          <li class="links__item">
-            <a href="">Мой профиль</a>
-          </li>
-          <li class="links__item">
-            <a href="<?= Url::toRoute('users/index') ?>">Исполнители</a>
-          </li>
-          <li class="links__item">
             <a href="<?= Url::toRoute('sign/signup') ?>">Регистрация</a>
-          </li>
-          <li class="links__item">
-            <a href="<?= Url::toRoute('tasks/add') ?>">Создать задание</a>
           </li>
           <li class="links__item">
             <a href="<?= Url::to() ?>">Справка</a>
@@ -195,7 +183,7 @@ $this->title = 'TaskForce';
       <div class="page-footer__copyright">
         <a href="https://htmlacademy.ru">
           <img class="copyright-logo"
-             src="../img/academy-logo.png"
+             src="<?= Url::to('@web/img/academy-logo.png') ?>"
              width="185" height="63"
              alt="Логотип HTML Academy">
         </a>

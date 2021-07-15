@@ -47,6 +47,11 @@ use frontend\models\{
  */
 class Users extends \yii\db\ActiveRecord
 {
+    public const ROLE_CUSTOMER = 'customer';
+    public const ROLE_EXECUTANT = 'executant';
+
+    private $rating;
+
     /**
      * {@inheritdoc}
      */
@@ -141,7 +146,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getExecutantReviews()
     {
-        return $this->hasMany(Reviews::className(), ['executant_id' => 'id']);
+        return $this->hasMany(Reviews::class, ['executant_id' => 'id']);
     }
 
     /**
@@ -275,5 +280,25 @@ class Users extends \yii\db\ActiveRecord
         asArray();
 
         return $query->all();
+    }
+
+    public function getRating(): float
+    {
+        if (!isset($this->rating)) {
+            $reviews = $this->executantReviews;
+            $count = 0;
+            $sum = 0;
+
+            foreach ($reviews as $review) {
+                $count++;
+                $sum += $review->rate;
+            }
+
+            $rating = round($sum / ($count ? $count : 1), 2);
+
+            $this->rating = $rating;
+        }
+
+        return $this->rating;
     }
 }

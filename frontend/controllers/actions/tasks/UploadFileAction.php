@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace frontend\controllers\actions\tasks;
 
-use yii\base\Action;
 use TaskForce\Utils\Uploader;
+use yii\base\Action;
 
 class UploadFileAction extends Action
 {
@@ -14,7 +14,7 @@ class UploadFileAction extends Action
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         Uploader::uploadFile();
     }

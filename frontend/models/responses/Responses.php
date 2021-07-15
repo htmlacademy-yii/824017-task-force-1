@@ -2,9 +2,11 @@
 
 namespace frontend\models\responses;
 
+use frontend\models\task\TasksQuery;
 use frontend\models\user\Users;
 use frontend\models\task\Tasks;
 
+use frontend\models\user\UsersQuery;
 use Yii;
 
 /**
@@ -18,8 +20,8 @@ use Yii;
  * @property string $date_time
  * @property bool $is_refused
  *
- * @property User $user
- * @property Task $task
+ * @property Users $user
+ * @property Tasks $task
  */
 class Responses extends \yii\db\ActiveRecord
 {
@@ -41,44 +43,29 @@ class Responses extends \yii\db\ActiveRecord
             [['user_id', 'task_id', 'payment'], 'integer'],
             [['task_id', 'user_id', 'comment', 'payment', 'is_refused'], 'safe'],
             [['comment'], 'string', 'max' => 3000],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'user_id' => 'User ID',
-            'task_id' => 'Task ID',
-            'payment' => 'Payment',
-            'comment' => 'Comment',
-            'date_time' => 'Date Time',
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']],
+            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::class, 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
 
     /**
      * Gets query for [[User]].
      *
-     * @return \yii\db\ActiveQuery|UserQuery
+     * @return \yii\db\ActiveQuery|UsersQuery
      */
-    public function getUser()
+    public function getAuthor()
     {
-        return $this->hasOne(Users::className(), ['id' => 'user_id']);
+        return $this->hasOne(Users::class, ['id' => 'user_id']);
     }
 
     /**
      * Gets query for [[Task]].
      *
-     * @return \yii\db\ActiveQuery|TaskQuery
+     * @return \yii\db\ActiveQuery|TasksQuery
      */
     public function getTask()
     {
-        return $this->hasOne(Tasks::className(), ['id' => 'task_id']);
+        return $this->hasOne(Tasks::class, ['id' => 'task_id']);
     }
 
     /**
@@ -88,5 +75,18 @@ class Responses extends \yii\db\ActiveRecord
     public static function find()
     {
         return new ResponsesQuery(get_called_class());
+    }
+
+    public static function findByUserAndTask(int $userId, int $taskId): array
+    {
+        return self::find()
+            ->where(['user_id' => $userId, 'task_id' => $taskId])->all();
+    }
+
+    public function refuse(): bool
+    {
+        $this->setAttribute('is_refused', 1);
+
+        return $this->save(false);
     }
 }

@@ -14,7 +14,7 @@ class LogoutAction extends BaseAction
      *
      * @return Response
      */
-    public function run()
+    public function run(): Response
     {
         $this->signHandler->logout();
 

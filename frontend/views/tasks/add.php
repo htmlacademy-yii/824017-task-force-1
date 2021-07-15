@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
+use yii\web\View;
 use frontend\assets\{AppAsset, UploadFileAsset};
 
+
 UploadFileAsset::register($this);
-$this->title = 'Добавление задания';
 $specializations = $taskCreatingForm->getSpecializations();
+
+$this->title = 'Добавление задания';
+
 ?>
 
 <section class="create__task">
@@ -58,9 +63,19 @@ $specializations = $taskCreatingForm->getSpecializations();
     <div class="create__file">
         <span>Добавить новый файл</span>
     </div>
-    <label for="13">Локация</label>
-    <input class="input-navigation input-middle input" id="13" type="search" name="q" placeholder="Санкт-Петербург, Калининский район">
-    <span>Укажите адрес исполнения, если задание требует присутствия</span>
+    <?= $form->field($taskCreatingForm, "address", [
+            'options' => ['style' => 'margin-top: 29px;'],
+            'template' =>
+                "{label}\n{input}\n"
+                . "<span>Укажите адрес исполнения, если задание требует присутствия</span>",
+            'inputOptions' => [
+                'id' => 13,
+                'class' => 'input-navigation input-middle input',
+                'placeholder' => 'Санкт-Петербург, Калининский район',
+                'type' => 'search',
+                'style' => 'width: 520px; margin-top: 12px; margin-bottom: 2px;',
+            ]
+        ]) ?>
     <div class="create__price-time">
     <?= $form->field($taskCreatingForm, "payment", [
         'options' => ['class' => 'create__price-time--wrapper', 'style' => 'margin-top: 0'],

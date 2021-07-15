@@ -21,6 +21,7 @@ class Task
     private string $currentStatus;
     private int $customerId;
     private ?int $executantId;
+    private int $taskId;
     
     private array $mapping = [
         self::STATUS_NEW => 'Новое',
@@ -44,8 +45,9 @@ class Task
         ]
     ];
 
-    public function __construct(int $customerId, ?int $executantId = null, string $status = self::STATUS_NEW)
+    public function __construct(int $taskId, int $customerId, ?int $executantId = null, string $status = self::STATUS_NEW)
     {
+        $this->taskId = $taskId;
         $this->executantId = $executantId;
         $this->customerId = $customerId;
         
@@ -87,10 +89,10 @@ class Task
 
         switch ($this->currentStatus) {
             case self::STATUS_NEW:
-                $actions = [new ExecuteAction, new CancelAction];
+                $actions = [new ExecuteAction($this->taskId), new CancelAction()];
                 break;
             case self::STATUS_EXECUTING:
-                $actions = [new FailAction, new AccomplishAction];
+                $actions = [new FailAction(), new AccomplishAction()];
                 break;
             default:
                 return null;
