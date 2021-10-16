@@ -1,17 +1,19 @@
-﻿<ol>
+﻿﻿<ol>
     <li>
-         Создайте базу данных:<br>  
-        <pre><code>CREATE DATABASE task_force_1
-            DEFAULT CHARACTER SET utf8
-            DEFAULT COLLATE UTF8_GENERAL_CI;
-USE task_force_1;</code></pre>
+        <pre><code>git clone git@github.com:mikeserov/824017-task-force-1.git task-force</code></pre>
     </li>
     <li>
-         Накатите миграцию:<br>
-        <pre><code>php yii migrate</code></pre>
+        <pre><code>cd task-force</code></pre>
     </li>
     <li>
-        Загрузите дамп заданий:
-        <pre><code>php yii fixture/load Task</code></pre>
+        <pre><code>cp .env.example .env
+cp docker-compose-prod.yml docker-compose.yml
+cp src/.env.example src/.env</code></pre>
+    </li>
+    <li>
+        <pre><code>docker-compose up</code></pre>
+    </li>
+    <li>
+        <a href="http://localhost">http://localhost</a>
     </li>
 </ol>

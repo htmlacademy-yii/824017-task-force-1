@@ -46,6 +46,6 @@ return [
         '@modalPath' => '@frontend/views/modals',
     ],
     'params' => [
-        'apiKey' => 'e666f398-c983-4bde-8f14-e3fec900592a'
+        'apiKey' => getenv('YANDEX_MAPS_API_KEY'),
     ],
 ];

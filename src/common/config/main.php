@@ -1,5 +1,11 @@
 <?php
+
 return [
+    'bootstrap' => [
+        [
+            'class' => 'common\components\DotenvLoader',
+        ],
+    ],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',

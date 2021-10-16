@@ -1,2 +1,8 @@
 # phpstorm project files
 .idea
+
+/docker/postgresql/data
+/docker/nginx/logs
+
+docker-compose.yml
+.env
