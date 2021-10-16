@@ -7,12 +7,12 @@ use yii\db\Migration;
  */
 class m210704_204817_add_column_to_responses_table extends Migration
 {
-    public function up()
+    public function safeUp()
     {
         $this->addColumn('responses', 'is_refused', $this->boolean()->defaultValue(false));
     }
 
-    public function down()
+    public function safeDown()
     {
         $this->dropColumn('responses', 'is_refused');
     }

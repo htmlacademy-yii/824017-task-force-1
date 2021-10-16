@@ -7,12 +7,12 @@ use yii\db\Migration;
  */
 class m210713_190358_alter_table_task_helpful_files extends Migration
 {
-    public function up()
+    public function safeUp()
     {
         $this->renameColumn('task_helpful_files', 'helpful_file', 'path');
     }
 
-    public function down()
+    public function safeDown()
     {
         $this->renameColumn('task_helpful_files', 'path', 'helpful_file');
     }
