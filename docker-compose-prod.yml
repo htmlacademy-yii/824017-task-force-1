@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: ${PGDATA}
+    volumes:
+      - ./docker/postgresql/data:/var/lib/postgresql/data
+    ports:
+      - ${PG_EXTERNAL_PORT}:5432
+    restart: always
+
+  php-cli:
+    working_dir: /app
+    build: ./docker/php-cli
+    depends_on:
+      - postgres
+    command: bash -c "../wait-for-it.sh ${POSTGRES_USER} ${POSTGRES_PASSWORD}
+      && composer update
+      && php init --env=Development --overwrite=n
+      && php yii migrate --interactive=0
+      && php yii fixture/load Task --interactive=0"
+    volumes:
+      - ./src:/app
+
+  php-fpm:
+    working_dir: /app
+    build: ./docker/php-fpm
+    restart: always
+    depends_on:
+      - postgres
+    volumes:
+      - ./src:/app
+      - ./docker/php-fpm/php.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./docker/php-fpm/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  nginx:
+    image: nginx:latest
+    restart: always
+    depends_on:
+      - php-fpm
+    volumes:
+      - ./src:/app
+      - ./docker/nginx/logs:/var/log/nginx
+      - ./docker/nginx/hosts:/etc/nginx/conf.d
+    ports:
+      - ${NGINX_PORT}:80
