@@ -14,6 +14,9 @@ return [
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ],
         ],
         'user' => [
             'identityClass' => 'frontend\models\user\UserIdentity',
@@ -45,7 +48,9 @@ return [
     'aliases' => [
         '@modalPath' => '@frontend/views/modals',
     ],
-    'params' => [
-        'apiKey' => getenv('YANDEX_MAPS_API_KEY'),
+    'modules' => [
+        'api' => [
+            'class' => 'frontend\modules\api\Module'
+        ]
     ],
 ];

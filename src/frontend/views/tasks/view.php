@@ -2,6 +2,7 @@
 
 declare(strict_types = 1);
 
+use frontend\assets\MessengerAsset;
 use frontend\assets\YandexMapAsset;
 use frontend\models\responses\Responses;
 use frontend\models\task\Tasks;
@@ -12,11 +13,14 @@ use yii\helpers\{Html, Url};
 /** @var yii\web\View $this */
 /** @var Tasks $task Отображаемое задание */
 /** @var Responses[] $responses Отклики к заданию */
+/** @var bool $needShowChat Показать ли окно переписки */
 
 $this->title = 'Просмотр задания';
 
 /** @var UserIdentity $user Залогиненный пользователь. */
 $user = \Yii::$app->user->getIdentity();
+
+MessengerAsset::register($this);
 
 YandexMapAsset::register($this);
 $this->registerJsVar('latitude', $task->latitude);
@@ -129,7 +133,8 @@ $formatter = \Yii::$app->formatter;
         </div>
     </div>
     <div id="chat-container">
-        <!--                                        добавьте сюда атрибут task с указанием в нем id текущего задания-->
+        <?php if ($needShowChat): ?>
         <chat class="connect-desk__chat" task="<?= $task->id ?>"></chat>
+        <?php endif; ?>
     </div>
 </section>

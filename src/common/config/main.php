@@ -22,6 +22,21 @@ return [
             'rules' => [
                 'task/view/<id>' => 'tasks/view',
                 'user/view/<id>' => 'users/view',
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => ['messages' => 'api/messages'],
+                    'patterns' => [
+                        'GET'  => 'index',
+                        'POST' => 'create',
+                    ],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => ['tasks' => 'api/tasks'],
+                    'patterns' => [
+                        'GET'  => 'index'
+                    ]
+                ],
             ],
         ],
         'formatter' => [

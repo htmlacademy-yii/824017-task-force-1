@@ -59,9 +59,12 @@ class ViewAction extends BaseAction
             $responses = [];
         }
 
+        $needShowChat = $user->id === $task->customer_id
+            || $user->id === $task->executant_id;
+
         return $this->controller->render(
             'view',
-            compact('task', 'responses')
+            compact('task', 'responses', 'needShowChat')
         );
     }
 }
