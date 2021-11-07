@@ -35,7 +35,7 @@ class UsersOptionalSettings extends \yii\db\ActiveRecord
             [['user_id', 'is_hidden_contacts', 'is_hidden_account', 'is_subscribed_messages', 'is_subscribed_actions', 'is_subscribed_reviews'], 'required'],
             [['user_id', 'is_hidden_contacts', 'is_hidden_account', 'is_subscribed_messages', 'is_subscribed_actions', 'is_subscribed_reviews'], 'integer'],
             [['user_id'], 'unique'],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -61,7 +61,7 @@ class UsersOptionalSettings extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     /**

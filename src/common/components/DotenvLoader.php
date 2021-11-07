@@ -2,23 +2,25 @@
 
 namespace common\components;
 
-use cyberinferno\yii\phpdotenv\Loader;
+use Dotenv\Dotenv;
+use yii\base\BootstrapInterface;
 use yii\helpers\ArrayHelper;
 
-class DotenvLoader extends Loader
+class DotenvLoader implements BootstrapInterface
 {
     public function bootstrap($app)
     {
-        parent::bootstrap($app);
+        Dotenv::createImmutable(__DIR__ . '/../../')->load();
+
         $app->setComponents(ArrayHelper::merge($app->getComponents(),
             [
                 'db' => [
                     'class' => 'yii\db\Connection',
                     'dsn' => 'pgsql:host=postgres;' .
-                        'port=' . getenv('PG_EXTERNAL_PORT') . ';' .
-                        'dbname=' . getenv('POSTGRES_DB'),
-                    'username' => getenv('POSTGRES_USER'),
-                    'password' => getenv('POSTGRES_PASSWORD'),
+                        'port=' . $_ENV['PG_EXTERNAL_PORT'] . ';' .
+                        'dbname=' . $_ENV['POSTGRES_DB'],
+                    'username' => $_ENV['POSTGRES_USER'],
+                    'password' => $_ENV['POSTGRES_PASSWORD'],
                     'charset' => 'utf8',
                 ],
             ]

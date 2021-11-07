@@ -40,13 +40,13 @@ class NotificationsHistory extends \yii\db\ActiveRecord
             [
                 'recipient_id',
                 'exist',
-                'targetClass' => User::className(),
+                'targetClass' => User::class,
                 'targetAttribute' => ['recipient_id' => 'id']
             ],
             [
                 'task_id',
                 'exist',
-                'targetClass' => Task::className(),
+                'targetClass' => Task::class,
                 'targetAttribute' => ['task_id' => 'id']
             ],
         ];
@@ -74,7 +74,7 @@ class NotificationsHistory extends \yii\db\ActiveRecord
      */
     public function getRecipient()
     {
-        return $this->hasOne(User::className(), ['id' => 'recipient_id']);
+        return $this->hasOne(User::class, ['id' => 'recipient_id']);
     }
 
     /**
@@ -84,7 +84,7 @@ class NotificationsHistory extends \yii\db\ActiveRecord
      */
     public function getTask()
     {
-        return $this->hasOne(Task::className(), ['id' => 'task_id']);
+        return $this->hasOne(Task::class, ['id' => 'task_id']);
     }
 
     /**

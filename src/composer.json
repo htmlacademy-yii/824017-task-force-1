@@ -26,7 +26,7 @@
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
         "guzzlehttp/guzzle": "^7.3",
         "ext-json": "*",
-        "cyberinferno/yii2-phpdotenv": "~2.0.0"
+        "vlucas/phpdotenv": "~v5.0.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

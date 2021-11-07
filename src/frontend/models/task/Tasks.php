@@ -11,7 +11,7 @@ use frontend\models\{
     user\Users,
     cities\Cities,
 };
-use frontend\models\chatMessages\ChatMessages;
+use frontend\models\ChatMessages;
 
 /**
  * This is the model class for table "tasks".
@@ -91,7 +91,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getChatMessages()
     {
-        return $this->hasMany(ChatMessages::className(), ['task_id' => 'id']);
+        return $this->hasMany(ChatMessages::class, ['task_id' => 'id']);
     }
 
     /**
@@ -101,7 +101,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getNotificationsHistories()
     {
-        return $this->hasMany(NotificationsHistory::className(), ['task_id' => 'id']);
+        return $this->hasMany(NotificationsHistory::class, ['task_id' => 'id']);
     }
 
     /**
@@ -111,7 +111,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getResponses()
     {
-        return $this->hasMany(Responses::className(), ['task_id' => 'id']);
+        return $this->hasMany(Responses::class, ['task_id' => 'id']);
     }
 
     /**
@@ -121,7 +121,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getReviews()
     {
-        return $this->hasMany(Reviews::className(), ['task_id' => 'id']);
+        return $this->hasMany(Reviews::class, ['task_id' => 'id']);
     }
 
     /**
@@ -131,7 +131,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getTaskHelpfulFiles()
     {
-        return $this->hasMany(TaskHelpfulFiles::className(), ['task_id' => 'id']);
+        return $this->hasMany(TaskHelpfulFiles::class, ['task_id' => 'id']);
     }
 
     /**
@@ -141,7 +141,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getCustomer()
     {
-        return $this->hasOne(Users::className(), ['id' => 'customer_id'])->one();
+        return $this->hasOne(Users::class, ['id' => 'customer_id'])->one();
     }
 
     /**
@@ -151,7 +151,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getExecutant()
     {
-        return $this->hasOne(Users::className(), ['id' => 'executant_id']);
+        return $this->hasOne(Users::class, ['id' => 'executant_id']);
     }
 
     /**
@@ -161,7 +161,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getCity()
     {
-        return $this->hasOne(Cities::className(), ['id' => 'city_id']);
+        return $this->hasOne(Cities::class, ['id' => 'city_id']);
     }
 
     /**
@@ -171,7 +171,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getSpecialization()
     {
-        return $this->hasOne(Specializations::className(), ['id' => 'specialization_id']);
+        return $this->hasOne(Specializations::class, ['id' => 'specialization_id']);
     }
 
     /**

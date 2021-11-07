@@ -56,7 +56,7 @@ class Specializations extends \yii\db\ActiveRecord
      */
     public function getTasks()
     {
-        return $this->hasMany(Task::className(), ['specialization_id' => 'id']);
+        return $this->hasMany(Task::class, ['specialization_id' => 'id']);
     }
 
     /**
@@ -66,7 +66,7 @@ class Specializations extends \yii\db\ActiveRecord
      */
     public function getUserSpecializations()
     {
-        return $this->hasMany(UserSpecialization::className(), ['specialization_id' => 'id']);
+        return $this->hasMany(UserSpecialization::class, ['specialization_id' => 'id']);
     }
 
     /**
@@ -76,7 +76,7 @@ class Specializations extends \yii\db\ActiveRecord
      */
     public function getUsers()
     {
-        return $this->hasMany(User::className(), ['id' => 'user_id'])->viaTable('user_specialization', ['specialization_id' => 'id']);
+        return $this->hasMany(User::class, ['id' => 'user_id'])->viaTable('user_specialization', ['specialization_id' => 'id']);
     }
 
     final public static function getAll()

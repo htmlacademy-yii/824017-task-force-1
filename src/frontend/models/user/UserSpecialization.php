@@ -32,8 +32,8 @@ class UserSpecialization extends \yii\db\ActiveRecord
             [['user_id', 'specialization_id'], 'required'],
             [['user_id', 'specialization_id'], 'integer'],
             [['user_id', 'specialization_id'], 'unique', 'targetAttribute' => ['user_id', 'specialization_id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['specialization_id'], 'exist', 'skipOnError' => true, 'targetClass' => Specialization::className(), 'targetAttribute' => ['specialization_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+            [['specialization_id'], 'exist', 'skipOnError' => true, 'targetClass' => Specialization::class, 'targetAttribute' => ['specialization_id' => 'id']],
         ];
     }
 
@@ -55,7 +55,7 @@ class UserSpecialization extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     /**
@@ -65,7 +65,7 @@ class UserSpecialization extends \yii\db\ActiveRecord
      */
     public function getSpecialization()
     {
-        return $this->hasOne(Specialization::className(), ['id' => 'specialization_id']);
+        return $this->hasOne(Specialization::class, ['id' => 'specialization_id']);
     }
 
     /**
