@@ -13,6 +13,8 @@ use Yii;
  */
 final class SignHandler
 {
+    private const DEFAULT_AVATAR = '/img/w3_characters/1.jpg';
+
     /**
      * Регистрирует нового пользователя.
      *
@@ -26,11 +28,11 @@ final class SignHandler
     public function signup(SignupForm $form): bool
     {
         if (!$form->validate()) {
-
             return false;
         }
 
         $user = new Users(['attributes' => $form->attributes]);
+        $user->avatar = self::DEFAULT_AVATAR;
         $user->password = Yii::$app->security
             ->generatePasswordHash($form->password);
 

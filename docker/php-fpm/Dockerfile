@@ -15,8 +15,6 @@ RUN install-php-extensions \
         opcache \
         pdo_mysql \
         pdo_pgsql \
-        imagick \
-        mongodb \
-        xdebug
+        imagick
 
 COPY php.ini ${PHP_INI_DIR}/conf.d/custom.ini

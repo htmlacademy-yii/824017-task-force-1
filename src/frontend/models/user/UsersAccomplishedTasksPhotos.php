@@ -31,7 +31,7 @@ class UsersAccomplishedTasksPhotos extends \yii\db\ActiveRecord
             [['user_id', 'accomplished_task_photo'], 'required'],
             [['user_id'], 'integer'],
             [['accomplished_task_photo'], 'string', 'max' => 1000],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -53,7 +53,7 @@ class UsersAccomplishedTasksPhotos extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     /**

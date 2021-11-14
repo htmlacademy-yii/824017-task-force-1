@@ -18,7 +18,7 @@ class YandexMapAsset extends AssetBundle
         parent::init();
 
         $this->js = [
-            'http://api-maps.yandex.ru/2.1/?apikey=' . getenv('YANDEX_MAPS_API_KEY') . '&lang=ru_RU',
+            'http://api-maps.yandex.ru/2.1/?apikey=' . $_ENV['YANDEX_MAPS_API_KEY'] . '&lang=ru_RU',
             'js/yandexMap.js',
         ];
     }

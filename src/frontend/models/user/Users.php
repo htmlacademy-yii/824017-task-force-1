@@ -103,7 +103,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getChatMessages()
     {
-        return $this->hasMany(ChatMessage::className(), ['user_id' => 'id']);
+        return $this->hasMany(ChatMessage::class, ['user_id' => 'id']);
     }
 
     /**
@@ -114,7 +114,7 @@ class Users extends \yii\db\ActiveRecord
     public function getNotificationsHistories()
     {
         return $this->hasMany(
-            NotificationsHistory::className(),
+            NotificationsHistory::class,
             ['recipient_id' => 'id']
         );
     }
@@ -126,7 +126,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getResponses()
     {
-        return $this->hasMany(Response::className(), ['user_id' => 'id']);
+        return $this->hasMany(Response::class, ['user_id' => 'id']);
     }
 
     /**
@@ -136,7 +136,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getCustomerReviews()
     {
-        return $this->hasMany(Reviews::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Reviews::class, ['customer_id' => 'id']);
     }
 
     /**
@@ -156,7 +156,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getCustomerTasks()
     {
-        return $this->hasMany(Tasks::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Tasks::class, ['customer_id' => 'id']);
     }
 
     /**
@@ -166,7 +166,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getExecutantTasks()
     {
-        return $this->hasMany(Tasks::className(), ['executant_id' => 'id']);
+        return $this->hasMany(Tasks::class, ['executant_id' => 'id']);
     }
 
     /**
@@ -176,7 +176,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getUserSpecializations()
     {
-        return $this->hasMany(UserSpecialization::className(), ['user_id' => 'id']);
+        return $this->hasMany(UserSpecialization::class, ['user_id' => 'id']);
     }
 
     /**
@@ -186,7 +186,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getSpecializations()
     {
-        return $this->hasMany(Specializations::className(), ['id' => 'specialization_id'])->viaTable('user_specialization', ['user_id' => 'id']);
+        return $this->hasMany(Specializations::class, ['id' => 'specialization_id'])->viaTable('user_specialization', ['user_id' => 'id']);
     }
 
     /**
@@ -196,7 +196,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getCity()
     {
-        return $this->hasOne(Cities::className(), ['id' => 'city_id']);
+        return $this->hasOne(Cities::class, ['id' => 'city_id']);
     }
 
     /**
@@ -206,7 +206,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getUsersAccomplishedTasksPhotos()
     {
-        return $this->hasMany(UsersAccomplishedTasksPhotos::className(), ['user_id' => 'id']);
+        return $this->hasMany(UsersAccomplishedTasksPhotos::class, ['user_id' => 'id']);
     }
 
     /**
@@ -216,7 +216,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getUsersOptionalSetting()
     {
-        return $this->hasOne(UsersOptionalSetting::className(), ['user_id' => 'id']);
+        return $this->hasOne(UsersOptionalSetting::class, ['user_id' => 'id']);
     }
 
     /**

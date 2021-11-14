@@ -139,11 +139,11 @@ class TaskService extends BaseObject
         $response = $client->send($request, [
             'query' => [
                 'geocode' => $address,
-                'apikey' => Yii::$app->params['apiKey'],
+                'apikey' => $_ENV['YANDEX_MAPS_API_KEY'],
                 'format' => 'json',
             ]
         ]);
-        
+
         if ($response->getStatusCode() !== 200) {
             throw new BadResponseException("Ошибка ответа: " . $response->getReasonPhrase(), $request, $response);
         }
@@ -162,7 +162,7 @@ class TaskService extends BaseObject
         if ($responseData['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos'] ?? null) {
             $coordinates = explode(' ', $responseData['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos']);
         }
-    
+
         return $coordinates;
     }
 

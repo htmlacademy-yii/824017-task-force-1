@@ -44,9 +44,9 @@ class Reviews extends \yii\db\ActiveRecord
             [['completion'], 'string'],
             [['comment'], 'default'],
             [['comment'], 'string', 'max' => 3000],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
-            [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['customer_id' => 'id']],
-            [['executant_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['executant_id' => 'id']],
+            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::class, 'targetAttribute' => ['task_id' => 'id']],
+            [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['customer_id' => 'id']],
+            [['executant_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['executant_id' => 'id']],
         ];
     }
 
@@ -74,7 +74,7 @@ class Reviews extends \yii\db\ActiveRecord
      */
     public function getTask()
     {
-        return $this->hasOne(Tasks::className(), ['id' => 'task_id']);
+        return $this->hasOne(Tasks::class, ['id' => 'task_id']);
     }
 
     /**
@@ -84,7 +84,7 @@ class Reviews extends \yii\db\ActiveRecord
      */
     public function getCustomer()
     {
-        return $this->hasOne(Users::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Users::class, ['id' => 'customer_id']);
     }
 
     /**
@@ -94,7 +94,7 @@ class Reviews extends \yii\db\ActiveRecord
      */
     public function getExecutant()
     {
-        return $this->hasOne(Users::className(), ['id' => 'executant_id']);
+        return $this->hasOne(Users::class, ['id' => 'executant_id']);
     }
 
     /**

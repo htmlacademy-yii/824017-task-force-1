@@ -20,7 +20,8 @@ services:
     depends_on:
       - postgres
     command: bash -c "../wait-for-it.sh ${POSTGRES_USER} ${POSTGRES_PASSWORD}
-      && composer update
+      && composer install
+      && composer dump-autoload
       && php init --env=Development --overwrite=n
       && php yii migrate --interactive=0
       && php yii fixture/load Task --interactive=0"
